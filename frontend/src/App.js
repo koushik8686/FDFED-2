@@ -22,8 +22,7 @@ function App() {
         <Route path="/seller" element={<SellerAuth />} />
         <Route path="/sellerhome" element={<SellerHome />} />
         <Route path="/auction/:item" element={<Auction />} />
-        <Route path="/item/:item" element={<Item />} />
-       
+        <Route path="/item/:item" element={<Item />} />   
       </Routes>
     </BrowserRouter>
   );

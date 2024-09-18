@@ -5,7 +5,7 @@ import Cookies from "js-cookie";
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [errormsg, seterrormsg] = useState("");
   const navigate = useNavigate();
   const user = Cookies.get("user");
 
@@ -19,23 +19,24 @@ export default function Component() {
     event.preventDefault();
 
     try {
-      const response = await fetch("/login", {
+      const response = await fetch("http://localhost:4000/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log(response);
-      if (!response.ok) {
-        throw new Error("Login failed");
+      const data = await response.json(); // Parse the JSON response
+      console.log(data);
+      if (data.message!=="Login Successfully") {
+        seterrormsg(data.message);
       } else {
-        const data = await response.json();
+        console.log(data);
         Cookies.set("user", data.userId);
         navigate("/home");
       }
     } catch (error) {
-      setError(error.message);
+      seterrormsg(error.message);
     }
   };
 
@@ -86,7 +87,7 @@ export default function Component() {
           >
             Sign in
           </button>
-          {error && <p className="text-red-500">{error}</p>}
+          { <p className="text-red-500">{errormsg}</p>}
         </form>
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}
