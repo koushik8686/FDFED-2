@@ -35,7 +35,7 @@ app.options('*', cors()); // Enable pre-flight requests for all routes
 app.listen(4000, function (param) { console.log("Running on port 4000"); console.log("http://localhost:4000/"); })
 
 //user routes
-app.get("/", function (req, res) {  res.sendFile(__dirname+"/views/intro.html")})
+app.get("/", function (req, res) {  res.send("hello welcome to hexart")})
 app.use("/register", require("./routers/user-routes/user_register"))
 app.use("/login",require("./routers/user-routes/user_login"))
 app.use("/user", require("./routers/user-routes/user_home") )

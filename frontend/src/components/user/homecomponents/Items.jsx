@@ -1,9 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+import "../../../App.css"
+
 
 export default function Items({filteredItems} ) {
+  const boxStyle = {
+    borderRadius: '8px',
+    animation: 'fadeIn 2s ease-in-out',
+  };
   return (
-    <div className='container mx-auto py-10 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
+    <div style={boxStyle} className=' container mx-auto py-10 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
          {filteredItems.map(item => (
           <div key={item.id} className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
             <img
@@ -32,3 +38,4 @@ export default function Items({filteredItems} ) {
     </div>
   )
 }
+

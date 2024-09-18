@@ -21,11 +21,15 @@ export default function Home() {
    navigate('/')
   }
   useEffect(() => {
+
+    if (Cookies.get("user")===undefined) {
+      navigate("/login")
+    }
     // Define the async function inside the useEffect to use async/await
     const fetchUserData = async () => {
+
       try {
         const response = await fetch(`/user/${userid}` , {method: 'GET'});
-        console.log(userid);
         const data = await response.json();
         console.log("response" , data);
         
@@ -33,8 +37,6 @@ export default function Home() {
           setUsername(data.data.user.username);
           setmyitems(data.data.user.items);
           setitems(data.data.items) // Assuming the API response has a field 'username'
-          const sortedItems = data.data.items.sort((a, b) => b.visited_users.length - a.visited_users.length);
-          setSortedItems(sortedItems);
           console.log(items);
           console.log(sortedItems);
         } else {
@@ -172,7 +174,7 @@ export default function Home() {
 <main className="">
   {display === 'items' && <Items filteredItems={filteredItems} />}
   {display === 'myitems' && <Myitems  MyfilteredItems={MyfilteredItems}/>}
-  {display === 'mostvisited' && <Mostvisited sortedItems={filteredItems} />}
+  {display === 'mostvisited' && <Mostvisited Items={filteredItems} />}
 </main>
     </div>
   );

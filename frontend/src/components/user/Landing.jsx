@@ -3,9 +3,9 @@ import { Link } from "react-router-dom";
 export default function Component() {
   return (
     <div className="flex flex-col min-h-[100dvh]">
-      <header className="bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 text-white py-4 px-6 shadow-md flex items-center justify-between">
+      <header className=" sticky top-0 bg-gradient-to-r from-green-600 via-teal-600 to-blue-600 text-white py-4 px-6 shadow-md flex items-center justify-between">
         <Link to="/" className="flex items-center gap-2">
-          <span className="text-lg font-semibold tracking-wide">Auction House</span>
+          <span className="text-lg font-semibold tracking-wide">HEXART</span>
         </Link>
         <nav className="flex items-center gap-6">
           <Link to="/login" className="hover:underline text-sm font-medium">
@@ -20,9 +20,6 @@ export default function Component() {
           <Link to="/admin" className="hover:underline text-sm font-medium">
             Admin
           </Link>
-          <Link to="/superuser" className="hover:underline text-sm font-medium">
-            Superuser
-          </Link>
         </nav>
       </header>
       <main className="flex-1">
@@ -35,7 +32,7 @@ export default function Component() {
               Explore a world of mystery and history with our curated selection of items, waiting for the highest bidder.
             </p>
             <Link
-              to="/auctions"
+              to="/home"
               className="inline-flex h-12 items-center justify-center rounded-full bg-teal-500 text-white px-8 py-3 text-sm font-medium shadow-lg transition-transform hover:scale-110 hover:shadow-2xl focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal-500 focus-visible:ring-offset-2 focus-visible:ring-offset-blue-900 disabled:pointer-events-none disabled:opacity-50"
             >
               Browse Auctions
@@ -43,9 +40,7 @@ export default function Component() {
           </div>
         </section>
       </main>
-      <footer className="bg-teal-900 text-gray-300 py-4 text-center">
-        <p className="text-sm">&copy; 2024 Auction House. All rights reserved.</p>
-      </footer>
+
     </div>
   );
 }

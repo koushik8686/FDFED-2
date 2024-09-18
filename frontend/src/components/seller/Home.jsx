@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate,  } from "react-router-dom";
 import AddItem from "./AddItem"; // Import the AddItem component
 import axios from "axios"; // Import axios for API requests
 import Cookies from "js-cookie";
@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import { AgCharts } from 'ag-charts-react';
 
 export default function SellerHome() {
+  const navigate = useNavigate()
   const [items, setItems] = useState([]);
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -59,7 +60,10 @@ export default function SellerHome() {
     setChartOptions({ data: itemdata, series: [{ type: 'bar', xKey: 'name', yKey: 'base_price' }] });
     setShowChart(!showChart);
   }
-
+  const logout = ()=>{
+   Cookies.remove('seller')
+   navigate("/seller")
+  }
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -88,9 +92,9 @@ export default function SellerHome() {
             {showChart ? "Hide Chart" : "Show Chart"}
           </button>
         </div>
-        <Link to="#" className="text-sm hover:text-gray-300 transition-colors">
+        <button onClick={logout} to="#" className="text-sm hover:text-gray-300 transition-colors">
           Logout
-        </Link>
+        </button>
       </header>
 
       <div className="p-6">
