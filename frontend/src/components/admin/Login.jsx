@@ -37,7 +37,7 @@ export default function AdminLogin() {
       seterrormsg(error.message);
     }
   };
-
+// hi
   return (
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-50 to-blue-100 p-6">
       <div className="mx-auto w-full max-w-lg space-y-8 rounded-lg bg-white p-8 shadow-2xl">
@@ -45,6 +45,7 @@ export default function AdminLogin() {
           <div className="flex justify-center mb-4">
             <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
               {/* SVG icon */}
+
               <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>
