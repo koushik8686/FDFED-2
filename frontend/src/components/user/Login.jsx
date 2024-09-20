@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errormsg, seterrormsg] = useState("");
   const navigate = useNavigate();
   const user = Cookies.get("user");
-
   useEffect(() => {
     if (user!==undefined) {
       navigate("/home");
@@ -19,7 +17,7 @@ export default function Component() {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/login", {
+      const response = await fetch("/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -69,9 +67,6 @@ export default function Component() {
               <label htmlFor="password" className="text-sm font-medium">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-sm font-medium underline hover:text-primary">
-                Forgot password?
-              </Link>
             </div>
             <input
               id="password"
