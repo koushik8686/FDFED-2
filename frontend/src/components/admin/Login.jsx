@@ -64,6 +64,7 @@ export default function AdminLogin() {
               placeholder="name@example.com"
               className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={email}
+              required
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
@@ -74,8 +75,9 @@ export default function AdminLogin() {
             <input
               id="password"
               type="password"
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="  block w- rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
               value={password}
+              required
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
