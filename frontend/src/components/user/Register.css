@@ -1,0 +1,75 @@
+.user-register-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f7fafc;
+  }
+  
+  .user-register-form {
+    background-color: white;
+    padding: 2rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+  }
+  
+  .user-register-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+  }
+  
+  .user-register-field {
+    margin-bottom: 1rem;
+  }
+  
+  .user-register-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+  }
+  
+  .user-register-input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid #cbd5e0;
+    border-radius: 0.25rem;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+  }
+  
+  .user-register-error {
+    margin: 0.5rem 0;
+    text-align: center;
+    color: #e53e3e;
+  }
+  
+  .user-register-button {
+    width: 100%;
+    background-color: #5a67d8;
+    color: white;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+  
+  .user-register-button:hover {
+    background-color: #434190;
+  }
+  
+  .user-register-login-link {
+    display: block;
+    margin-top: 1rem;
+    text-align: center;
+    color: #5a67d8;
+    text-decoration: none;
+  }
+  
+  .user-register-login-link:hover {
+    text-decoration: underline;
+  }
+  

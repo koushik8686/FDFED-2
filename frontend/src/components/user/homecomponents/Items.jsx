@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import "../../../App.css"
-
+import moduleName from './items.css'
 
 export default function Items({filteredItems} ) {
   const boxStyle = {
@@ -9,27 +9,26 @@ export default function Items({filteredItems} ) {
     animation: 'fadeIn 2s ease-in-out',
   };
   return (
-    <div style={boxStyle} className=' container mx-auto py-10 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
+    <div style={boxStyle} className='user-items-div-container'>
          {filteredItems.map(item => (
-          <div key={item.id} className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
+          <div key={item.id} className="user-items-div-item">
             <img
               src={"/"+item.url}
               alt={item.name}
-              className="w-full h-48 object-cover"
-              style={{ aspectRatio: "300/200" }}
+              className="user-items-div-image"
             />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-500">Owner: {item.person}</span>
-                <span className="text-gray-500">Base Price: ${item.base_price}</span>
+            <div className="user-items-div-content">
+              <h3 className="user-items-div-title">{item.name}</h3>
+              <div className="user-items-div-details">
+                <span className="user-items-div-owner">Owner: {item.person}</span>
+                <span className="user-items-div-base-price">Base Price: ${item.base_price}</span>
               </div>
-              <div className="flex items-center justify-between">
-                <span className="text-red-600 font-medium">Current Price: ${item.current_price}</span>
+              <div className="user-items-div-current-price">
+                <span className="user-items-div-current-price-text">Current Price: ${item.current_price}</span>
                 <Link to={`/auction/${item._id}`}>
-                <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                Bid
-                </button>
+                  <button className="user-items-div-bid-button">
+                    Bid
+                  </button>
                 </Link>
               </div>
             </div>

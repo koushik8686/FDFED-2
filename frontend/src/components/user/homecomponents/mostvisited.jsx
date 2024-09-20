@@ -1,46 +1,47 @@
-import React, { useState , useEffect } from 'react'
-import { Link } from 'react-router-dom'
-import "../../../App.css"
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import "../../../App.css";
+import "./items.css";
 
-
-export default function Items({Items} ) {
+export default function MostVisited({ Items }) {
   const boxStyle = {
     borderRadius: '8px',
     animation: 'fadeIn 2s ease-in-out',
   };
-  const [sortedItems, setSortedItems] =useState([])
+  const [sortedItems, setSortedItems] = useState([]);
+
   useEffect(() => {
-    const sortedItems = [...Items].sort((a, b) => b.visited_users.length - a.visited_users.length)
-    setSortedItems(sortedItems)
-  }, [Items])
+    const sortedItems = [...Items].sort((a, b) => b.visited_users.length - a.visited_users.length);
+    setSortedItems(sortedItems);
+  }, [Items]);
+
   return (
-    <div style={boxStyle} className='container mx-auto py-10 px-4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8'>
-         {sortedItems.map(item => (
-          <div key={item.id} className="bg-white border border-gray-300 rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-            <img
-              src={"/"+item.url}
-              alt={item.name}
-              className="w-full h-48 object-cover"
-              style={{ aspectRatio: "300/200" }}
-            />
-            <div className="p-4">
-              <h3 className="text-xl font-semibold mb-2">{item.name}</h3>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-gray-500">Owner: {item.person}</span>
-                <span className="text-gray-500">Base Price: ${item.base_price}</span>
-                <span className="text-gray-500">Visited USers: {item.visited_users.length}</span>
-              </div>
-              <div className="flex items-center justify-between">
-                <span className="text-red-600 font-medium">Current Price: ${item.current_price}</span>
-                <Link to={`/auction/${item._id}`}>
-                <button className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700">
-                Bid
+    <div style={boxStyle} className='user-items-div-container'>
+      {sortedItems.map(item => (
+        <div key={item.id} className="user-items-div-item">
+          <img
+            src={"/" + item.url}
+            alt={item.name}
+            className="user-items-div-image"
+          />
+          <div className="user-items-div-content">
+            <h3 className="user-items-div-title">{item.name}</h3>
+            <div className="user-items-div-details">
+              <span className="user-items-div-owner">Owner: {item.person}</span>
+              <span className="user-items-div-base-price">Base Price: ${item.base_price}</span>
+              <span className="user-items-div-visited-users">Visited Users: {item.visited_users.length}</span>
+            </div>
+            <div className="user-items-div-current-price">
+              <span className="user-items-div-current-price-text">Current Price: ${item.current_price}</span>
+              <Link to={`/auction/${item._id}`}>
+                <button className="user-items-div-bid-button">
+                  Bid
                 </button>
-                </Link>
-              </div>
+              </Link>
             </div>
           </div>
-        ))}
+        </div>
+      ))}
     </div>
-  )
+  );
 }

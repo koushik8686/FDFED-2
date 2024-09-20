@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import './AdminLogin.css';  // Import the CSS file
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
@@ -37,62 +38,58 @@ export default function AdminLogin() {
       seterrormsg(error.message);
     }
   };
-// hi
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-gradient-to-r from-blue-50 to-blue-100 p-6">
-      <div className="mx-auto w-full max-w-lg space-y-8 rounded-lg bg-white p-8 shadow-2xl">
-        <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <div className="h-10 w-10 rounded-full bg-blue-500 flex items-center justify-center">
-              {/* SVG icon */}
 
-              <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+  return (
+    <div className="admin-login-container">
+      <div className="admin-login-box">
+        <div className="text-center">
+          <div className="admin-login-icon-container">
+            <div className="admin-login-icon">
+              {/* SVG icon */}
+              <svg className="admin-login-svg-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
               </svg>
             </div>
           </div>
-          <h2 className="text-3xl font-extrabold text-gray-900">Admin Login</h2>
-          <p className="text-sm text-gray-500">Sign in to manage your admin account</p>
+          <h2 className="admin-login-title">Admin Login</h2>
+          <p className="admin-login-subtitle">Sign in to manage your admin account</p>
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid gap-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+        <form className="admin-login-form" onSubmit={handleSubmit}>
+          <div className="admin-login-form-group">
+            <label htmlFor="email" className="admin-login-label">
               Email
             </label>
             <input
               id="email"
               type="email"
               placeholder="name@example.com"
-              className="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="admin-login-input"
               value={email}
               required
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="grid gap-4">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+          <div className="admin-login-form-group">
+            <label htmlFor="password" className="admin-login-label">
               Password
             </label>
             <input
               id="password"
               type="password"
-              className="  block w- rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              className="admin-login-input"
               value={password}
               required
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button
-            type="submit"
-            className="w-full rounded-md bg-blue-600 py-2 px-4 text-white font-semibold shadow-sm hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2"
-          >
+          <button type="submit" className="admin-login-btn">
             Sign in
           </button>
-          {errormsg && <p className="mt-2 text-center text-sm text-red-500">{errormsg}</p>}
+          {errormsg && <p className="admin-login-error-msg">{errormsg}</p>}
         </form>
-        <div className="text-center text-sm text-gray-600">
+        <div className="admin-login-footer">
           Don't have an account?{" "}
-          <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500">
+          <Link to="/register" className="admin-login-link">
             Register
           </Link>
         </div>

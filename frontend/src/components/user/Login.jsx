@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
+import './Login.css'
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -8,7 +9,7 @@ export default function Component() {
   const navigate = useNavigate();
   const user = Cookies.get("user");
   useEffect(() => {
-    if (user!==undefined) {
+    if (user !== undefined) {
       navigate("/home");
     }
   }, [user, navigate]);
@@ -26,7 +27,7 @@ export default function Component() {
       });
       const data = await response.json(); // Parse the JSON response
       console.log(data);
-      if (data.message!=="Login Successfully") {
+      if (data.message !== "Login Successfully") {
         seterrormsg(data.message);
       } else {
         console.log(data);
@@ -39,40 +40,41 @@ export default function Component() {
   };
 
   return (
-    <div className="flex min-h-[100dvh] items-center justify-center bg-background">
-      <div className="mx-auto w-full max-w-md space-y-8 rounded-lg border bg-card p-8 shadow-lg">
-        <div className="flex flex-col items-center space-y-2">
-          <div className="h-8 w-8 text-primary">
+  <>
+    <div className="user-login-container">
+      <div className="user-login-box">
+        <div className="user-login-header">
+          <div className="user-login-icon">
             {/* SVG icon */}
           </div>
-          <h2 className="text-2xl font-bold">Welcome to Hexart</h2>
-          <p className="text-muted-foreground">Please sign in to your account to continue.</p>
+          <h2 className="user-login-title">Welcome to Hexart</h2>
+          <p className="user-login-subtitle">Please sign in to your account to continue.</p>
         </div>
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          <div className="grid gap-2">
-            <label htmlFor="email" className="text-sm font-medium">
+        <form className="user-login-form" onSubmit={handleSubmit}>
+          <div className="user-login-input-group">
+            <label htmlFor="email" className="user-login-label">
               Email
             </label>
             <input
               id="email"
               type="email"
               placeholder="name@example.com"
-              className="flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm"
+              className="user-login-input"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-          <div className="grid gap-2">
-            <div className="flex items-center justify-between">
-              <label htmlFor="password" className="text-sm font-medium">
+          <div className="user-login-input-group">
+            <div className="user-login-label-group">
+              <label htmlFor="password" className="user-login-label">
                 Password
               </label>
             </div>
             <input
               id="password"
               type="password"
-              className="flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm"
+              className="user-login-input"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
@@ -80,19 +82,20 @@ export default function Component() {
           </div>
           <button
             type="submit"
-            className="inline-flex h-10 w-full items-center justify-center rounded-md bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground transition-colors hover:bg-primary/90"
+            className="user-login-button"
           >
             Sign in
           </button>
-          { <p className="text-red-500">{errormsg}</p>}
+          { <p className="user-login-error">{errormsg}</p>}
         </form>
-        <div className="text-center text-sm text-muted-foreground">
+        <div className="user-login-footer">
           Don't have an account?{" "}
-          <Link to="/register" className="font-medium underline hover:text-primary">
+          <Link to="/register" className="user-login-register-link">
             Register
           </Link>
         </div>
       </div>
     </div>
+  </>
   );
 }

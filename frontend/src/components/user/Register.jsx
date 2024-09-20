@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Link ,useNavigate} from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import Cookies from 'js-cookie'
+import Cookies from 'js-cookie';
+import './Register.css';
 
 const RegisterPage = () => {
   const navigate = useNavigate();
-  const [error , seterror] = useState("");
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     username: '',
     email: '',
@@ -24,29 +25,27 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/register', formData);
-      // Handle successful registration here, e.g., redirect to login page
-      if (response.status === 200 && response.data.message === "Email Already Exists"){
-        seterror("Email Already Exists")
-    }
-      if (response.status === 200  && response.data.message === "Account Created Successfully") {
-        Cookies.set('user' , response.data.userId)
+      if (response.status === 200 && response.data.message === "Email Already Exists") {
+        setError("Email Already Exists");
+      }
+      if (response.status === 200 && response.data.message === "Account Created Successfully") {
+        Cookies.set('user', response.data.userId);
         console.log('Registration successful:', response.data);
-        seterror("")
-        navigate("/home")
-      } 
+        setError("");
+        navigate("/home");
+      }
     } catch (error) {
       console.error('Error during registration:', error);
-      // Handle error here, e.g., show an error message
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-        <h2 className="text-2xl font-bold mb-6">Register</h2>
+    <div className="user-register-container">
+      <div className="user-register-form">
+        <h2 className="user-register-title">Register</h2>
         <form onSubmit={handleSubmit}>
-          <div className="mb-4">
-            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Username</label>
+          <div className="user-register-field">
+            <label htmlFor="username" className="user-register-label">Username</label>
             <input
               type="text"
               id="username"
@@ -54,11 +53,11 @@ const RegisterPage = () => {
               value={formData.username}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="user-register-input"
             />
           </div>
-          <div className="mb-4">
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+          <div className="user-register-field">
+            <label htmlFor="email" className="user-register-label">Email</label>
             <input
               type="email"
               id="email"
@@ -66,11 +65,11 @@ const RegisterPage = () => {
               value={formData.email}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="user-register-input"
             />
           </div>
-          <div className="mb-6">
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password</label>
+          <div className="user-register-field">
+            <label htmlFor="password" className="user-register-label">Password</label>
             <input
               type="password"
               id="password"
@@ -78,17 +77,17 @@ const RegisterPage = () => {
               value={formData.password}
               onChange={handleChange}
               required
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              className="user-register-input"
             />
           </div>
-          <p className='m-3 text-center' style={{color:"red"}}>{error}</p>
+          <p className='user-register-error'>{error}</p>
           <button
             type="submit"
-            className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            className="user-register-button"
           >
             Register
           </button>
-          <Link to="/login" className="block mt-4 text-center text-indigo-600 hover:text-indigo-800">
+          <Link to="/login" className="user-register-login-link">
             Login
           </Link>
         </form>
