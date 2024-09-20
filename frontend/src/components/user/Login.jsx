@@ -61,6 +61,7 @@ export default function Component() {
               className="flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
           </div>
           <div className="grid gap-2">
@@ -78,6 +79,7 @@ export default function Component() {
               className="flex h-10 w-full rounded-md border bg-transparent px-3 py-2 text-sm"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              required
             />
           </div>
           <button

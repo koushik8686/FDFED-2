@@ -25,10 +25,10 @@ const RegisterPage = () => {
     try {
       const response = await axios.post('/register', formData);
       // Handle successful registration here, e.g., redirect to login page
-      if (response.status === 200 && response.data.message == "Email Already Exists"){
+      if (response.status === 200 && response.data.message === "Email Already Exists"){
         seterror("Email Already Exists")
     }
-      if (response.status === 200  && response.data.message == "Account Created Successfully") {
+      if (response.status === 200  && response.data.message === "Account Created Successfully") {
         Cookies.set('user' , response.data.userId)
         console.log('Registration successful:', response.data);
         seterror("")
