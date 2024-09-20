@@ -12,6 +12,7 @@ function userlogin_get(req, res) {
 async function userlogin_post(req, res) { 
     var email = req.body.email;
     var pass = req.body.password;
+    console.log("User login");
     console.log(email, pass);
     try {
         const user = await usermodel.findOne({ email: email });

@@ -11,9 +11,7 @@ function userregister_post(req, res) {
         .then((user) => {    
             if (user) {
                return res.status(200).send({ message: "Email Already Exists" });
-
             }
-
             const newUser = new usermodel({
                 username: username,
                 email: email,

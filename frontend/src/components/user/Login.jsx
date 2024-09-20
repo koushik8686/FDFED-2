@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
-
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [errormsg, seterrormsg] = useState("");
   const navigate = useNavigate();
   const user = Cookies.get("user");
-
   useEffect(() => {
     if (user!==undefined) {
       navigate("/home");
@@ -26,16 +24,17 @@ export default function Component() {
         },
         body: JSON.stringify({ email, password }),
       });
-      console.log(response);
-      if (!response.ok) {
-        throw new Error("Login failed");
+      const data = await response.json(); // Parse the JSON response
+      console.log(data);
+      if (data.message!=="Login Successfully") {
+        seterrormsg(data.message);
       } else {
-        const data = await response.json();
+        console.log(data);
         Cookies.set("user", data.userId);
         navigate("/home");
       }
     } catch (error) {
-      setError(error.message);
+      seterrormsg(error.message);
     }
   };
 
@@ -69,9 +68,6 @@ export default function Component() {
               <label htmlFor="password" className="text-sm font-medium">
                 Password
               </label>
-              <Link to="/forgot-password" className="text-sm font-medium underline hover:text-primary">
-                Forgot password?
-              </Link>
             </div>
             <input
               id="password"
@@ -88,7 +84,7 @@ export default function Component() {
           >
             Sign in
           </button>
-          {error && <p className="text-red-500">{error}</p>}
+          { <p className="text-red-500">{errormsg}</p>}
         </form>
         <div className="text-center text-sm text-muted-foreground">
           Don't have an account?{" "}

@@ -1,13 +1,7 @@
 
 const path = require("path");
 const adminmodels = require("../../models/adminmodel");
-const {set_session , get_session} = require("../..//middleware/admin-sessions/adminauth")
-function adminlogin_get(req, res) { 
-  if (get_session(req)) {
-    return res.redirect("/admin/home/"+get_session(req));
-   }
-    res.sendFile(path.join(__dirname, "../../views/adminlogin.html"));
-}
+
 function adminlogin_post (req, res) { 
   var email = req.body.email
   var pass = req.body.pass
@@ -24,8 +18,7 @@ function adminlogin_post (req, res) {
     } else {
       if (admin.password == pass) {
         var AdminId = admin._id;
-        set_session(req, AdminId); // Set the session with the user ID
-        res.redirect("/admin/home/" + AdminId);
+        return res.status(200).send({ message: "Login Successfuly"  ,admin:admin._id });
       } else {
         res.send("Wrong password");
       }
@@ -33,4 +26,4 @@ function adminlogin_post (req, res) {
   });
    }
 
-module.exports={adminlogin_get , adminlogin_post}
+module.exports={ adminlogin_post}
