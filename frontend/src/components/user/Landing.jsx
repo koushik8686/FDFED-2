@@ -12,11 +12,11 @@ export default function Component() {
           <Link to="/login" className="nav-link">Login</Link>
           <Link to="/register" className="nav-link">Register</Link>
           <Link to="/seller" className="nav-link">Seller</Link>
-          <Link to="/admin" className="nav-link">Admin</Link>
+          <Link to="/admin/login" className="nav-link">Admin</Link>
         </nav>
       </header>
       <main className="main">
-        <section className="section">
+        {/* <section className="section">
           <div className="content">
             <h1 className="title">
               Discover Rare Artifacts at Our Auction House
@@ -24,11 +24,14 @@ export default function Component() {
             <p className="description">
               Explore a world of mystery and history with our curated selection of items, waiting for the highest bidder.
             </p>
-            <Link to="/home" className="button">
+            <Link to="/login" className="button">
               Browse Auctions
             </Link>
           </div>
-        </section>
+        </section> */}
+        <div className="landing-hexagon">
+          Hexart
+        </div>
       </main>
     </div>
   );

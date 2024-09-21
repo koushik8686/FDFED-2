@@ -8,8 +8,7 @@ async function deleteitem(req, res)
     switch (req.params.type) {
       case "user":
         await usermodel.findByIdAndDelete(req.params.id);
-        res.redirect("/admin/home/"+ req.params.admin);
-        break;
+        return res.status(200).send("User deleted successfully");
       case "seller":
       await sellermodel.findOne({_id:req.params.id}).then(async(arr)=>{
         for (let i = 0; i < arr.items.length; i++) {
@@ -17,8 +16,7 @@ async function deleteitem(req, res)
         }
       })  
       await sellermodel.findByIdAndDelete(req.params.id);
-      res.redirect("/admin/home/"+ req.params.admin);
-      break;
+      return res.status(200).send("Seller deleted successfully");
       case "item":
         const itemId = req.params.id;
         const item = await itemmodel.findOne({ _id: itemId });
@@ -34,8 +32,7 @@ async function deleteitem(req, res)
         );
 
         await itemmodel.findByIdAndDelete(itemId);
-        res.redirect("/admin/home/"+ req.params.admin);
-        break;
+        return res.status(200).send("Item deleted successfully");
       default:
         break;
     }

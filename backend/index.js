@@ -8,20 +8,23 @@ const multer = require("multer");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const app = express();
+
+
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
-app.use(
-  session({
-    secret: "secretkey",
-    resave: true,
-    saveUninitialized: true,
-    cookie: {  maxAge: null }, 
-  })
-);
+// app.use(
+//   session({
+//     secret: "secretkey",
+//     resave: true,
+//     saveUninitialized: true,
+//     cookie: {  maxAge: null }, 
+//   })
+// );
 mongoose.connect(process.env.URL);
 //models 
 const usermodel = require("./models/usermodel")
@@ -53,7 +56,7 @@ app.use("/create", require("./routers/seller-routes/create_auction") )
 app.use("/sell",require("./routers/seller-routes/sell_item")) //route for owner of the item
 
 //admin 
-app.use("/admin",require("./routers/admin-routes/admin_login"))
+app.use("/admin/login",require("./routers/admin-routes/admin_login"))
 app.use("/admin/home",require("./routers/admin-routes/admin_home"))
 app.use("/admin/logout", require("./routers/admin-routes/delete_session_admin"))
 app.use("/delete" ,require("./routers/admin-routes/deleteitem") )

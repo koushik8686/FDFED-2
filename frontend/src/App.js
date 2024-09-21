@@ -11,6 +11,7 @@ import SellerHome from './components/seller/Home';
 import Auction from './components/user/Auction';
 import Item from './components/seller/Item';
 import AdminLogin from './components/admin/Login';
+import Admin from './components/admin/Home';
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
         <Route path="/auction/:item" element={<Auction />} />
         <Route path="/item/:item" element={<Item />} />   
         <Route path='/admin/login' element={<AdminLogin/>}/>
+        <Route path='/admin/' element={<Admin/>}/>
       </Routes>
     </BrowserRouter>
   );

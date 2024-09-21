@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import "../../../App.css"
-import moduleName from './items.css'
+
 
 export default function Items({filteredItems} ) {
   const boxStyle = {

@@ -4,22 +4,17 @@ const {itemmodel} = require("../../models/itemmodel")
 const adminmodel = require("../../models/adminmodel")
 async function adminpage_get(req, res) { 
   try {
-    const admin = await adminmodel.findOne({_id:req.params.id});
-    if (!admin) {
-      return res.status(404).send("Admin not found");
-    }
     const users = await usermodel.find();
     const items = await itemmodel.find();
     const sellers = await sellermodel.find();
   
     const data = {
-      admin: admin,
-      usersdata: users,
-      sellersdata: sellers,
-      itemsdata: items
+      users: users,
+      sellers: sellers,
+      items: items
     };
-  
-    res.render("adminpage", { data: data });
+    res.status(200).send({data});
+
   } catch (error) {
     console.error("Error:", error);
     res.status(500).send("Internal Server Error");

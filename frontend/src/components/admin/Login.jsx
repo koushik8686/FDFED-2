@@ -31,7 +31,7 @@ export default function AdminLogin() {
       if (data.message !== "Login Successfully") {
         seterrormsg(data.message);
       } else {
-        Cookies.set("admin", data.userId);
+        Cookies.set("admin", data.admin);
         navigate("/admin");
       }
     } catch (error) {
