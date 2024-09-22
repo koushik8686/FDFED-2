@@ -1,7 +1,31 @@
 import { Link } from "react-router-dom";
 import './Landing.css';  // Import the CSS file
+import { useEffect , useState} from "react";
 
 export default function Component() {
+  const [visibleLetters, setVisibleLetters] = useState({
+    H: false,
+    E: false,
+    X: false,
+    A: false,
+    R: false,
+    T: false,
+  });
+
+  useEffect(() => {
+    const timeouts = [];
+    const letters = ['H', 'E', 'X', 'A', 'R', 'T'];
+
+    letters.forEach((letter, index) => {
+      timeouts.push(setTimeout(() => {
+        setVisibleLetters((prev) => ({ ...prev, [letter]: true }));
+      }, index * 300)); // 300ms delay between each letter
+    });
+
+    return () => {
+      timeouts.forEach((timeout) => clearTimeout(timeout));
+    };
+  }, []);
   return (
     <div className="page-container">
       <header className="header">
@@ -16,10 +40,15 @@ export default function Component() {
         </nav>
       </header>
       <main className="main">
-        {/* <section className="section">
+        <section className="section">
           <div className="content">
             <h1 className="title">
-              Discover Rare Artifacts at Our Auction House
+              <div className=" letter H">H</div>
+              <div className=" letter E">E</div>
+              <div className=" letter X">X</div>
+              <div className=" letter A">A</div>
+              <div className=" letter R">R</div>
+              <div className=" letter T">T</div>
             </h1>
             <p className="description">
               Explore a world of mystery and history with our curated selection of items, waiting for the highest bidder.
@@ -28,10 +57,8 @@ export default function Component() {
               Browse Auctions
             </Link>
           </div>
-        </section> */}
-        <div className="landing-hexagon">
-          Hexart
-        </div>
+        </section>
+        
       </main>
     </div>
   );

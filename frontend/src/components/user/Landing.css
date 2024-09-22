@@ -2,10 +2,44 @@
 .page-container {
     display: flex;
     flex-direction: column;
+    background-size: cover;
+    background-repeat: no-repeat;
     min-height: 100vh;
   }
-  
+  .title{
+    display: flex;
+  }
+  .letter{
+    font-size: 12rem;
+    margin-left: 1rem;
+  }
   /* Header */
+  .hexagon { 
+    top: 30vh; 
+    left: 40%; 
+    position: absolute; 
+    margin: 0 auto; 
+    background-color: dodgerblue; 
+    border-radius: 10px; 
+    width: 100px;  
+    height: 63px; 
+    box-sizing: border-box; 
+    transition: all 1s; 
+    border: 0.4vh solid transparent; 
+} 
+  
+/* Creating pseudo-class */
+.hexagon:before, .hexagon:after { 
+    content: ""; 
+    border: inherit; 
+    position: absolute; 
+    top: -0.5vh; 
+    left: -0.5vh; 
+    background-color: dodgerblue; 
+    border-radius: inherit; 
+    height: 100%; 
+    width: 100%; 
+} 
   .header {
     position: sticky;
     top: 0;
@@ -119,4 +153,84 @@
     outline: none;
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.5), 0 0 0 5px rgba(37, 99, 235, 0.5);
   }
-  
+  .letter{
+   
+  }
+  .H {
+    position: relative;
+    animation: H 1s ease 0s 1 normal forwards;
+    right: 500px;
+  }
+  .E{
+    position: relative;
+    animation: E 1s ease 0.2s 1 normal forwards;
+    bottom: 500px;
+  }
+  .X{
+    position: relative;
+    animation: X 1s ease 0.4s 1 normal forwards;
+    top: 1500px;
+  }
+  .A{
+    position: relative;
+    animation: A 1s ease 0.6s 1 normal forwards;
+    left: 1500px;
+  }
+  .R{
+    position: relative;
+    animation: R 1s ease 0.8s 1 normal forwards;
+    bottom: 1500px;
+  }
+  .T{
+    position: relative;
+    animation: T 1s ease 0.6s 1 normal forwards;
+    scale: 0;
+  }
+  @keyframes H {
+    from {
+      right: 500px;
+    }
+    to {
+      right: 0;
+    }
+  }
+  @keyframes E {
+    from {
+      bottom: 500px;
+    }
+    to {
+      bottom: 0;
+    }
+  }
+  @keyframes X {
+    from {
+      top: 1500px;
+    }
+    to {
+      top: 0;
+    }
+  }
+  @keyframes A {
+    from {
+      left: 500px;
+    }
+    to {
+      left: 0;
+    }
+  }
+  @keyframes R {
+    from {
+      bottom: 1500px;
+    }
+    to {
+      bottom: 0;
+    }
+  }
+  @keyframes T {
+    from {
+   scale: 0;
+    }
+    to {
+   scale: 1;
+    }
+  }
