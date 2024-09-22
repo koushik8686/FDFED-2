@@ -2,9 +2,7 @@
 .page-container {
     display: flex;
     flex-direction: column;
-    background-size: cover;
-    background-repeat: no-repeat;
-    min-height: 100vh;
+  min-height: 100vh;
   }
   .title{
     display: flex;
@@ -14,32 +12,7 @@
     margin-left: 1rem;
   }
   /* Header */
-  .hexagon { 
-    top: 30vh; 
-    left: 40%; 
-    position: absolute; 
-    margin: 0 auto; 
-    background-color: dodgerblue; 
-    border-radius: 10px; 
-    width: 100px;  
-    height: 63px; 
-    box-sizing: border-box; 
-    transition: all 1s; 
-    border: 0.4vh solid transparent; 
-} 
-  
-/* Creating pseudo-class */
-.hexagon:before, .hexagon:after { 
-    content: ""; 
-    border: inherit; 
-    position: absolute; 
-    top: -0.5vh; 
-    left: -0.5vh; 
-    background-color: dodgerblue; 
-    border-radius: inherit; 
-    height: 100%; 
-    width: 100%; 
-} 
+ 
   .header {
     position: sticky;
     top: 0;
@@ -48,14 +21,11 @@
     padding: 1rem 1.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
+    z-index: 2;
     justify-content: space-between;
     align-items: center;
   }
-  .landing-hexagon{
-    height: 100%;
-    width: 100%;
-    
-  }
+
   .logo {
     display: flex;
     align-items: center;
@@ -89,13 +59,13 @@
   .main {
     flex: 1;
   }
-  
+ 
   .section {
     height: 100vh;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
     padding: 5rem 1.5rem;
+    gap: 10rem;
   }
   
   .content {
@@ -154,7 +124,7 @@
     box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.5), 0 0 0 5px rgba(37, 99, 235, 0.5);
   }
   .letter{
-   
+    
   }
   .H {
     position: relative;
@@ -234,3 +204,89 @@
    scale: 1;
     }
   }
+  .features{
+    display: flex;
+   
+    width: 100%;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  .heading{
+    font-family: "Dancing Script", cursive;
+  font-optical-sizing: auto;
+  font-weight: 700;
+  font-style: normal;
+    font-size: 9rem;
+  }
+  .uline{
+    width: 30rem;
+    margin: 0 auto 0 auto;
+    height: 1px;
+    background-color: #0d9488;
+  }
+  .features-cardes {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    width: 70%;
+  }
+  
+  .user, .seller, .admin {
+    display: flex;
+    align-items: center;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    box-shadow: 0 10px 20px rgba(255, 255, 255, 0.95);
+/* box-shadow: 0 8px 32px 0 rgba( 31, 38, 135, 0.37 ); */
+
+
+  }
+  
+  /* Common Styles for Images */
+  .image {
+    width: 30%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    border-radius: 50%;
+    margin-right: 20px; /* For user and admin, where the image is on the left */
+  }
+  
+  .user-image {
+    /* background-image: url('path-to-user-image.jpg'); */
+  }
+  .card-heading{
+    color: #2563eb;
+    font-size: 4rem;
+    font-weight: 800;
+  }
+  .seller-image {
+    /* background-image: url('path-to-seller-image.jpg'); */
+  }
+  
+  .admin-image {
+    /* background-image: url('path-to-admin-image.jpg'); */
+  }
+  
+  /* Content Styles */
+  .privilige-content {
+    flex-grow: 1;
+  }
+  
+  .privilige-content ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+  }
+  
+  .privilige-content ul li {
+    margin-bottom: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    color: #333;
+  }
+  
