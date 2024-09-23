@@ -2,6 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Login.css';
+import { useGoogleLogin } from "@react-oauth/google";
+import {jwtDecode} from "jwt-decode";
+import axios from 'axios';
 
 export default function SellerAuth() {
   const [activeTab, setActiveTab] = useState('login');
@@ -53,6 +56,22 @@ export default function SellerAuth() {
       console.error('Fetch error:', error);
     }
   };
+  // Google Login Error Handler
+  const responsegoogle = async(authtesult)=>{
+    try {
+      console.log(authtesult);
+      if (authtesult) {
+        const response = await axios.get(`http://localhost:4000/seller/auth/google`, {params:{tokens: authtesult}});
+        console.log(response);
+      }
+    } catch (error) {
+      console.log("error is " , error);
+    }
+}
+const googlelogin = useGoogleLogin({
+  onSuccess:responsegoogle,
+  onError:responsegoogle,
+})
 
   useEffect(() => {
     if (seller !== undefined) {
@@ -134,6 +153,7 @@ export default function SellerAuth() {
               />
             </div>
           )}
+          <a href="">Forgot Password</a>
           <button
             type="submit"
             className="seller-login-button"
@@ -141,6 +161,16 @@ export default function SellerAuth() {
             {activeTab === 'login' ? 'Sign in' : 'Create account'}
           </button>
         </form>
+
+        <div className="google-login-container">
+        <button
+            onClick={googlelogin}
+            className="user-register-button"
+          >
+            sign in with google
+          </button>
+        </div>
+
         {serverMessage && (
           <p className="seller-login-message">
             {serverMessage}

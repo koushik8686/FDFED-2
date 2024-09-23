@@ -46,6 +46,7 @@ app.use("/popular", require("./routers/user-routes/popular") )
 app.use("/items", require("./routers/user-routes/user_items") ) // route for individual user items
 app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction page for users
 app.use("/logout", require("./routers/user-routes/delete_session"))
+app.use("/auth", require("./routers/user-routes/authrouter"))
 
 //seller routes
 app.get("/seller", function (req, res) {  res.sendFile(__dirname+"/views/sellerintro.html")})
@@ -54,6 +55,7 @@ app.use("/sellerlogin",require("./routers/seller-routes/seller_login") )
 app.use("/sellerhome",require("./routers/seller-routes/seller_home"))
 app.use("/create", require("./routers/seller-routes/create_auction") )
 app.use("/sell",require("./routers/seller-routes/sell_item")) //route for owner of the item
+app.use("/seller/auth", require("./routers/user-routes/authrouter"))
 
 //admin 
 app.use("/admin/login",require("./routers/admin-routes/admin_login"))

@@ -3,6 +3,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import './Register.css';
+import { useGoogleLogin } from "@react-oauth/google";
+
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -38,7 +40,22 @@ const RegisterPage = () => {
       console.error('Error during registration:', error);
     }
   };
-
+  const responsegoogle = async(authtesult)=>{
+      try {
+        console.log(authtesult);
+        if (authtesult) {
+          const response = await axios.get(`http://localhost:4000/auth/google`, {params:{tokens: authtesult}});
+          console.log(response);
+        }
+      } catch (error) {
+        console.log("error is " , error);
+      }
+  }
+  const googlelogin = useGoogleLogin({
+    onSuccess:responsegoogle,
+    onError:responsegoogle,
+  })
+  
   return (
     <div className="user-register-container">
       <div className="user-register-form">
@@ -87,6 +104,13 @@ const RegisterPage = () => {
           >
             Register
           </button>
+          <button
+            onClick={googlelogin}
+            className="user-register-button"
+          >
+            sign in with google
+          </button>
+
           <Link to="/login" className="user-register-login-link">
             Login
           </Link>
@@ -97,3 +121,4 @@ const RegisterPage = () => {
 };
 
 export default RegisterPage;
+

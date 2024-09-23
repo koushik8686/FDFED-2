@@ -12,7 +12,6 @@ var transporter = nodemailer.createTransport({
   }
 });
 
-
 async function sellingpage_get(req, res) { 
     var name = ""
     await sellermodel.findOne({_id:req.params.seller}).then((result)=>{

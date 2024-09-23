@@ -95,14 +95,6 @@ export default function Item() {
             </div>
           </div>
           <form className="seller-item-bid-form" onSubmit={handleBidSubmit}>
-            <input
-              type="number"
-              value={bidAmount}
-              onChange={(e) => setBidAmount(e.target.value)}
-              className="seller-item-bid-input"
-              placeholder="Enter your bid"
-              required
-            />
             <button type="submit" className="seller-item-bid-button">
               Sell Item
             </button>
