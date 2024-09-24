@@ -1,8 +1,20 @@
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const UserController = require("../../controllers/user/user_home");
 
-const render_home= require("../../controllers/user/user_home")
+class UserRouter {
+    constructor() {
+        this.router = express.Router();
+        this.initializeRoutes();
+    }
 
-router.get("/:email", render_home)
-      
-module.exports= router
+    initializeRoutes() {
+        this.router.get("/:email", UserController.renderUserHome);
+    }
+
+    getRouter() {
+        return this.router;
+    }
+}
+
+const userRouter = new UserRouter();
+module.exports = userRouter.getRouter();

@@ -81,8 +81,6 @@
 .items-container {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
   gap: 20px;
   padding: 10px;
 }
@@ -92,7 +90,7 @@
   border: 1px solid #e2e8f0; /* Updated border color */
   border-radius: 0.5rem; /* Updated border radius */
   padding: 10px;
-  width: calc(30.333% - 20px);
+  width: calc(25.333% - 20px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease;
 }

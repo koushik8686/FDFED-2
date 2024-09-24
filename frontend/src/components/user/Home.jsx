@@ -76,7 +76,6 @@ export default function Home() {
           <button onClick={logout} className="user-home-logout-button">Log Out</button>
         </div>
       </header>
-
       <div className="user-home-search">
       <div className="user-home-categories">
     <button
@@ -161,8 +160,6 @@ export default function Home() {
     </div>
   </div>
 )}
-
-
       <main className="user-home-main">
         {display === 'items' && <Items filteredItems={filteredItems} />}
         {display === 'myitems' && <Myitems MyfilteredItems={MyfilteredItems} />}

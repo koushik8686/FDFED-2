@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AiOutlineDelete } from 'react-icons/ai';
 import "./Home.css";
 import Cookies from 'js-cookie';
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 export default function Admin() {
   const [data, setData] = useState({ users: [], sellers: [], items: [] });
@@ -67,7 +67,7 @@ export default function Admin() {
           <h1 className="sidebar-title">Auction Admin</h1>
         </div>
         <nav className="sidebar-nav">
-          <a href="#dashboard" className="nav-item">Dashboard</a>
+          <Link href="/admin" className="nav-item">Dashboard</Link>
           <a href="#users" className="nav-item">Users</a>
           <a href="#sellers" className="nav-item">Sellers</a>
           <a href="#items" className="nav-item">Items</a>

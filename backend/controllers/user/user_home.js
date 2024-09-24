@@ -1,19 +1,26 @@
-const usermodel =  require("../../models/usermodel")
-const {itemmodel} =  require("../../models/itemmodel")
+const usermodel = require("../../models/usermodel");
+const { itemmodel } = require("../../models/itemmodel");
 
-async function render_user_home (req, res) { 
-  console.log("received request" , req.params.email);
-  
-   await usermodel.findOne({_id:req.params.email}).then((result)=>{
-    itemmodel.find().then((arr)=>{
-      var data = {
-          user:result,
-          id:req.params.email,
-          items:arr
-      }
-      return res.status(200).send({ message: "Data Fetched Successfully" , data: data});
-    })
-    })
-  }
+class UserController {
+    static async renderUserHome(req, res) {
+        console.log("received request", req.params.email);
 
-module.exports= render_user_home
+        try {
+            const user = await usermodel.findOne({ _id: req.params.email });
+            const items = await itemmodel.find();
+
+            const data = {
+                user: user,
+                id: req.params.email,
+                items: items
+            };
+
+            return res.status(200).send({ message: "Data Fetched Successfully", data: data });
+        } catch (error) {
+            console.error("Error fetching data:", error);
+            return res.status(500).send("Internal Server Error");
+        }
+    }
+}
+
+module.exports = UserController;

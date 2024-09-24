@@ -3,6 +3,8 @@ import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { useGoogleLogin } from "@react-oauth/google";
 import './Login.css'
+import axios from "axios";
+
 export default function Component() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +19,6 @@ export default function Component() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
     try {
       const response = await fetch("/login", {
         method: "POST",
@@ -39,7 +40,26 @@ export default function Component() {
       seterrormsg(error.message);
     }
   };
-
+  const responsegoogle = async(authtesult)=>{
+    try {
+      console.log(authtesult);
+      if (authtesult) {
+        const response = await axios.get(`http://localhost:4000/auth/google`, {params:{tokens: authtesult}});
+        if(response.data.message === "Account Created Successfully") {
+          Cookies.set('user', response.data.userId);
+          console.log('Registration successful:', response.data);
+          navigate("/home");
+        };
+        console.log(response);
+      }
+    } catch (error) {
+      console.log("error is " , error);
+    }
+}
+const googlelogin = useGoogleLogin({
+  onSuccess:responsegoogle,
+  onError:responsegoogle,
+})
   return (
   <>
     <div className="user-login-container">
@@ -94,6 +114,13 @@ export default function Component() {
           <Link to="/register" className="user-login-register-link">
             Register
           </Link>
+          <button
+            onClick={googlelogin}
+            className="user-register-button"
+          >
+            sign in with google
+          </button>
+
         </div>
       </div>
     </div>

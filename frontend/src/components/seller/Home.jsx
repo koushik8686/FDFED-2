@@ -106,6 +106,57 @@ export default function SellerHome() {
                 </div>
               </div>
             ))}
+            {items.map((item) => (
+              <div key={item._id} className="item-card">
+                <img src={"/" + item.url} alt={item.name} className="item-image" />
+                <div className="item-content">
+                <div className="qwe">
+                  <h3 className="item-title">{item.name}</h3>
+                  <AiOutlineDelete className="delete-icon" />
+                </div>
+                  <div className="item-prices">
+                    <span>Base Price: ${item.base_price}</span>
+                    <span>Current Price: ${item.current_price}</span>
+                  </div>
+                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
+                 
+                </div>
+              </div>
+            ))}
+            {items.map((item) => (
+              <div key={item._id} className="item-card">
+                <img src={"/" + item.url} alt={item.name} className="item-image" />
+                <div className="item-content">
+                <div className="qwe">
+                  <h3 className="item-title">{item.name}</h3>
+                  <AiOutlineDelete className="delete-icon" />
+                </div>
+                  <div className="item-prices">
+                    <span>Base Price: ${item.base_price}</span>
+                    <span>Current Price: ${item.current_price}</span>
+                  </div>
+                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
+                 
+                </div>
+              </div>
+            ))}
+            {items.map((item) => (
+              <div key={item._id} className="item-card">
+                <img src={"/" + item.url} alt={item.name} className="item-image" />
+                <div className="item-content">
+                <div className="qwe">
+                  <h3 className="item-title">{item.name}</h3>
+                  <AiOutlineDelete className="delete-icon" />
+                </div>
+                  <div className="item-prices">
+                    <span>Base Price: ${item.base_price}</span>
+                    <span>Current Price: ${item.current_price}</span>
+                  </div>
+                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
+                 
+                </div>
+              </div>
+            ))}
           </div>
         </main>
       </div>

@@ -43,7 +43,6 @@ app.use("/register", require("./routers/user-routes/user_register"))
 app.use("/login",require("./routers/user-routes/user_login"))
 app.use("/user", require("./routers/user-routes/user_home") )
 app.use("/popular", require("./routers/user-routes/popular") )
-app.use("/items", require("./routers/user-routes/user_items") ) // route for individual user items
 app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction page for users
 app.use("/logout", require("./routers/user-routes/delete_session"))
 app.use("/auth", require("./routers/user-routes/authrouter"))
@@ -62,9 +61,3 @@ app.use("/admin/login",require("./routers/admin-routes/admin_login"))
 app.use("/admin/home",require("./routers/admin-routes/admin_home"))
 app.use("/admin/logout", require("./routers/admin-routes/delete_session_admin"))
 app.use("/delete" ,require("./routers/admin-routes/deleteitem") )
-
-//super-user
-app.use("/superUser/login" , require("./routers/super-user-routes/super_user_login"))
-app.use("/admincreate",require("./routers/super-user-routes/admin_create_route") )
-app.use("/superUser/home", require("./routers/super-user-routes/superuser-home") )
-app.use("/changepermissions",require("./routers/super-user-routes/changepermission"));

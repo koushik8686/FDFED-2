@@ -1,7 +1,21 @@
-const express = require('express')
-const router = express.Router()
-const googlelogin = require('../../controllers/user/googleauth')
-// const render_home= require("../../controllers/user/popularpage")
-router.get('/google' , googlelogin )
-      
-module.exports= router
+const express = require('express');
+const GoogleAuthController = require('../../controllers/user/googleauth');
+
+class AuthRouter {
+    constructor() {
+        this.router = express.Router();
+        this.googleAuthController = new GoogleAuthController();
+        this.initializeRoutes();
+    }
+
+    initializeRoutes() {
+        this.router.get('/google', (req, res) => this.googleAuthController.googleLogin(req, res));
+    }
+
+    getRouter() {
+        return this.router;
+    }
+}
+
+const authRouter = new AuthRouter();
+module.exports = authRouter.getRouter();

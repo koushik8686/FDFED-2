@@ -49,9 +49,9 @@ async function sellingpage_post(req, res) {
           { $pull: { items: { _id: req.params.itemid } } },
           { new: true }
         )
-        var phone=""
+        var email=""
         await sellermodel.findOne({_id:req.params.seller}).then((result)=>{
-         phone=result.phone
+         email=result.email;
         })
     //adding in buyer
     var buyer = result.current_bidder_id
@@ -61,16 +61,17 @@ async function sellingpage_post(req, res) {
       to: user.email,
       subject: 'Item Bid Successful',
       html: `<h3>Congratulations</h3>
-      <p>The seller had sold the item you were bidding to you</p>
+      <p>The seller has sold the item you were bidding on to you</p>
       <h5>Item Details :</h5>
       <p>Name: ${solditem.name}</p>
       <p>Price: ${solditem.base_price}</p>
-      <img style="width: 200px; height: 200px;" src="${solditem.url}" alt="">
-      <p>Phone: ${phone}</p>`  }
+      <p>Phone: ${email}</p>`
+  }
       transporter.sendMail(mailOptions, function(error, info){
       if (error) {
         console.log(error);
       } else {
+        console.log("Maail sent successfully to receiver");
       }
     });  
       var itemlength = user.items.length

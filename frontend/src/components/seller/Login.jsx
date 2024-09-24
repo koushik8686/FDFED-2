@@ -162,15 +162,6 @@ const googlelogin = useGoogleLogin({
           </button>
         </form>
 
-        <div className="google-login-container">
-        <button
-            onClick={googlelogin}
-            className="user-register-button"
-          >
-            sign in with google
-          </button>
-        </div>
-
         {serverMessage && (
           <p className="seller-login-message">
             {serverMessage}

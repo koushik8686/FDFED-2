@@ -21,8 +21,6 @@ export default function Auction() {
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
-
-    // Create the bid object
     // Send the POST request
     fetch(`http://localhost:4000/auction/${userid}/item/${item}`, {
       method: "POST",
