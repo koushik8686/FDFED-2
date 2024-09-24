@@ -33,7 +33,6 @@ const RegisterPage = () => {
       if (response.status === 200 && response.data.message === "Account Created Successfully") {
         Cookies.set('user', response.data.userId);
         console.log('Registration successful:', response.data);
-        setError("");
         navigate("/home");
       }
     } catch (error) {
@@ -45,6 +44,11 @@ const RegisterPage = () => {
         console.log(authtesult);
         if (authtesult) {
           const response = await axios.get(`http://localhost:4000/auth/google`, {params:{tokens: authtesult}});
+          if(response.data.message == "Account Created Successfully") {
+            Cookies.set('user', response.data.userId);
+            console.log('Registration successful:', response.data);
+            navigate("/home");
+          };
           console.log(response);
         }
       } catch (error) {
