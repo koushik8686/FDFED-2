@@ -2,9 +2,12 @@ const { google } = require('googleapis');
 const axios = require('axios');
 const usermodel = require('../../models/usermodel'); // Adjust the import path accordingly
 
+const clientId = "947397347573-0nephq36dtkfm710h9qrkn258lsqomu"
+const client_secret = "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"
+
 const oauth2client = new google.auth.OAuth2(
-  process.env.GOOGLE_CLIENT_ID,
-  process.env.GOOGLE_CLIENT_SECRET,
+  clientId , 
+  client_secret,
   "postsecret"
 );
 

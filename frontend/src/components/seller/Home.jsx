@@ -4,6 +4,8 @@ import AddItem from "./AddItem";
 import axios from "axios";
 import Cookies from "js-cookie";
 import './Home.css';
+import { AiOutlineDelete } from 'react-icons/ai';
+
 
 export default function SellerHome() {
   const navigate = useNavigate();
@@ -19,6 +21,7 @@ export default function SellerHome() {
       try {
         const response = await axios.get(`/sellerhome/${sellerid}`);
         setSeller(response.data.seller);
+        console.log(response.data.items);
         setItems(response.data.seller.items);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -90,12 +93,16 @@ export default function SellerHome() {
               <div key={item._id} className="item-card">
                 <img src={"/" + item.url} alt={item.name} className="item-image" />
                 <div className="item-content">
+                <div className="qwe">
                   <h3 className="item-title">{item.name}</h3>
+                  <AiOutlineDelete className="delete-icon" />
+                </div>
                   <div className="item-prices">
                     <span>Base Price: ${item.base_price}</span>
                     <span>Current Price: ${item.current_price}</span>
                   </div>
                   <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
+                 
                 </div>
               </div>
             ))}

@@ -1,3 +1,4 @@
+const bcrypt = require('bcryptjs');
 const usermodel = require("../../models/usermodel");
 const { set_session, get_session } = require("../../middleware/user-cookies/userauth");
 const path = require("path");
@@ -10,25 +11,32 @@ function userlogin_get(req, res) {
 }
 
 async function userlogin_post(req, res) { 
-    var email = req.body.email;
-    var pass = req.body.password;
+    const email = req.body.email;
+    const pass = req.body.password;
     console.log("User login");
     console.log(email, pass);
+
     try {
         const user = await usermodel.findOne({ email: email });
 
         if (!user) {
-            console.log("no emsil");
+            console.log("No email");
             return res.status(200).send({ message: "No Email" });
         }
 
-        // Directly compare passwords without hashing
-        if (pass === user.password) {
-            var userId = user._id;
-            console.log("success");
-           return res.status(200).send({ message: "Login Successfully" , userId: userId});
+        // Compare the plain text password with the hashed password in the database
+        const isMatch = await bcrypt.compare(pass, user.password);
+
+        if (isMatch) {
+            const userId = user._id;
+            console.log("Login successful");
+            
+            // Set session or token if applicable
+            set_session(req, userId);  // Assuming set_session sets a session or cookie
+
+            return res.status(200).send({ message: "Login Successfully", userId: userId });
         } else {      
-            console.log("wrong pass");       
+            console.log("Wrong password");       
             return res.status(200).send({ message: "Wrong Password" });
         }
     } catch (error) {
