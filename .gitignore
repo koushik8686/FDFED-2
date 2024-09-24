@@ -5,3 +5,4 @@
 .env.local
 /backend/uploads
 /backend/.env
+/backend/.env.local
