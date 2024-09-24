@@ -4,3 +4,4 @@
 .env
 .env.local
 /backend/uploads
+/backend/.env
