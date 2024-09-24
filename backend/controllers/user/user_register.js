@@ -26,7 +26,6 @@ function userregister_post(req, res) {
                     password: hashedPassword, // Store hashed password
                     items: []
                 });
-
                 newUser.save()
                     .then(() => {
                         res.status(200).send({ message: "Account Created Successfully", userId: newUser._id });
