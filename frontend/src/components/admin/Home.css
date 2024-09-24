@@ -168,20 +168,30 @@
   }
   .table-row:nth-child(even) .table-cell {
     background-color: #d3d0d0; /* Light gray background */
-}
-  .delete-btn {
-    background: linear-gradient(135deg, #e74c3c, #c0392b);
-    color: white;
-    padding: 0.75rem 1.5rem;
-    border: none;
-    border-radius: 0.5rem;
+  }
+
+    /* Style for the delete icon */
+  .delete-icon {
+    font-size: 24px; /* Base size of the icon */
+    transition: transform 0.3s ease, color 0.3s ease;
     cursor: pointer;
-    transition: background 0.3s ease;
   }
-  
-  .delete-btn:hover {
-    background: linear-gradient(135deg, #c0392b, #a93226);
+
+  /* Enlarge the icon slightly and change its color on hover */
+  .delete-icon:hover {
+    transform: scale(1.15); /* Increase the size */
+    color: #ff5555; /* Change color on hover */
   }
+
+  /* Animation for lid opening effect */
+  .delete-icon:hover:before {
+    content: '🗑️';
+    display: inline-block;
+    position: relative;
+    top: -3px; /* Move the lid upwards */
+    transition: top 0.3s ease;
+  }
+
   
   /* Quick Actions Panel */
 

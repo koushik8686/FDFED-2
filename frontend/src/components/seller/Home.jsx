@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import AddItem from "./AddItem";
 import axios from "axios";
 import Cookies from "js-cookie";
-import './Home.css'
+import './Home.css';
 
 export default function SellerHome() {
   const navigate = useNavigate();
@@ -11,7 +11,7 @@ export default function SellerHome() {
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showAddItemForm, setShowAddItemForm] = useState(false);
-  const [isNavOpen, setIsNavOpen] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open/close state
   const sellerid = Cookies.get("seller");
 
   useEffect(() => {
@@ -48,10 +48,6 @@ export default function SellerHome() {
     navigate("/seller");
   };
 
-  const toggleNav = () => {
-    setIsNavOpen(!isNavOpen);
-  };
-
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen">
@@ -61,56 +57,49 @@ export default function SellerHome() {
   }
 
   return (
-    <div className="seller-home-div-container">
-      <header className="seller-home-div-header">
-        <button onClick={toggleNav} className="seller-home-div-nav-button">
-          ☰
-        </button>
-        <div className="seller-home-div-welcome">
-          <h2>Welcome, {seller.name}</h2>
+    <div className={`seller-home-div ${isSidebarOpen ? 'sidebar-open' : ''}`}>
+      {/* Sidebar */}
+      <aside className={`seller-sidebar ${isSidebarOpen ? 'open' : ''}`}>
+        <div className="sidebar-content">
+          <h1 className="sidebar-title">Seller Dashboard</h1>
         </div>
-        <button onClick={logout} className="text-sm hover:text-gray-300 transition-colors">
-          Logout
-        </button>
-      </header>
+        <nav className="sidebar-nav">
+          <Link to="/" className="nav-item">Dashboard</Link>
+          <button onClick={handleAddItem} className="nav-item">Add Item</button>
+          <Link to="/profile" className="nav-item">Profile</Link>
+          <p onClick={logout} className="nav-item">Log Out</p>
+        </nav>
+      </aside>
 
-      {/* Side Navbar */}
-      <div className={`seller-home-div-navbar ${isNavOpen ? "active" : ""}`}>
-        <div className="seller-home-div-nav-item">
-          <Link to="/" className="seller-home-div-button">Dashboard</Link>
-        </div>
-        <div className="seller-home-div-nav-item">
-          <button onClick={handleAddItem} className="seller-home-div-button">
-            Add Item
+      {/* Main content */}
+      <div className="seller-main">
+        <header className="seller-header">
+          <button onClick={() => setIsSidebarOpen(!isSidebarOpen)} className="menu-btn">
+            <svg className="menu-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
           </button>
-        </div>
-        <div className="seller-home-div-nav-item">
-          <Link to="/profile" className="seller-home-div-button">Profile</Link>
-        </div>
-      </div>
+          <h2 className="seller-welcome">Welcome, {seller.name}</h2>
+        </header>
 
-      {isNavOpen && <div className="seller-home-div-blur" onClick={toggleNav}></div>}
+        <main className="seller-content">
+          {showAddItemForm && <AddItem onClose={handleCloseForm} onAdd={handleNewItem} />}
 
-      {/* Main Content */}
-      <div className="p-6">
-        {showAddItemForm && <AddItem onClose={handleCloseForm} onAdd={handleNewItem} />}
-
-        <main className="seller-home-div-main">
-          {items.map((item) => (
-            <div key={item._id} className="seller-home-div-item">
-              <img src={"/" + item.url} alt={item.name} className="seller-home-div-image" />
-              <div className="seller-home-div-content">
-                <h3 className="seller-home-div-title">{item.name}</h3>
-                <div className="seller-home-div-price">
-                  <span>Base Price: ${item.base_price}</span>
-                  <span>Current Price: ${item.current_price}</span>
+          <div className="items-container">
+            {items.map((item) => (
+              <div key={item._id} className="item-card">
+                <img src={"/" + item.url} alt={item.name} className="item-image" />
+                <div className="item-content">
+                  <h3 className="item-title">{item.name}</h3>
+                  <div className="item-prices">
+                    <span>Base Price: ${item.base_price}</span>
+                    <span>Current Price: ${item.current_price}</span>
+                  </div>
+                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
                 </div>
-                <Link to={`/item/${item._id}`} className="seller-home-div-view-button">
-                  View Item
-                </Link>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </main>
       </div>
     </div>
