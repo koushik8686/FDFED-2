@@ -6,3 +6,9 @@
 /backend/uploads
 /backend/.env
 /backend/.env.local
+/frontend/.env.local
+/frontend/.env.development.local
+/frontend/.env.test.local
+/frontend/.env.production.local
+/backend/.env.test.local
+/backend/.env.production.local
