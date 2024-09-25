@@ -14,11 +14,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-mongoose.connect(process.env.URL);
-//models 
-const usermodel = require("./models/usermodel")
-const {itemmodel} = require("./models/itemmodel")
-const sellermodel = require("./models/sellermodel")
+mongoose.connect("mongodb://127.0.0.1:27017/auction");
 
 // Middleware to parse JSON bodies (optional, if you're also handling JSON data)
 app.use(cors({origin:'http://localhost:3000'}))
