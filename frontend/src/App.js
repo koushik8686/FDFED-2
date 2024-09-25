@@ -21,7 +21,7 @@ function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<RegisterPage />} />
-        <Route path="/verify/:userId" element={<VerifyEmail />} />
+        <Route path="/verify/:userid" element={<VerifyEmail />} />
         <Route path="/home" element={<Home />} />
         <Route path="/seller" element={<SellerAuth />} />
         <Route path="/sellerhome" element={<SellerHome />} />

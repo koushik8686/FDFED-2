@@ -25,7 +25,7 @@ const VerifyEmail = () => {
                 setStatusMessage('Email verification failed. Please try again.');
             }
         };
-
+        console.log(userid);
         // Call the verifyUserEmail function when the component mounts
         verifyUserEmail();
     }, [userid, navigate]);

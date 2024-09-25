@@ -5,6 +5,7 @@ class UserVerificationService {
     async verifyEmail(userid) {
         try {
             // Search for the user in unverified users
+            console.log(userid);
             const unverifiedUser = await unverified_users.findOne({ _id: userid });
             if (!unverifiedUser) {
                 return { success: false, message: "User not found or already verified" };
@@ -35,6 +36,7 @@ class UserVerificationController {
 
     // Controller method for email verification
     async verifyEmail(req, res) {
+        console.log(req.params);
         const userid = req.params.id;
 
         try {

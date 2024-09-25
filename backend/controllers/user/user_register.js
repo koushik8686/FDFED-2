@@ -93,6 +93,7 @@ class UserService {
 // Controller for handling user registration requests
 class UserController {
     static async userregister_post(req, res) {
+        console.log(req.body , req.params);
         const { username, email, password } = req.body;
         const userService = new UserService(username, email, password);
 
