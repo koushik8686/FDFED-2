@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const sellermodel = require("../../models/sellermodel");
-const { set_sellersession, get_sellersession } = require("../../middleware/seller-sessions/sellerauth");
 const path = require("path");
 
 function sellerlogin_get(req, res) { 

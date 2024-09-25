@@ -33,7 +33,6 @@ app.use("/login",require("./routers/user-routes/user_login"))
 app.use("/user", require("./routers/user-routes/user_home") )
 app.use("/popular", require("./routers/user-routes/popular") )
 app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction page for users
-app.use("/logout", require("./routers/user-routes/delete_session"))
 app.use("/auth", require("./routers/user-routes/authrouter"))
 app.use("/verify" , require("./routers/user-routes/verifymail"))
 
@@ -51,5 +50,4 @@ app.use("/seller/verify" , require("./routers/seller-routes/sellerverification")
 //admin 
 app.use("/admin/login",require("./routers/admin-routes/admin_login"))
 app.use("/admin/home",require("./routers/admin-routes/admin_home"))
-app.use("/admin/logout", require("./routers/admin-routes/delete_session_admin"))
 app.use("/delete" ,require("./routers/admin-routes/deleteitem") )
