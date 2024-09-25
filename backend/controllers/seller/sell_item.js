@@ -1,86 +1,99 @@
-const sellermodel = require("../../models/sellermodel")
-const usermodel = require("../../models/usermodel")
-const {itemmodel} = require("../../models/itemmodel")
-var email = "hexart637@gmail.com"
+const sellermodel = require("../../models/sellermodel");
+const usermodel = require("../../models/usermodel");
+const { itemmodel } = require("../../models/itemmodel");
+var email = "hexart637@gmail.com";
 var nodemailer = require('nodemailer');
 
 var transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: email,
-    pass: 'zetk dsdm imvx keoa'
+    pass: 'zetk dsdm imvx keoa', // Consider using environment variables for sensitive data
   }
 });
 
 async function sellingpage_get(req, res) { 
-    var name = ""
-    await sellermodel.findOne({_id:req.params.seller}).then((result)=>{
-     name=result.name
-    })
-   await itemmodel.findOne({_id:req.params.itemid}).then((result)=>{
+  var name = "";
+  await sellermodel.findOne({_id: req.params.seller}).then((result) => {
+    name = result.name;
+  });
+  await itemmodel.findOne({_id: req.params.itemid}).then((result) => {
     if (!result) {
-      res.send('<h1 style="color: green; text-align: center;">Item Sold</h1><br><p style="text-align: center;"><a href="/sellerhome/' + req.params.seller + '" style="color: blue;">Back to User Profile</a></p>');
-      return
+      res.status(404).send({ message: "Item Sold" });
+      return;
     }
-      if (result.aution_active) {
-        res.send("item sold")
-      }
-     var data = {
+    if (result.auction_active) {
+      res.send("item sold");
+    }
+    var data = {
       user: req.params.seller,
-      username:name,
-      item:result
-     }
-     console.log(data.item);
-      res.status(200).send({data:data} )
-     })
-   }
+      username: name,
+      item: result
+    };
+    res.status(200).send({ data: data });
+  });
+}
+
 async function sellingpage_post(req, res) {
-    var solditem
-   await itemmodel.findOne({_id:req.params.itemid}).then( async (result)=>{
-     if (!result) {
-       res.send("itemsold")
-     }
-         result.person=result.current_bidder
-         result.save()
-         solditem=result
-   //deleting in owner
-        await sellermodel.findOneAndUpdate(
-          { _id: req.params.seller },
-          { $pull: { items: { _id: req.params.itemid } } },
-          { new: true }
-        )
-        var email=""
-        await sellermodel.findOne({_id:req.params.seller}).then((result)=>{
-         email=result.email;
-        })
-    //adding in buyer
-    var buyer = result.current_bidder_id
-   await usermodel.findOne({_id:buyer}).then ((user)=>{
-    var mailOptions = {
-      from: email,
+  try {
+    let solditem;
+    const itemResult = await itemmodel.findOne({ _id: req.params.itemid });
+    
+    if (!itemResult) {
+      return res.status(404).send({ message: "Item already sold" });
+    }
+    // Assign the current bidder to the sold item
+    itemResult.person = itemResult.current_bidder;
+    solditem = itemResult;
+    await itemResult.save();
+
+    // Remove the sold item from the seller's items
+    await sellermodel.findOneAndUpdate(
+      { _id: req.params.seller },
+      { $pull: { items: { _id: req.params.itemid } } },
+      { new: true }
+    );
+
+    const buyerEmail = await sellermodel.findById(req.params.seller).then(result => result.email);
+    const buyerId = itemResult.current_bidder_id;
+    
+    const user = await usermodel.findById(buyerId);
+    if (!user) {
+      return res.status(404).send({ message: "Buyer not found" });
+    }
+
+    // Send email to the buyer
+    const mailOptions = {
+      from: buyerEmail,
       to: user.email,
       subject: 'Item Bid Successful',
       html: `<h3>Congratulations</h3>
-      <p>The seller has sold the item you were bidding on to you</p>
-      <h5>Item Details :</h5>
-      <p>Name: ${solditem.name}</p>
-      <p>Price: ${solditem.base_price}</p>
-      <p>Phone: ${email}</p>`
-  }
-      transporter.sendMail(mailOptions, function(error, info){
+             <p>The seller has sold the item you were bidding on to you</p>
+             <h5>Item Details :</h5>
+             <p>Name: ${solditem.name}</p>
+             <p>Price: ${solditem.base_price}</p>
+             <p>Email: ${buyerEmail}</p>`
+    };
+    
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.log(error);
       } else {
-        console.log("Maail sent successfully to receiver");
+        console.log("Mail sent successfully to receiver");
       }
-    });  
-      var itemlength = user.items.length
-      user.items[itemlength]=solditem
-      user.save()
-    })
-    })
-    await itemmodel.deleteOne({ _id: req.params.itemid });
-    res.redirect("/sellerhome/"+req.params.seller)
-  }
+    });
 
-module.exports= {sellingpage_get, sellingpage_post}
+    // Add the sold item to the buyer's items
+    user.items.push(solditem);
+    await user.save();
+    // Delete the sold item from the item model
+    await itemmodel.deleteOne({ _id: req.params.itemid });
+    // Respond with a success message and the sold item details
+    return res.status(200).send({ message: "Item sold successfully", item: solditem });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).send({ message: "Internal server error" });
+  }
+}
+
+module.exports = { sellingpage_get, sellingpage_post };

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./item.css";
 
@@ -8,13 +8,24 @@ export default function Item() {
   const [bidAmount, setBidAmount] = useState("");
   const { item } = useParams();
   const sellerid = Cookies.get('seller');
+  const navigate = useNavigate();
 
-  useEffect(() => {
+  // Function to fetch item data
+  const fetchItemData = () => {
     fetch(`/sell/${sellerid}/${item}`)
       .then((response) => response.json())
       .then((data) => setItemData(data.data.item))
       .catch((error) => console.error("Error fetching item data:", error));
-  }, [item]);
+  };
+
+  useEffect(() => {
+    // Initial fetch
+    fetchItemData();
+    // Set interval to fetch item data every 1 second
+    const intervalId = setInterval(fetchItemData, 1000);
+    // Clear interval on component unmount
+    return () => clearInterval(intervalId);
+  }, [item, sellerid]);
 
   if (!itemData) {
     return <div>Loading...</div>;
@@ -22,7 +33,10 @@ export default function Item() {
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
-
+    if (itemData.auction_history.length === 0) {
+      alert("No bids have been placed yet. You cannot sell this item.");
+      return; // Prevent further execution
+    }
     fetch(`http://localhost:4000/sell/${sellerid}/${item}`, {
       method: "POST",
       headers: {
@@ -31,9 +45,12 @@ export default function Item() {
       body: JSON.stringify({ bid: bidAmount }),
     })
       .then((response) => response.json())
-      .then((data) => {
-        setItemData(data.data.item);
-        setBidAmount("");
+      .then((data) => {          // Alert item sold
+          alert("Item sold successfully!");
+          setTimeout(() => {
+            navigate(`/sellerhome`);            
+          }, 1000);
+        
       })
       .catch((error) => console.error("Error submitting bid:", error));
   };
@@ -45,7 +62,6 @@ export default function Item() {
           <ArrowLeftIcon className="seller-item-back-icon" />
           <span>Back</span>
         </Link>
-        <h1 className="seller-item-title">{itemData.name}</h1>
       </div>
 
       <div className="seller-item-content">
@@ -81,6 +97,8 @@ export default function Item() {
             className="seller-item-image"
           />
           <div className="seller-item-info">
+            <h1 className="seller-item-title">{itemData.name}</h1>
+
             <div className="seller-item-info-row">
               <span>Current Highest Bidder:</span>
               <span>{itemData.current_bidder || "No bids yet"}</span>
@@ -124,4 +142,3 @@ function ArrowLeftIcon(props) {
     </svg>
   );
 }
-

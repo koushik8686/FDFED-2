@@ -6,28 +6,24 @@ class UserAuctionController {
         let name = " ";
         try {
             const user = await usermodel.findOne({ _id: req.params.userid });
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
             name = user.email;
 
             const item = await itemmodel.findOne({ _id: req.params.itemid });
             if (!item) {
-                res.send('<h1>Item Sold</h1><br><a href="/user/' + req.params.userid + '">Back to User Profile</a>');
-                return;
+                return res.status(404).send("Item not found");
             }
             if (item.auction_over) {
-                res.send("item sold");
-                res.redirect("/user/" + req.params.userid);
-                return;
+                return res.status(410).send("Item sold");
             }
-            if (item.pid == req.params.userid) {
-                res.redirect("/" + req.params.userid + "/auction/item/" + req.params.itemid + "/owner");
-                return;
-            }
+          
             const isVisited = item.visited_users.some(user => user.id === req.params.userid);
             if (!isVisited) {
                 item.visited_users.push({ id: req.params.userid, email: name });
                 await item.save();
             }
-
             const data = {
                 user: req.params.userid,
                 username: name,
@@ -46,22 +42,27 @@ class UserAuctionController {
         let name = " ";
         try {
             const user = await usermodel.findOne({ _id: req.params.userid });
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
             name = user.username;
 
             const item = await itemmodel.findOne({ _id: req.params.itemid });
             if (!item) {
-                res.send("item sold");
-                return;
+                return res.status(404).send("Item not found");
+            }
+            if (item.auction_over) {
+                return res.status(410).send("Item sold");
             }
             if (price < item.current_price || price < item.base_price) {
-                res.redirect("/auction/" + req.params.userid + "/item/" + req.params.itemid);
+                return res.status(400).send("Bid amount is less than the current price or base price");
             } else {
                 item.current_price = price;
                 item.current_bidder = name;
                 item.current_bidder_id = req.params.userid;
                 item.auction_history.push({ bidder: name, price: price.toString() });
                 await item.save();
-                res.status(200).send({ message: "success", item: item });
+                res.status(200).send({ message: "Bid placed successfully", item: item });
             }
         } catch (error) {
             console.error("Error placing bid:", error);

@@ -1,18 +1,39 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 
 export default function Auction() {
   const [itemData, setItemData] = useState(null);
   const [bidAmount, setBidAmount] = useState("");
+
   const { item } = useParams();
   const userid = Cookies.get('user');
-
+  const navigate = useNavigate();
   useEffect(() => {
-    fetch(`/auction/${userid}/item/${item}`)
-      .then((response) => response.json())
-      .then((data) => setItemData(data.data.item))
-      .catch((error) => console.error("Error fetching item data:", error));
+    const fetchItemData = () => {
+      fetch(`/auction/${userid}/item/${item}`)
+        .then((response) => {
+          if (response.status === 404) {
+            // Redirect to home if item not found
+            navigate("/home");
+            return null;
+          }
+          return response.json();
+        })
+        .then((data) => {
+          if (data) {
+            setItemData(data.data.item);
+          }
+        })
+        .catch((error) => console.error("Error fetching item data:", error));
+    };
+
+    // Fetch item data immediately
+    fetchItemData();
+
+    // Set up interval to fetch data every second
+    const intervalId = setInterval(fetchItemData, 1000);
+    return () => clearInterval(intervalId);
   }, [item, userid]);
 
   if (!itemData) {
@@ -21,7 +42,6 @@ export default function Auction() {
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
-    // Send the POST request
     fetch(`http://localhost:4000/auction/${userid}/item/${item}`, {
       method: "POST",
       headers: {
@@ -31,11 +51,10 @@ export default function Auction() {
     })
       .then((response) => response.json())
       .then((data) => {
-        // Clear the bid input
         setBidAmount("");
-  
+
         // Refetch the updated item data to reflect the latest bid
-        fetch(`http://localhost:4000/auction/${userid}/item/${item}`)
+        fetch(`/auction/${userid}/item/${item}`)
           .then((response) => response.json())
           .then((newData) => {
             setItemData(newData.data.item); // Update the state with the new item data
@@ -44,7 +63,6 @@ export default function Auction() {
       })
       .catch((error) => console.error("Error submitting bid:", error));
   };
-  
 
   return (
     <div className="max-w-4xl mx-auto py-8 px-4 md:px-6">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect,  } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './Verifyseller.css';
@@ -13,6 +13,7 @@ const VerifySellerEmail = () => {
             try {
                 // Send GET request to verify the seller
                 const response = await axios.get(`http://localhost:4000/seller/verify/${sellerId}`);
+                console.log(response);
                 // Redirect to /sellerlogin after 3 seconds
                 setTimeout(() => {
                     navigate('/seller');
