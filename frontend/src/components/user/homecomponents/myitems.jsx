@@ -6,6 +6,7 @@ import './myitems.css'
 export default function Items({MyfilteredItems} ) {
   return (
     <div className='user-myitems-div-container'>
+      <p>Your Items</p>
       {MyfilteredItems.map(item => (
         <div key={item.id} className="user-myitems-div-item">
           <img

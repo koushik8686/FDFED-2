@@ -27,13 +27,13 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       const response = await axios.post('/register', formData);
+      console.log(response);
       if (response.status === 200 && response.data.message === "Email Already Exists") {
         setError("Email Already Exists");
-      }
-      if (response.status === 200 && response.data.message === "Account Created Successfully") {
-        Cookies.set('user', response.data.userId);
+      } 
+      if (response.status === 200 && response.data.message === "Verification Email Sent To Your Email") {
+        setError("Verification Link Sent to your Email")
         console.log('Registration successful:', response.data);
-        navigate("/home");
       }
     } catch (error) {
       console.error('Error during registration:', error);
@@ -44,7 +44,7 @@ const RegisterPage = () => {
         console.log(authtesult);
         if (authtesult) {
           const response = await axios.get(`http://localhost:4000/auth/google`, {params:{tokens: authtesult}});
-          if(response.data.message == "Account Created Successfully") {
+          if(response.data.message) {
             Cookies.set('user', response.data.userId);
             console.log('Registration successful:', response.data);
             navigate("/home");

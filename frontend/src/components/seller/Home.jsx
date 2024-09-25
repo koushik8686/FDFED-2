@@ -19,9 +19,13 @@ export default function SellerHome() {
   useEffect(() => {
     const fetchSellerData = async () => {
       try {
+        if (!sellerid) {
+          return navigate("/seller")
+        }
+        console.log(`/sellerhome/${sellerid}`);
         const response = await axios.get(`/sellerhome/${sellerid}`);
         setSeller(response.data.seller);
-        console.log(response.data.items);
+        console.log(response.data);
         setItems(response.data.seller.items);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -48,7 +52,7 @@ export default function SellerHome() {
 
   const logout = () => {
     Cookies.remove("seller");
-    navigate("/seller");
+    navigate("/");
   };
 
   if (loading) {
@@ -67,9 +71,8 @@ export default function SellerHome() {
           <h1 className="sidebar-title">Seller Dashboard</h1>
         </div>
         <nav className="sidebar-nav">
-          <Link to="/" className="nav-item">Dashboard</Link>
+          <Link to="/sellerhome" className="nav-item">Dashboard</Link>
           <button onClick={handleAddItem} className="nav-item">Add Item</button>
-          <Link to="/profile" className="nav-item">Profile</Link>
           <p onClick={logout} className="nav-item">Log Out</p>
         </nav>
       </aside>
@@ -89,57 +92,6 @@ export default function SellerHome() {
           {showAddItemForm && <AddItem onClose={handleCloseForm} onAdd={handleNewItem} />}
 
           <div className="items-container">
-            {items.map((item) => (
-              <div key={item._id} className="item-card">
-                <img src={"/" + item.url} alt={item.name} className="item-image" />
-                <div className="item-content">
-                <div className="qwe">
-                  <h3 className="item-title">{item.name}</h3>
-                  <AiOutlineDelete className="delete-icon" />
-                </div>
-                  <div className="item-prices">
-                    <span>Base Price: ${item.base_price}</span>
-                    <span>Current Price: ${item.current_price}</span>
-                  </div>
-                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
-                 
-                </div>
-              </div>
-            ))}
-            {items.map((item) => (
-              <div key={item._id} className="item-card">
-                <img src={"/" + item.url} alt={item.name} className="item-image" />
-                <div className="item-content">
-                <div className="qwe">
-                  <h3 className="item-title">{item.name}</h3>
-                  <AiOutlineDelete className="delete-icon" />
-                </div>
-                  <div className="item-prices">
-                    <span>Base Price: ${item.base_price}</span>
-                    <span>Current Price: ${item.current_price}</span>
-                  </div>
-                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
-                 
-                </div>
-              </div>
-            ))}
-            {items.map((item) => (
-              <div key={item._id} className="item-card">
-                <img src={"/" + item.url} alt={item.name} className="item-image" />
-                <div className="item-content">
-                <div className="qwe">
-                  <h3 className="item-title">{item.name}</h3>
-                  <AiOutlineDelete className="delete-icon" />
-                </div>
-                  <div className="item-prices">
-                    <span>Base Price: ${item.base_price}</span>
-                    <span>Current Price: ${item.current_price}</span>
-                  </div>
-                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
-                 
-                </div>
-              </div>
-            ))}
             {items.map((item) => (
               <div key={item._id} className="item-card">
                 <img src={"/" + item.url} alt={item.name} className="item-image" />

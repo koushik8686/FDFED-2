@@ -45,12 +45,11 @@ export default function Component() {
       console.log(authtesult);
       if (authtesult) {
         const response = await axios.get(`http://localhost:4000/auth/google`, {params:{tokens: authtesult}});
-        if(response.data.message === "Account Created Successfully") {
+        if(response.status === 200) {
           Cookies.set('user', response.data.userId);
           console.log('Registration successful:', response.data);
           navigate("/home");
         };
-        console.log(response);
       }
     } catch (error) {
       console.log("error is " , error);

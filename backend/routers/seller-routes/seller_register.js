@@ -1,8 +1,20 @@
 const express = require('express')
 const router = express.Router()
-const {sellerregister_get,sellerregister_post } = require("../../controllers/seller/seller_register")
+const SellerController  = require("../../controllers/seller/seller_register")
 
-router.get("/", sellerregister_get)
-      .post("/", sellerregister_post)
-      
-module.exports= router
+
+class SellerRouter{
+       constructor(){
+           this.router = express.Router()
+           this.initializeRoutes()
+       }
+       initializeRoutes(){
+           this.router.post("/", SellerController.sellerregister_post)
+       }
+       getRouter(){
+           return this.router
+       }
+}
+
+const sellerRouter = new SellerRouter();
+module.exports = sellerRouter.getRouter();

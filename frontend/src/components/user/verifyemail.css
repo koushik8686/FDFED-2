@@ -1,0 +1,30 @@
+.verify-email {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh; /* Full-screen height */
+    background-color: #f5f5f5; /* Light background */
+    font-family: 'Arial', sans-serif;
+}
+
+.verify-email h2 {
+    color: #393E46; /* Darker text color */
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+.verify-email p {
+    color: #00ADB5; /* Accent color for messages */
+    font-size: 1.2rem;
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.verify-email p.error {
+    color: #FF5A5F; /* Red for error messages */
+}
+
+.verify-email p.success {
+    color: #4CAF50; /* Green for success messages */
+}

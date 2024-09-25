@@ -1,21 +1,20 @@
 /* Seller Home Styles */
 
-/* Sidebar styles */
 .seller-sidebar {
   position: fixed;
   top: 0;
-  left: -250px; /* Hidden initially */
+  left: -250px;
   width: 250px;
   height: 100%;
-  background-color: #2d3748; /* Updated color */
+  background-color: #2d3748;
   color: #fff;
   padding: 20px;
-  transition: left 0.3s ease; /* Transition for smooth slide-in effect */
+  transition: left 0.3s ease;
   z-index: 1000;
 }
 
 .seller-sidebar.open {
-  left: 0; /* Slide in when sidebar is open */
+  left: 0;
 }
 
 .sidebar-content {
@@ -25,7 +24,7 @@
 .sidebar-title {
   font-size: 1.5em;
   margin-bottom: 10px;
-  font-weight: bold; /* Matching the bold style */
+  font-weight: bold;
 }
 
 .sidebar-nav .nav-item {
@@ -39,26 +38,24 @@
   color: #ddd;
 }
 
-/* Main content styles */
 .seller-main {
   margin-left: 0;
-  transition: margin-left 0.3s ease; /* Smooth transition for content shift */
-  background-color: #f7fafc; /* Updated background color */
+  transition: margin-left 0.3s ease;
+  background-color: #f7fafc;
 }
 
 .seller-home-div.sidebar-open .seller-main {
-  margin-left: 250px; /* Shift content to the right when sidebar is open */
+  margin-left: 250px;
 }
 
-/* Header */
 .seller-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 10px 20px;
-  background-color: #2d3748; /* Updated background color */
-  color: white; /* Updated text color */
-  border-bottom: 1px solid #e2e8f0; /* Updated border color */
+  background-color: #2d3748;
+  color: white;
+  border-bottom: 1px solid #e2e8f0;
 }
 
 .menu-btn {
@@ -74,10 +71,9 @@
 
 .seller-welcome {
   font-size: 1.2em;
-  color: #eeeeee; /* Updated color */
+  color: #eeeeee;
 }
 
-/* Items styles */
 .items-container {
   display: flex;
   flex-wrap: wrap;
@@ -87,8 +83,8 @@
 
 .item-card {
   background-color: white;
-  border: 1px solid #e2e8f0; /* Updated border color */
-  border-radius: 0.5rem; /* Updated border radius */
+  border: 1px solid #e2e8f0;
+  border-radius: 0.5rem;
   padding: 10px;
   width: calc(25.333% - 20px);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -96,13 +92,12 @@
 }
 
 .item-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Hover effect for item card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .item-image {
   width: 100%;
   height: 200px;
-  /* object-fit: cover; */
   object-fit: contain;
 }
 
@@ -112,8 +107,8 @@
 
 .item-title {
   font-size: 1.2em;
-  font-weight: 600; /* Updated font weight */
-  color: #2d3748; /* Updated text color */
+  font-weight: 600;
+  color: #2d3748;
   margin-bottom: 5px;
 }
 
@@ -121,10 +116,10 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 10px;
-  color: #4a5568; /* Updated price text color */
+  color: #4a5568;
 }
 
-.qwe{
+.qwe {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -132,11 +127,92 @@
 
 .view-item-button {
   text-decoration: none;
-  color: #3182ce; /* Updated button color */
+  color: #3182ce;
   background-color: transparent;
 }
 
 .view-item-button:hover {
   text-decoration: underline;
-  color: #2b6cb0; /* Updated hover color */
+  color: #2b6cb0;
+}
+
+@media (max-width: 1024px) {
+  .item-card {
+    width: calc(33.333% - 20px);
+  }
+
+  .seller-sidebar {
+    width: 200px;
+  }
+
+  .seller-main {
+    margin-left: 200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .item-card {
+    width: calc(50% - 20px);
+  }
+
+  .seller-sidebar {
+    width: 150px;
+  }
+
+  .seller-main {
+    margin-left: 150px;
+  }
+}
+
+@media (max-width: 480px) {
+  .item-card {
+    width: calc(100% - 20px);
+  }
+
+  .seller-sidebar {
+    left: 0;
+    width: 100%;
+    height: auto;
+  }
+
+  .seller-main {
+    margin-left: 0;
+  }
+
+  .seller-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .seller-welcome {
+    font-size: 1em;
+  }
+}
+.seller-main {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+  background-color: #f7fafc;
+}
+
+.seller-home-div.sidebar-open .seller-main {
+  margin-left: 250px; /* Ensure this matches the sidebar width */
+}
+
+/* Adjust for responsive widths if necessary */
+@media (max-width: 1024px) {
+  .seller-home-div.sidebar-open .seller-main {
+    margin-left: 200px; /* Ensure this matches the sidebar width */
+  }
+}
+
+@media (max-width: 768px) {
+  .seller-home-div.sidebar-open .seller-main {
+    margin-left: 150px; /* Ensure this matches the sidebar width */
+  }
+}
+
+@media (max-width: 480px) {
+  .seller-home-div.sidebar-open .seller-main {
+    margin-left: 0; /* Reset margin for small screens */
+  }
 }

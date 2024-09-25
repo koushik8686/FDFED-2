@@ -9,22 +9,11 @@ require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const app = express();
 
-
-
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-app.use(cookieParser());
-// app.use(
-//   session({
-//     secret: "secretkey",
-//     resave: true,
-//     saveUninitialized: true,
-//     cookie: {  maxAge: null }, 
-//   })
-// );
 mongoose.connect(process.env.URL);
 //models 
 const usermodel = require("./models/usermodel")
@@ -46,6 +35,7 @@ app.use("/popular", require("./routers/user-routes/popular") )
 app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction page for users
 app.use("/logout", require("./routers/user-routes/delete_session"))
 app.use("/auth", require("./routers/user-routes/authrouter"))
+app.use("/verify" , require("./routers/user-routes/verifymail"))
 
 //seller routes
 app.get("/seller", function (req, res) {  res.sendFile(__dirname+"/views/sellerintro.html")})
@@ -55,6 +45,8 @@ app.use("/sellerhome",require("./routers/seller-routes/seller_home"))
 app.use("/create", require("./routers/seller-routes/create_auction") )
 app.use("/sell",require("./routers/seller-routes/sell_item")) //route for owner of the item
 app.use("/seller/auth", require("./routers/user-routes/authrouter"))
+app.use("/seller/verify" , require("./routers/seller-routes/sellerverification"))
+
 
 //admin 
 app.use("/admin/login",require("./routers/admin-routes/admin_login"))
