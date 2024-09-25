@@ -19,7 +19,7 @@ class GoogleAuthController {
         );
         return userRes.data;
     }
-
+    
     async googleLogin(req, res) {
         try {
             const { tokens } = req.query;

@@ -58,9 +58,7 @@ class UserService {
 
         try {
             await newUser.save();
-
             const verificationLink = `http://localhost:3000/verify/${newUser._id}`;
-
             const mailOptions = {
                 from: email,
                 to: this.email,
@@ -84,7 +82,6 @@ class UserService {
                     console.log("Mail sent successfully to receiver");
                 }
             });
-
             return newUser;
         } catch (error) {
             console.error("Error saving new user:", error);

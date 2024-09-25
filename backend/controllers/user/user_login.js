@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const usermodel = require("../../models/usermodel");
-const { set_session, get_session } = require("../../middleware/user-cookies/userauth");
 
 class UserController {
     static async userlogin_post(req, res) {
@@ -8,7 +7,6 @@ class UserController {
         const pass = req.body.password;
         console.log("User login");
         console.log(email, pass);
-
         try {
             const user = await usermodel.findOne({ email: email });
 

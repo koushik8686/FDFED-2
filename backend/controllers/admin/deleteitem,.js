@@ -22,15 +22,13 @@ async function deleteitem(req, res)
         const item = await itemmodel.findOne({ _id: itemId });
         if (!item) {
           return res.status(404).send("Item not found");
-        }
-    
+        }   
         const sellerId = item.pid;
         await sellermodel.findOneAndUpdate(
           { _id: sellerId },
           { $pull: { items: { _id: itemId } } },
           { new: true }
         );
-
         await itemmodel.findByIdAndDelete(itemId);
         return res.status(200).send("Item deleted successfully");
       default:
