@@ -9,8 +9,8 @@ class UserAuctionRouter {
 
     initializeRoutes() {
         // Directly use the controller methods for route handling
-        this.router.get("/:userid/item/:itemid", SellingController.sellingPageGet);
-        this.router.post("/:userid/item/:itemid", SellingController.sellingPagePost);
+        this.router.get("/:seller/:itemid", SellingController.sellingPageGet);
+        this.router.post("/:seller/:itemid", SellingController.sellingPagePost);
     }
 
     getRouter() {

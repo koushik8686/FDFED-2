@@ -12,7 +12,7 @@ export default function Item() {
 
   // Function to fetch item data
   const fetchItemData = () => {
-    fetch(`/sell/${sellerid}/${item}`)
+    fetch(`http://localhost:4000/sell/${sellerid}/${item}`)
       .then((response) => response.json())
       .then((data) => setItemData(data.data.item))
       .catch((error) => console.error("Error fetching item data:", error));

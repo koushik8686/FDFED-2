@@ -126,7 +126,7 @@
   .letter{
     
   }
-  .H {
+  /* .H {
     position: relative;
     animation: H 1s ease 0s 1 normal forwards;
     right: 500px;
@@ -203,7 +203,7 @@
     to {
    scale: 1;
     }
-  }
+  } */
   .features{
     display: flex;
    

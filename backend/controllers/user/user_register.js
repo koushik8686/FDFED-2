@@ -73,7 +73,6 @@ class UserService {
                     </div>
                 `
             };
-
             // Send the verification email
             transporter.sendMail(mailOptions, function (error, info) {
                 if (error) {

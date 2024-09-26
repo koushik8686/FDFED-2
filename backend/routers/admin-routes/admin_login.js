@@ -8,7 +8,7 @@ class AdminRouter {
   }
 
   initializeRoutes() {
-    this.router.post("/adminlogin", AdminController.login);
+    this.router.post("/", AdminController.login);
   }
 }
 

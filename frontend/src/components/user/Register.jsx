@@ -20,7 +20,7 @@ const RegisterPage = () => {
       alert("Password Invalid");
       return;
     }
-
+   //ajax
     const xhr = new XMLHttpRequest();
     xhr.open('POST', '/register', true);
     xhr.setRequestHeader('Content-Type', 'application/json');
@@ -104,7 +104,7 @@ const RegisterPage = () => {
                 if (value.length < 8) {
                   setError("Password must be at least 8 characters long");
                 } else if (!/[a-zA-Z]/.test(value)) { // Check for at least one letter
-                  setError("Password must contain at least one letter");
+                  setError("Password must contain at least one alphabet");
                 } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) { // Check for at least one special character
                   setError("Password must contain at least one special character");
                 } else {
