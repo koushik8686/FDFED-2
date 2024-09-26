@@ -37,7 +37,7 @@ export default function Item() {
       alert("No bids have been placed yet. You cannot sell this item.");
       return; // Prevent further execution
     }
-    fetch(`http://localhost:4000/sell/${sellerid}/${item}`, {
+    fetch(`/sell/${sellerid}/${item}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
