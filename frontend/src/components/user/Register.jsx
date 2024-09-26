@@ -16,8 +16,8 @@ const RegisterPage = () => {
     e.preventDefault();
     
     // Check if password is at least 8 characters
-    if (password.length < 8) {
-      setError("Password must be at least 8 characters long");
+    if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password) ) {
+      alert("Password Invalid");
       return;
     }
 
@@ -29,7 +29,6 @@ const RegisterPage = () => {
         if (xhr.status === 200) { // Check if response is OK
           const response = JSON.parse(xhr.responseText);
           console.log(response);
-
           if (response.message === "Email Already Exists") {
             setError("Email Already Exists");
           } else if (response.message === "Verification Email Sent To Your Email") {
@@ -100,13 +99,19 @@ const RegisterPage = () => {
               type="password"
               id="password"
               value={password}
-              onChange={(e) =>{
-                if (e.target.value.length < 8) {
-                  setError("PLease Ennter a password of atleast 8 characters")
-                } else{
-                  setError("")
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length < 8) {
+                  setError("Password must be at least 8 characters long");
+                } else if (!/[a-zA-Z]/.test(value)) { // Check for at least one letter
+                  setError("Password must contain at least one letter");
+                } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) { // Check for at least one special character
+                  setError("Password must contain at least one special character");
+                } else {
+                  setError("");
                 }
-                setPassword(e.target.value)}}
+                setPassword(value);
+              }}
               required
               className="user-register-input"
             />

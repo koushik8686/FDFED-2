@@ -1,19 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Login.css';
-import { useGoogleLogin } from "@react-oauth/google";
-import {jwtDecode} from "jwt-decode";
-import axios from 'axios';
 
 export default function SellerAuth() {
   const [activeTab, setActiveTab] = useState('login');
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    password: '',
-    phone: ''
-  });
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [phone, setPhone] = useState('');
   const seller = Cookies.get('seller');
   const [serverMessage, setServerMessage] = useState('');
   const navigate = useNavigate();
@@ -23,26 +18,32 @@ export default function SellerAuth() {
     setServerMessage('');
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.id]: e.target.value });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Validate password and phone number before sending
+    if (activeTab === 'register') {
+      if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
+        alert("Invalid password. Ensure it meets the criteria.");
+        return; // Prevent submission
+      }
+      if (phone.length !== 10 || !/^\d+$/.test(phone)) {
+        alert("Phone number must be exactly 10 digits.");
+        return; // Prevent submission
+      }
+    }
     const url = activeTab === 'login' ? '/sellerlogin' : '/sellerregister';
-    const body = activeTab === 'login' ? { email: formData.email, password: formData.password } : formData;
-
+    const body = activeTab === 'login'
+      ? { email, password }
+      : { name, email, password, phone };
     try {
       const response = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(body),
       });
-
       const result = await response.json();
       setServerMessage(result.message);
-
       if (response.ok) {
         if (result.message === "Account Created Successfully" || result.message === "Login Successfully") {
           Cookies.set('seller', result.sellerId, { expires: 7 });
@@ -56,28 +57,12 @@ export default function SellerAuth() {
       console.error('Fetch error:', error);
     }
   };
-  // Google Login Error Handler
-  const responsegoogle = async(authtesult)=>{
-    try {
-      console.log(authtesult);
-      if (authtesult) {
-        const response = await axios.get(`http://localhost:4000/seller/auth/google`, {params:{tokens: authtesult}});
-        console.log(response);
-      }
-    } catch (error) {
-      console.log("error is " , error);
-    }
-}
-const googlelogin = useGoogleLogin({
-  onSuccess:responsegoogle,
-  onError:responsegoogle,
-})
 
   useEffect(() => {
     if (seller !== undefined) {
       navigate("/sellerhome");
     }
-  }, [seller, navigate]);
+  }, [seller]);
 
   return (
     <div className="seller-login-container">
@@ -108,8 +93,8 @@ const googlelogin = useGoogleLogin({
                 id="name"
                 type="text"
                 placeholder="Jared Palmer"
-                value={formData.name}
-                onChange={handleChange}
+                value={name}
+                onChange={(e) => setName(e.target.value)}
                 required
                 className="seller-login-input"
               />
@@ -121,8 +106,8 @@ const googlelogin = useGoogleLogin({
               id="email"
               type="email"
               placeholder="m@example.com"
-              value={formData.email}
-              onChange={handleChange}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               className="seller-login-input"
             />
@@ -133,8 +118,20 @@ const googlelogin = useGoogleLogin({
               id="password"
               type="password"
               placeholder="••••••••"
-              value={formData.password}
-              onChange={handleChange}
+              value={password}
+              onChange={(e) => {
+                const value = e.target.value;
+                if (value.length < 8) {
+                  setServerMessage("Password must be at least 8 characters long");
+                } else if (!/[a-zA-Z]/.test(value)) { // Check for at least one letter
+                  setServerMessage("Password must contain at least one letter");
+                } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) { // Check for at least one special character
+                  setServerMessage("Password must contain at least one special character");
+                } else {
+                  setServerMessage("");
+                }
+                setPassword(value);
+              }}
               required
               className="seller-login-input"
             />
@@ -145,9 +142,17 @@ const googlelogin = useGoogleLogin({
               <input
                 id="phone"
                 type="tel"
-                placeholder="123-456-7890"
-                value={formData.phone}
-                onChange={handleChange}
+                placeholder="1234567890"
+                value={phone}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  if (value.length !== 10 || !/^\d+$/.test(value)) { // Check for exactly 10 digits
+                    setServerMessage("Phone number must be exactly 10 digits");
+                  } else {
+                    setServerMessage("");
+                  }
+                  setPhone(value);
+                }}
                 required
                 className="seller-login-input"
               />

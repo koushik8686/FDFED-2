@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './verifyemail.css';
@@ -6,7 +6,6 @@ import './verifyemail.css';
 const VerifyEmail = () => {
     const { userid } = useParams(); // Get userid from URL parameters
     const navigate = useNavigate();
-    const [statusMessage, setStatusMessage] = useState('');
 
     useEffect(() => {
         // Function to verify the email
@@ -14,19 +13,17 @@ const VerifyEmail = () => {
             try {
                 // Send GET request to verify the user
                 const response = await axios.get(`http://localhost:4000/verify/${userid}`);
-                setStatusMessage(response.data.message);
-                
+                console.log(response);
                 // Redirect to /login after 3 seconds
                 setTimeout(() => {
                     navigate('/login');
                 }, 5000);
             } catch (error) {
-                // Handle error if verification fails
-                setStatusMessage('Email verification failed. Please try again.');
+              console.log(error);
             }
         };
         console.log(userid);
-        // Call the verifyUserEmail function when the component mounts
+        // Call the verifyUserEmail function when the page loads
         verifyUserEmail();
     }, [userid, navigate]);
 

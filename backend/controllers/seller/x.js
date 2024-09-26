@@ -19,3 +19,6 @@ var mailOptions = {
     } else {
     }
   });  
+
+var x = /[a-z][#@$%]/.test("abcd")
+console.log(x);
