@@ -12,12 +12,12 @@ const VerifySellerEmail = () => {
         const verifySellerEmail = async () => {
             try {
                 // Send GET request to verify the seller
-                const response = await axios.get(`http://localhost:4000/seller/verify/${sellerId}`);
+                const response = await axios.get(`/seller/verify/${sellerId}`);
                 console.log(response);
                 // Redirect to /sellerlogin after 3 seconds
                 setTimeout(() => {
                     navigate('/seller');
-                }, 3000);
+                }, 1500);
             } catch (error) {
                 // Handle error if verification fails
             }

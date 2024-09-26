@@ -4,7 +4,6 @@ import AddItem from "./AddItem";
 import axios from "axios";
 import Cookies from "js-cookie";
 import './Home.css';
-import { AiOutlineDelete } from 'react-icons/ai';
 
 
 export default function SellerHome() {

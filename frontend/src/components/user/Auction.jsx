@@ -42,7 +42,7 @@ export default function Auction() {
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
-    fetch(`http://localhost:4000/auction/${userid}/item/${item}`, {
+    fetch(`/auction/${userid}/item/${item}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -102,7 +102,7 @@ export default function Auction() {
         </div>
         <div className="md:col-span-1">
           <img
-            src={`http://localhost:4000/${itemData.url}`}
+            src={`/${itemData.url}`}
             alt={itemData.name}
             width={600}
             height={400}

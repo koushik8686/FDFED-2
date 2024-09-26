@@ -12,7 +12,7 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [display, setDisplay] = useState("items");
   const [myitems, setMyItems] = useState([]);
-  const [username, setUsername] = useState('');
+  const [email, setemail] = useState('');
   const userid = Cookies.get('user');
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -36,7 +36,7 @@ export default function Home() {
         if (xhr.readyState === 4) { // Request is complete
           if (xhr.status === 200) {
             const data = JSON.parse(xhr.responseText);
-            setUsername(data.data.user.username);
+            setemail(data.data.user.email);
             setMyItems(data.data.user.items);
             setItems(data.data.items);
           } else {
@@ -72,10 +72,10 @@ export default function Home() {
         <nav className="user-home-nav">
           <div className="user-home-username">
             <div className="user-home-username-circle">
-              {username.charAt(0).toUpperCase()}
+              {email.charAt(0).toUpperCase()}
             </div>
             <div className="user-home-username-full">
-              {username}
+              {email}
             </div>
           </div>
           <Link onClick={() => { setDisplay("items") }} to="#" className="user-home-link">All Items</Link>

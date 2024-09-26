@@ -2,17 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import "./item.css";
+import axios from "axios";
 
 export default function Item() {
   const [itemData, setItemData] = useState(null);
-  const [bidAmount, setBidAmount] = useState("");
   const { item } = useParams();
   const sellerid = Cookies.get('seller');
   const navigate = useNavigate();
 
   // Function to fetch item data
   const fetchItemData = () => {
-    fetch(`http://localhost:4000/sell/${sellerid}/${item}`)
+    fetch(`/sell/${sellerid}/${item}`)
       .then((response) => response.json())
       .then((data) => setItemData(data.data.item))
       .catch((error) => console.error("Error fetching item data:", error));
@@ -37,22 +37,20 @@ export default function Item() {
       alert("No bids have been placed yet. You cannot sell this item.");
       return; // Prevent further execution
     }
-    fetch(`/sell/${sellerid}/${item}`, {
-      method: "POST",
+    axios.post(`/sell/${sellerid}/${item}`, {}, {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ bid: bidAmount }),
     })
-      .then((response) => response.json())
-      .then((data) => {          // Alert item sold
-          alert("Item sold successfully!");
-          setTimeout(() => {
-            navigate(`/sellerhome`);            
-          }, 1000);
-        
-      })
-      .catch((error) => console.error("Error submitting bid:", error));
+    .then((response) => {    
+      console.log(response);
+      alert("Item sold successfully!");
+      setTimeout(() => {
+        navigate(`/sellerhome`);            
+      }, 1000);
+    })
+    .catch((error) => console.error("Error submitting bid:", error));
+  
   };
 
   return (
@@ -92,7 +90,7 @@ export default function Item() {
         </div>
         <div className="seller-item-details">
           <img
-            src={`http://localhost:4000/${itemData.url}`}
+            src={`/${itemData.url}`}
             alt={itemData.name}
             className="seller-item-image"
           />

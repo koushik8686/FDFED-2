@@ -123,6 +123,8 @@ const RegisterPage = () => {
           >
             Register
           </button>
+          </form>
+
           <button
             onClick={googlelogin}
             className=" google-login-button"
@@ -133,7 +135,6 @@ const RegisterPage = () => {
           <Link to="/login" className="user-register-login-link">
             Login
           </Link>
-        </form>
       </div>
     </div>
   );

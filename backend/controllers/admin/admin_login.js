@@ -1,14 +1,14 @@
-const adminmodels = require("../../models/adminmodel");
-
 class AdminController {
   static async login(req, res) {
     try {
       const { email, password } = req.body;
       console.log(email, password);
 
-      const admin = await adminmodels.findOne({ email, password });
-      if (admin) {
-        return res.status(200).send({ message: "Login Successfully", admin: admin._id });
+      // Hardcoded email and password
+      const Email = "pinnukoushikp@gmail.com";
+      const Password = "Koushik@2004";
+      if (email === Email && password === Password) {
+        return res.status(200).send({ message: "Login Successfully", admin: "admin_id_12345" });
       } else {
         return res.status(401).send({ message: "Invalid email or password" });
       }

@@ -4,15 +4,6 @@ const { itemmodel } = require("../../models/itemmodel");
 const nodemailer = require('nodemailer');
 
 class SellingController {
-  constructor() {
-    this.transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: {
-        user: "hexart637@gmail.com", 
-        pass: 'zetk dsdm imvx keoa', 
-      }
-    });
-  }
 
   static async sellingPageGet(req, res) { 
     try {
@@ -24,10 +15,6 @@ class SellingController {
       const item = await itemmodel.findById(req.params.itemid);
       if (!item) {
         return res.status(404).send({ message: "Item Sold" });
-      }
-
-      if (item.auction_active) {
-        return res.send("Item sold");
       }
 
       const data = {
@@ -49,10 +36,11 @@ class SellingController {
       if (!item) {
         return res.status(404).send({ message: "Item already sold" });
       }
-
+      
+      console.log(req.params);
       // Assign the current bidder to the sold item
       item.person = item.current_bidder;
-      await item.save();
+      // await item.save();
 
       // Remove the sold item from the seller's items
       const seller = await sellermodel.findOneAndUpdate(
@@ -67,13 +55,18 @@ class SellingController {
 
       seller.solditems.push(item);
       await seller.save();
-
       const buyerId = item.current_bidder_id;
       const user = await usermodel.findById(buyerId);
       if (!user) {
         return res.status(404).send({ message: "Buyer not found" });
       }
-
+      const transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          user: "hexart637@gmail.com", 
+          pass: 'zetk dsdm imvx keoa', 
+        }
+      });
       // Send email to the buyer
       const mailOptions = {
         from: seller.email,
@@ -87,15 +80,19 @@ class SellingController {
                <p>Email: ${seller.email}</p>`
       };
       
-      await this.transporter.sendMail(mailOptions);
+      await transporter.sendMail(mailOptions);
       console.log("Mail sent successfully to receiver");
-
       // Add the sold item to the buyer's items
       user.items.push(item);
       await user.save();
-
-      await itemmodel.deleteOne({ _id: req.params.itemid });
-      return res.status(200).send({ message: "Item sold successfully", item });
+      await itemmodel.deleteOne({ _id: req.params.itemid })
+      .then(() => {
+        console.log("Item deleted");
+      })
+      .catch((error) => {
+        console.error("Error deleting item:", error);
+      });
+          return res.status(200).send({ message: "Item sold successfully", item });
     } catch (error) {
       console.error("Error:", error);
       return res.status(500).send({ message: "Internal server error" });

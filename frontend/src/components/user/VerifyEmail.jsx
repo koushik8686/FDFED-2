@@ -17,7 +17,7 @@ const VerifyEmail = () => {
                 // Redirect to /login after 3 seconds
                 setTimeout(() => {
                     navigate('/login');
-                }, 5000);
+                }, 1500);
             } catch (error) {
               console.log(error);
             }

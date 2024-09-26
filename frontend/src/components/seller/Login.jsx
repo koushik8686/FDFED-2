@@ -121,6 +121,8 @@ export default function SellerAuth() {
               value={password}
               onChange={(e) => {
                 const value = e.target.value;
+                if (activeTab === "register") {
+              
                 if (value.length < 8) {
                   setServerMessage("Password must be at least 8 characters long");
                 } else if (!/[a-zA-Z]/.test(value)) { // Check for at least one letter
@@ -131,7 +133,10 @@ export default function SellerAuth() {
                   setServerMessage("");
                 }
                 setPassword(value);
+              } else{
+                setPassword(value)
               }}
+            }
               required
               className="seller-login-input"
             />
