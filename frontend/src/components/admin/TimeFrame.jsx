@@ -130,7 +130,8 @@ export default function TimeFrame() {
                 <h3>{date}</h3>
                 <table className="table">
                   <thead>
-                    <tr>
+                    <tr> 
+                        
                       <th className="table-header">Name</th>
                       <th className="table-header">Email</th>
                       <th className="table-header">Phone</th>
