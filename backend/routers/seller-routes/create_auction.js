@@ -1,20 +1,32 @@
 const express = require('express');
-const router = express.Router();
 const multer = require("multer");
 const path = require('path');
-const { createauction_get, createauction_post } = require("../../controllers/seller/create_auction");
-const storage = multer.diskStorage({
-      destination: function (req, file, cb) {
+const AuctionController = require("../../controllers/seller/create_auction"); // Adjust the path as needed
+
+class AuctionRouter {
+  constructor() {
+    this.router = express.Router();
+    this.upload = this.configureMulter();
+    this.initializeRoutes();
+  }
+
+  configureMulter() {
+    const storage = multer.diskStorage({
+      destination: (req, file, cb) => {
         cb(null, path.join(__dirname, "../../uploads")); // Correctly resolve the directory path
       },
-      filename: function (req, file, cb) {
+      filename: (req, file, cb) => {
         cb(null, `${Date.now()}_${file.originalname}`); // Generate a unique file name with the current timestamp
       },
     });
-    
-const upload = multer({ storage: storage });
+    return multer({ storage: storage });
+  }
 
-router.get("/:seller", createauction_get)
-      .post("/:seller", upload.single('image'), createauction_post);
+  initializeRoutes() {
+    this.router.post("/:seller", this.upload.single('image'), (req, res) => {
+      return AuctionController.createAuctionPost(req, res);
+    });
+  }
+}
 
-module.exports = router;
+module.exports = new AuctionRouter().router;

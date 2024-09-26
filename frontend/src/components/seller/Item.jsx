@@ -80,7 +80,7 @@ export default function Item() {
                   {itemData.auction_history.slice().reverse().map((history, index) => (
                     <tr key={index}>
                       <td>{history.bidder}</td>
-                      <td>${history.price}</td>
+                      <td>₹{history.price}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -105,11 +105,11 @@ export default function Item() {
             </div>
             <div className="seller-item-info-row">
               <span>Base Price:</span>
-              <span>${itemData.base_price}</span>
+              <span>₹{itemData.base_price}</span>
             </div>
             <div className="seller-item-info-row">
               <span>Current Price:</span>
-              <span>${itemData.current_price}</span>
+              <span>₹{itemData.current_price}</span>
             </div>
           </div>
           <form className="seller-item-bid-form" onSubmit={handleBidSubmit}>

@@ -1,7 +1,18 @@
 const express = require('express')
 const router = express.Router()
-const render_sellerhome = require("../../controllers/seller/seller_home")
+const SellerHomeController = require("../../controllers/seller/seller_home")
 
-router.get("/:id",render_sellerhome )
+class SellerHomeRouter {
+    constructor() {
+        this.router = express.Router()
+        this.initializeRoutes()
+    }
+    initializeRoutes() {
+        this.router.get("/:id", SellerHomeController.renderSellerHome);
+    }
+    getRouter() {
+        return this.router;
+    }
+}
 
-module.exports= router 
+module.exports= new SellerHomeRouter().getRouter();

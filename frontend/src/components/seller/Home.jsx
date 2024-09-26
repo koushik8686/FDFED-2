@@ -35,7 +35,7 @@ export default function SellerHome() {
     };
 
     fetchSellerData();
-  }, [sellerid]);
+  }, [sellerid ] );
 
   const handleAddItem = () => {
     setShowAddItemForm(true);
@@ -102,8 +102,8 @@ export default function SellerHome() {
                   {/* <AiOutlineDelete className="delete-icon" /> */}
                 </div>
                   <div className="item-prices">
-                    <span>Base Price: ${item.base_price}</span>
-                    <span>Current Price: ${item.current_price}</span>
+                    <span>Base Price: ₹{item.base_price}</span>
+                    <span>Current Price: ₹{item.current_price}</span>
                   </div>
                   <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
                  

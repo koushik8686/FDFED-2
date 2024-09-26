@@ -35,11 +35,9 @@ export default function Component() {
         }
       }
     };
-
     xhr.onerror = function () {
       seterrormsg("An error occurred during the login process.");
     };
-
     xhr.send(JSON.stringify({ email, password }));
   };
 
@@ -69,7 +67,6 @@ export default function Component() {
         <div className="user-login-box">
           <div className="user-login-header">
             <div className="user-login-icon">
-              {/* SVG icon */}
             </div>
             <h2 className="user-login-title">Welcome to Hexart</h2>
             <p className="user-login-subtitle">Please sign in to your account to continue.</p>
@@ -113,7 +110,7 @@ export default function Component() {
             {<p className="user-login-error">{errormsg}</p>}
           </form>
           <div className="user-login-footer">
-            Don't have an account?{" "}
+            Don't have an account?
             <Link to="/register" className="user-login-register-link">
               Register
             </Link>

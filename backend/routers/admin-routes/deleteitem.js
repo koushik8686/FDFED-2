@@ -1,6 +1,15 @@
+const express = require('express');
+const AdminController = require('../../controllers/admin/deleteitem,'); 
 
-const express = require('express')
-const router = express.Router()
-const deleteitem = require("../../controllers/admin/deleteitem,")
-router.get("/:type/:id/",deleteitem )
-module.exports= router
+class AdminRouter {
+  constructor() {
+    this.router = express.Router();
+    this.initializeRoutes();
+  }
+
+  initializeRoutes() {
+    this.router.get("/:type/:id", (req, res) => AdminController.deleteItem(req, res));
+  }
+}
+
+module.exports = new AdminRouter().router;

@@ -1,7 +1,15 @@
+const express = require("express");
+const AdminController = require("../../controllers/admin/admin_login");
 
-const express = require('express')
-const router = express.Router()
-const {adminlogin_get , adminlogin_post} = require("../../controllers/admin/admin_login")
-router.post("/", adminlogin_post)
+class AdminRouter {
+  constructor() {
+    this.router = express.Router();
+    this.initializeRoutes();
+  }
 
-module.exports= router
+  initializeRoutes() {
+    this.router.post("/adminlogin", AdminController.login);
+  }
+}
+
+module.exports = new AdminRouter().router;

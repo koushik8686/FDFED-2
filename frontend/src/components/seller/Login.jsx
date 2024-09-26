@@ -153,7 +153,6 @@ const googlelogin = useGoogleLogin({
               />
             </div>
           )}
-          <a href="">Forgot Password</a>
           <button
             type="submit"
             className="seller-login-button"

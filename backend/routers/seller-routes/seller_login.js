@@ -1,8 +1,18 @@
 const express = require('express')
 const router = express.Router()
-const {sellerlogin_get,sellerlogin_post } = require("../../controllers/seller/seller_login")
+const SellerLoginController = require("../../controllers/seller/seller_login")
 
-router.get("/", sellerlogin_get)
-      .post("/", sellerlogin_post)
-      
-module.exports= router
+class SelllerLoginRoute {
+       constructor(){
+           this.router = express.Router()
+           this.initializeRoutes()
+       }
+       initializeRoutes(){
+           this.router.post("/", SellerLoginController.sellerlogin_post)
+       }
+       getRouter(){
+           return this.router
+       }
+}
+
+module.exports= new SelllerLoginRoute().getRouter()

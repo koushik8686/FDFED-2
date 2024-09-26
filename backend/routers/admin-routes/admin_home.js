@@ -1,6 +1,15 @@
-const adminpage_get = require("../../controllers/admin/admin_homepage")
-const express = require('express')
-const router = express.Router()
+const express = require('express');
+const AdminController = require('../../controllers/admin/admin_homepage'); 
 
-router.get("/",adminpage_get )
-module.exports= router
+class AdminRouter {
+  constructor() {
+    this.router = express.Router();
+    this.initializeRoutes();
+  }
+
+  initializeRoutes() {
+    this.router.get("/", (req, res) => AdminController.adminPageGet(req, res));
+  }
+}
+
+module.exports = new AdminRouter().router;

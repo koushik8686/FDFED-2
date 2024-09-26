@@ -16,7 +16,6 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 mongoose.connect("mongodb://127.0.0.1:27017/auction");
 
-// Middleware to parse JSON bodies (optional, if you're also handling JSON data)
 app.use(cors({origin:'http://localhost:3000'}))
 app.options('*', cors()); // Enable pre-flight requests for all routes
 

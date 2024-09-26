@@ -3,7 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import Cookies from "js-cookie";
 import './Home.css';
-import { AiOutlineDelete } from 'react-icons/ai';
 
 export default function SellerSoldItems() {
   const navigate = useNavigate();
@@ -85,7 +84,7 @@ export default function SellerSoldItems() {
                       <h3 className="item-title">{item.name}</h3>
                     </div>
                     <div className="item-prices">
-                      <span>Sold Price: ${item.current_price}</span>
+                      <span>Sold Price:₹{item.current_price}</span>
                     </div>
                   </div>
                 </div>

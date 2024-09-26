@@ -116,11 +116,11 @@ export default function Auction() {
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Base Price:</span>
-              <span className="font-medium">${itemData.base_price}</span>
+              <span className="font-medium">₹{itemData.base_price}</span>
             </div>
             <div className="flex items-center justify-between">
               <span className="text-gray-500">Current Price:</span>
-              <span className="font-medium">${itemData.current_price}</span>
+              <span className="font-medium">₹{itemData.current_price}</span>
             </div>
           </div>
           <form className="grid gap-4 mt-6" onSubmit={handleBidSubmit}>

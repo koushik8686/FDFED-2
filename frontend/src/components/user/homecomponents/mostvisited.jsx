@@ -28,11 +28,11 @@ export default function MostVisited({ Items }) {
             <h3 className="user-items-div-title">{item.name}</h3>
             <div className="user-items-div-details">
               <span className="user-items-div-owner">Owner: {item.person}</span>
-              <span className="user-items-div-base-price">Base Price: ${item.base_price}</span>
+              <span className="user-items-div-base-price">Base Price: ₹{item.base_price}</span>
               <span className="user-items-div-visited-users">Visited Users: {item.visited_users.length}</span>
             </div>
             <div className="user-items-div-current-price">
-              <span className="user-items-div-current-price-text">Current Price: ${item.current_price}</span>
+              <span className="user-items-div-current-price-text">Current Price: ₹{item.current_price}</span>
               <Link to={`/auction/${item._id}`}>
                 <button className="user-items-div-bid-button">
                   Bid

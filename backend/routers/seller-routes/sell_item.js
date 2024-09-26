@@ -1,8 +1,23 @@
-const express = require('express')
-const router = express.Router()
-const {sellingpage_get, sellingpage_post} = require("../../controllers/seller/sell_item")
+const express = require('express');
+const SellingController = require("../../controllers/seller/sell_item");
 
-router.get("/:seller/:itemid",sellingpage_get )
-      .post("/:seller/:itemid", sellingpage_post)
+class UserAuctionRouter {
+    constructor() {
+        this.router = express.Router();
+        this.initializeRoutes();
+    }
 
-module.exports= router
+    initializeRoutes() {
+        // Directly use the controller methods for route handling
+        this.router.get("/:userid/item/:itemid", SellingController.sellingPageGet);
+        this.router.post("/:userid/item/:itemid", SellingController.sellingPagePost);
+    }
+
+    getRouter() {
+        return this.router;
+    }
+}
+
+// Create an instance of the UserAuctionRouter
+const userAuctionRouter = new UserAuctionRouter();
+module.exports = userAuctionRouter.getRouter();
