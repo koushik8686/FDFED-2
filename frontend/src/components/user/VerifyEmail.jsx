@@ -33,7 +33,6 @@ const VerifyEmail = () => {
     return (
         <div className="verify-email">
             <h2>Email Verification</h2>
-            <p>{statusMessage}</p>
             <p>You will be redirected to login page shortly...</p>
         </div>
     );

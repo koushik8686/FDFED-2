@@ -13,6 +13,8 @@ import AdminLogin from './components/admin/Login';
 import Admin from './components/admin/Home';
 import VerifyEmail from './components/user/VerifyEmail';
 import VerifySellerEmail from './components/seller/Verifyseller';
+import SellerSoldItems from './components/seller/solditems';
+import TimeFrame from './components/admin/TimeFrame';
 
 function App() {
   return (
@@ -25,11 +27,13 @@ function App() {
         <Route path="/home" element={<Home />} />
         <Route path="/seller" element={<SellerAuth />} />
         <Route path="/sellerhome" element={<SellerHome />} />
+        <Route path="/seller/solditems" element = {<SellerSoldItems/>} />
         <Route path="/seller/verify/:sellerId" element={<VerifySellerEmail />} />
         <Route path="/auction/:item" element={<Auction />} />
         <Route path="/item/:item" element={<Item />} />   
         <Route path='/admin/login' element={<AdminLogin/>}/>
         <Route path='/admin/' element={<Admin/>}/>
+        <Route path='/admin/calender' element={<TimeFrame/>} />
       </Routes>
     </BrowserRouter>
   );

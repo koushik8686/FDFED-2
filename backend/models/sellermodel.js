@@ -7,7 +7,10 @@ const sellerschema = mongoose.Schema({
     phone :String,
     password:String,
     items:[itemschema],
-  })
+    solditems:[itemschema]
+  } ,  {
+    timestamps: true // This will add createdAt and updatedAt fields automatically
+  } )
 
 const sellermodel = mongoose.model("sellers", sellerschema)
   

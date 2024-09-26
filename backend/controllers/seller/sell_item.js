@@ -48,11 +48,15 @@ async function sellingpage_post(req, res) {
     await itemResult.save();
 
     // Remove the sold item from the seller's items
-    await sellermodel.findOneAndUpdate(
+    const seller =await sellermodel.findOneAndUpdate(
       { _id: req.params.seller },
       { $pull: { items: { _id: req.params.itemid } } },
       { new: true }
     );
+    
+
+    seller.solditems.push(solditem);
+    await seller.save();
 
     const buyerEmail = await sellermodel.findById(req.params.seller).then(result => result.email);
     const buyerId = itemResult.current_bidder_id;
@@ -86,7 +90,6 @@ async function sellingpage_post(req, res) {
     // Add the sold item to the buyer's items
     user.items.push(solditem);
     await user.save();
-    // Delete the sold item from the item model
     await itemmodel.deleteOne({ _id: req.params.itemid });
     // Respond with a success message and the sold item details
     return res.status(200).send({ message: "Item sold successfully", item: solditem });

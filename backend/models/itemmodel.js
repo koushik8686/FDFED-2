@@ -13,6 +13,8 @@ const itemschema= mongoose.Schema({
     aution_active:Boolean,
     visited_users:[{id:String ,email:String}],
     auction_history: [{bidder: String,price: String}]
+  } ,  {
+    timestamps: true // This will add createdAt and updatedAt fields automatically
   })
 
 

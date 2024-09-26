@@ -3,14 +3,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: #f7fafc;
+    background-color: #f7fafc6c;
   }
   
   .user-register-form {
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0.43);
     padding: 2rem;
     border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
   }
@@ -73,3 +73,20 @@
     text-decoration: underline;
   }
   
+  .google-login-button {
+    margin-top: 0.2rem;
+    width: 100%;
+    background-color: white;
+    color: #e53e3e; /* Red text */
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    border: 1px solid #e53e3e; /* Red border */
+    cursor: pointer;
+    transition: background-color 0.2s, color 0.2s;
+    margin-top: 1rem;
+}
+
+.google-login-button:hover {
+    background-color: #e53e3e;
+    color: white;
+}

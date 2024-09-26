@@ -1,32 +1,29 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AddItem from "./AddItem";
 import axios from "axios";
 import Cookies from "js-cookie";
 import './Home.css';
 import { AiOutlineDelete } from 'react-icons/ai';
 
-
-export default function SellerHome() {
+export default function SellerSoldItems() {
   const navigate = useNavigate();
-  const [items, setItems] = useState([]);
+  const [soldItems, setSoldItems] = useState([]);
   const [seller, setSeller] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open/close state
   const sellerid = Cookies.get("seller");
 
   useEffect(() => {
-    const fetchSellerData = async () => {
+    const fetchSoldItems = async () => {
       try {
         if (!sellerid) {
-          return navigate("/seller")
+          return navigate("/seller");
         }
         console.log(`/sellerhome/${sellerid}`);
         const response = await axios.get(`/sellerhome/${sellerid}`);
         setSeller(response.data.seller);
         console.log(response.data);
-        setItems(response.data.seller.items);
+        setSoldItems(response.data.seller.solditems); // Fetch only sold items
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -34,21 +31,8 @@ export default function SellerHome() {
       }
     };
 
-    fetchSellerData();
+    fetchSoldItems();
   }, [sellerid]);
-
-  const handleAddItem = () => {
-    setShowAddItemForm(true);
-  };
-
-  const handleCloseForm = () => {
-    setShowAddItemForm(false);
-  };
-
-  const handleNewItem = (newItem) => {
-    setItems([...items, newItem]);
-    setShowAddItemForm(false);
-  };
 
   const logout = () => {
     Cookies.remove("seller");
@@ -73,7 +57,6 @@ export default function SellerHome() {
         <nav className="sidebar-nav">
           <Link to="/sellerhome" className="nav-item">Dashboard</Link>
           <Link to="/seller/solditems" className="nav-item">Sold Items</Link>
-          <button onClick={handleAddItem} className="nav-item">Add Item</button>
           <p onClick={logout} className="nav-item">Log Out</p>
         </nav>
       </aside>
@@ -90,26 +73,24 @@ export default function SellerHome() {
         </header>
 
         <main className="seller-content">
-          {showAddItemForm && <AddItem onClose={handleCloseForm} onAdd={handleNewItem} />}
-
           <div className="items-container">
-            {items.map((item) => (
-              <div key={item._id} className="item-card">
-                <img src={"/" + item.url} alt={item.name} className="item-image" />
-                <div className="item-content">
-                <div className="qwe">
-                  <h3 className="item-title">{item.name}</h3>
-                  {/* <AiOutlineDelete className="delete-icon" /> */}
-                </div>
-                  <div className="item-prices">
-                    <span>Base Price: ${item.base_price}</span>
-                    <span>Current Price: ${item.current_price}</span>
+            {soldItems.length === 0 ? (
+              <p>No sold items to display.</p>
+            ) : (
+              soldItems.map((item) => (
+                <div key={item._id} className="item-card">
+                  <img src={"/" + item.url} alt={item.name} className="item-image" />
+                  <div className="item-content">
+                    <div className="qwe">
+                      <h3 className="item-title">{item.name}</h3>
+                    </div>
+                    <div className="item-prices">
+                      <span>Sold Price: ${item.current_price}</span>
+                    </div>
                   </div>
-                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
-                 
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </main>
       </div>

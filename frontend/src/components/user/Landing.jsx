@@ -50,8 +50,7 @@ export default function Component() {
           <span className="logo-text">HEXART</span>
         </Link>
         <nav className="nav">
-          <Link to="/login" className="nav-link">Login</Link>
-          <Link to="/register" className="nav-link">Register</Link>
+          <Link to="/register" className="nav-link">User</Link>
           <Link to="/seller" className="nav-link">Seller</Link>
           <Link to="/admin/login" className="nav-link">Admin</Link>
         </nav>
@@ -74,9 +73,9 @@ export default function Component() {
             <p className="description">
               Explore a world of mystery and history with our curated selection of items, waiting for the highest bidder.
             </p>
-            <Link  className="button">
-              Sroll to view details
-            </Link>
+            <h1 style={{color:"#0d9488"}} >
+              Scroll to view details
+            </h1>
           </div>
           <div className="features">
           <p className="heading">Features</p>

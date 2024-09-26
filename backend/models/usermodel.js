@@ -6,6 +6,8 @@ const userschema = mongoose.Schema({
     email:String,
     password:String,
     items:[itemschema],
-})
+} ,  {
+    timestamps: true // This will add createdAt and updatedAt fields automatically
+  })
 const usermodel = mongoose.model("userdetails",userschema)
 module.exports =usermodel 

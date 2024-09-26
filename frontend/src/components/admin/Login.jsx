@@ -87,12 +87,6 @@ export default function AdminLogin() {
           </button>
           {errormsg && <p className="admin-login-error-msg">{errormsg}</p>}
         </form>
-        <div className="admin-login-footer">
-          Don't have an account?{" "}
-          <Link to="/register" className="admin-login-link">
-            Register
-          </Link>
-        </div>
       </div>
     </div>
   );

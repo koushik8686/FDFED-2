@@ -110,7 +110,7 @@ const RegisterPage = () => {
           </button>
           <button
             onClick={googlelogin}
-            className="user-register-button"
+            className=" google-login-button"
           >
             sign in with google
           </button>

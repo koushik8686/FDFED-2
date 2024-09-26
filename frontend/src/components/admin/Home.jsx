@@ -20,6 +20,9 @@ export default function Admin() {
     }
   }
   useEffect(() => {
+    if (!Cookies.get('admin')) {
+      navigate("/admin/login");
+    }
     fetchData();
   }, []);
 
@@ -67,10 +70,12 @@ export default function Admin() {
           <h1 className="sidebar-title">Auction Admin</h1>
         </div>
         <nav className="sidebar-nav">
-          <Link href="/admin" className="nav-item">Dashboard</Link>
+          <Link to="/admin" className="nav-item">Dashboard</Link>
           <a href="#users" className="nav-item">Users</a>
           <a href="#sellers" className="nav-item">Sellers</a>
           <a href="#items" className="nav-item">Items</a>
+          <Link to="/admin/calender" className="nav-item">Calender</Link>
+
           <p onClick={logout} className="nav-item">Log Out</p>
         </nav>
       </aside>
