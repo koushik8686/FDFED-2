@@ -10,7 +10,7 @@ export default function Admin() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
-  async function fetchData() {
+ async function fetchData() {
     try {
       const response = await axios.get('/admin/home');
       console.log(response.data);

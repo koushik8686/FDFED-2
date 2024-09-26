@@ -10,7 +10,6 @@ export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showFilterPopup, setShowFilterPopup] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortedItems, setSortedItems] = useState([]);
   const [display, setDisplay] = useState("items");
   const [myitems, setMyItems] = useState([]);
   const [username, setUsername] = useState('');
@@ -27,21 +26,33 @@ export default function Home() {
     if (Cookies.get("user") === undefined) {
       navigate("/login");
     }
-    const fetchUserData = async () => {
-      try {
-        const response = await fetch(`/user/${userid}`, { method: 'GET' });
-        const data = await response.json();
-        if (response.ok) {
-          setUsername(data.data.user.username);
-          setMyItems(data.data.user.items);
-          setItems(data.data.items);
-        } else {
-          console.error('Error fetching user data:', response.statusText);
+    const fetchUserData = () => {
+      const xhr = new XMLHttpRequest();
+      //true for asynchrnous
+      xhr.open('GET', `/user/${userid}`, true);
+    
+      // Set up a function to handle changes to the request's state
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4) { // Request is complete
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            setUsername(data.data.user.username);
+            setMyItems(data.data.user.items);
+            setItems(data.data.items);
+          } else {
+            console.error('Error fetching user data:', xhr.statusText);
+          }
         }
-      } catch (error) {
-        console.error('Fetch error:', error);
-      }
+      };
+    
+      // Handle network errors
+      xhr.onerror = () => {
+        console.error('Fetch error:', xhr.statusText);
+      };
+    
+      xhr.send();
     };
+    
     fetchUserData();
   }, [userid, navigate]);
 
