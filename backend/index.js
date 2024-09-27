@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const express = require("express");
 const bodyParser = require("body-parser");
-const adminmodel = require("./models/adminmodel")
 const session = require("express-session");
 const cors = require("cors");
 const multer = require("multer");
