@@ -52,9 +52,8 @@ export default function Auction() {
       .then((response) => response.json())
       .then((data) => {
         setBidAmount("");
-
         // Refetch the updated item data to reflect the latest bid
-        fetch(`/auction/${userid}/item/${item}`)
+    fetch(`/auction/${userid}/item/${item}`)
           .then((response) => response.json())
           .then((newData) => {
             setItemData(newData.data.item); // Update the state with the new item data
