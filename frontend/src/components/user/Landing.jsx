@@ -2,9 +2,9 @@ import { Link } from "react-router-dom";
 import './Landing.css';  // Import the CSS file
 import { useEffect , useState} from "react";
 
-export default function Component() {
+//landing page
 
-  
+export default function Component() {
   return (
     <div  className="page-container">
       <header className="header">
