@@ -6,7 +6,7 @@ import Myitems from './homecomponents/myitems';
 import Mostvisited from './homecomponents/mostvisited';
 import './Home.css'
 
-//home page
+//home
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('All');
