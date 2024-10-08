@@ -1,1 +1,1 @@
-hello
+Terminate batch job (Y/N)? 
