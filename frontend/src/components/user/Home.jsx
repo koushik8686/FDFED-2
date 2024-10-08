@@ -6,6 +6,8 @@ import Myitems from './homecomponents/myitems';
 import Mostvisited from './homecomponents/mostvisited';
 import './Home.css'
 
+//home page
+
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [showFilterPopup, setShowFilterPopup] = useState(false);
