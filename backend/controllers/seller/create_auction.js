@@ -5,7 +5,7 @@ class AuctionController {
   static async createAuctionPost(req, res) {
     try {
       const seller = await sellermodel.findById(req.params.seller);
-
+      
       if (!seller) {
         return res.status(404).send({ message: "Seller not found" });
       }

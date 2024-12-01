@@ -141,25 +141,25 @@ export default function Home() {
       <div className="user-home-filter-options">
         <button
           className={`user-home-filter-option ${selectedCategory === 'Art' ? 'active' : ''}`}
-          onClick={() => { setSelectedCategory('Art'); setShowFilterPopup(false); }}
+          onClick={() => { console.log("clicked arts");  setSelectedCategory('Art'); setShowFilterPopup(false); }}
         >
           Arts
         </button>
         <button
           className={`user-home-filter-option ${selectedCategory === 'Antique' ? 'active' : ''}`}
-          onClick={() => { setSelectedCategory('Antique'); setShowFilterPopup(false); }}
+          onClick={() => { console.log("clicked antiques"); setSelectedCategory('Antique'); setShowFilterPopup(false); }}
         >
           Antiques
         </button>
         <button
           className={`user-home-filter-option ${selectedCategory === 'Used' ? 'active' : ''}`}
-          onClick={() => { setSelectedCategory('Used'); setShowFilterPopup(false); }}
+          onClick={() => { console.log("clicked used items");  setSelectedCategory('Used'); setShowFilterPopup(false); }}
         >
           Used Items
         </button>
         <button
           className={`user-home-filter-option ${selectedCategory === 'All' ? 'active' : ''}`}
-          onClick={() => { setSelectedCategory('All'); setShowFilterPopup(false); }}
+          onClick={() => { console.log("clicked all ");  setSelectedCategory('All'); setShowFilterPopup(false); }}
         >
           All
         </button>
