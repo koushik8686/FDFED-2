@@ -1,0 +1,23 @@
+.liked-items-sidebar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    width: 300px;
+    height: 100%;
+    background: #f4f4f4;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  .liked-items-sidebar h2 {
+    margin-bottom: 20px;
+  }
+  .liked-items-sidebar ul {
+    list-style: none;
+    padding: 0;
+  }
+  .liked-items-sidebar li {
+    margin-bottom: 15px;
+  }
+  

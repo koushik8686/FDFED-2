@@ -1,11 +1,13 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from 'js-cookie';
 import Items from './homecomponents/Items';
 import Myitems from './homecomponents/myitems';
 import Mostvisited from './homecomponents/mostvisited';
 import './Home.css'
-
+import LikedItems from './homecomponents/LikedItems';
+import { useDispatch } from 'react-redux';
+import {toggleWishlist} from '../../redux/LikedReducer'
 //home
 
 export default function Home() {
@@ -15,15 +17,19 @@ export default function Home() {
   const [display, setDisplay] = useState("items");
   const [myitems, setMyItems] = useState([]);
   const [email, setemail] = useState('');
+  const [showLikedWindow, setShowLikedWindow] = useState(false);
   const userid = Cookies.get('user');
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
-  
+  const dataProcessed = useRef(false); // Use useRef for immediate updates
+  const dispatch = useDispatch();
   const logout = () => {
     Cookies.remove('user');
     navigate('/');
   };
-
+  const toggleLikedWindow = () => {
+    setShowLikedWindow((prev) => !prev);
+  };
   useEffect(() => {
     if (Cookies.get("user") === undefined) {
       navigate("/login");
@@ -34,19 +40,26 @@ export default function Home() {
       xhr.open('GET', `/user/${userid}`, true);
     
       // Set up a function to handle changes to the request's state
-      xhr.onreadystatechange = () => {
-        if (xhr.readyState === 4) { // Request is complete
-          if (xhr.status === 200) {
-            const data = JSON.parse(xhr.responseText);
-            setemail(data.data.user.email);
-            setMyItems(data.data.user.items);
-            setItems(data.data.items);
-          } else {
-            console.error('Error fetching user data:', xhr.statusText);
-          }
-        }
-      };
-    
+     
+xhr.onreadystatechange = () => {
+  if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
+    dataProcessed.current=true;
+    if (xhr.status === 200) {
+      const data = JSON.parse(xhr.responseText);
+      setemail(data.data.user.email);
+      setMyItems(data.data.user.items);
+      setItems(data.data.items);
+      data.data.user.liked.forEach((item) => {
+        console.log(item);
+        dispatch(toggleWishlist(item));
+      });
+    } else {
+      console.error('Error fetching user data:', xhr.statusText);
+    }
+  }
+};
+
+      
       // Handle network errors
       xhr.onerror = () => {
         console.error('Fetch error:', xhr.statusText);
@@ -118,13 +131,18 @@ export default function Home() {
   </div>
 
   <div className="user-home-search-bar">
-    <input
-      type="text"
-      placeholder="Search items..."
-      value={searchQuery}
-      onChange={(e) => setSearchQuery(e.target.value)}
-      className="user-home-search-input"
-    />
+  <div className="user-home-search-bar">
+          <input
+            type="text"
+            placeholder="Search items..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="user-home-search-input"
+          />
+          <button className="user-home-liked-button" onClick={toggleLikedWindow}>
+            Liked Items
+          </button>
+        </div>
     <button
       className="user-home-filter-button"
       onClick={() => setShowFilterPopup(true)}
@@ -173,11 +191,17 @@ export default function Home() {
     </div>
   </div>
 )}
-      <main className="user-home-main">
-        {display === 'items' && <Items filteredItems={filteredItems} />}
-        {display === 'myitems' && <Myitems MyfilteredItems={MyfilteredItems} />}
-        {display === 'mostvisited' && <Mostvisited Items={filteredItems} />}
-      </main>
+{/* {showLikedWindow && <LikedItems closepopup={toggleLikedWindow} />} Render LikedItems if visible */}
+  <main className="flex">
+          <div className="flex-grow">
+            {display === 'items' && <Items filteredItems={filteredItems} />}
+            {display === 'myitems' && <Myitems MyfilteredItems={MyfilteredItems} />}
+            {display === 'mostvisited' && <Mostvisited Items={filteredItems} />}
+          </div>
+          {showLikedWindow && display === 'items' && (
+            <LikedItems closepopup={() => setShowLikedWindow(false)} />
+          )}
+        </main>
     </div>
   );
 }

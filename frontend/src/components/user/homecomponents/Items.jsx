@@ -1,19 +1,43 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaHeart } from 'react-icons/fa'; // Import the heart icon
 import "../../../App.css";
+import { useDispatch, useSelector } from 'react-redux';
+import { toggleWishlist } from '../../../redux/LikedReducer';
+import Cookies from 'js-cookie';
+import axios from 'axios'; // Import axios
 
 export default function Items({ filteredItems }) {
-  const [wishlist, setWishlist] = useState({}); // State to track wishlist status
+  const user = Cookies.get('user'); // User ID from cookies
+  const dispatch = useDispatch();
+  const wishlist = useSelector((state) => state.liked);
 
-  const handleAddToWishlist = (itemId) => {
-    // Toggle the wishlist status for the item
-    setWishlist((prevState) => ({
-      ...prevState,
-      [itemId]: !prevState[itemId], // Toggle the current state
-    }));
-    console.log(`Toggled wishlist for item with id: ${itemId}`);
+  const handleAddToWishlist = async (item) => {
+    dispatch(toggleWishlist(item)); // Dispatch the action with the entire item
+
+    if (user) {
+      try {
+        if (wishlist.find((wishlistItem) => wishlistItem._id === item._id)) {
+          // Remove from wishlist
+          await axios.delete(`http://localhost:4000/liked/${user}/${item._id}`);
+          console.log(`Removed from wishlist: ${item.name}`);
+        } else {
+          // Add to wishlist
+          await axios.post(`http://localhost:4000/liked/${user}/${item._id}`);
+          console.log(`Added to wishlist: ${item.name}`);
+        }
+      } catch (error) {
+        console.error('Error updating wishlist:', error.message);
+        alert('Failed to update wishlist. Please try again.');
+      }
+    } else {
+      alert('Please log in to manage your wishlist.');
+    }
   };
+
+  useEffect(() => {
+    console.log("Wishlist state:", wishlist); // Log the updated wishlist state
+  }, [wishlist]);
 
   const boxStyle = {
     borderRadius: '8px',
@@ -21,7 +45,7 @@ export default function Items({ filteredItems }) {
   };
 
   return (
-    <div style={boxStyle} className='user-items-div-container'>
+    <div style={boxStyle} className="user-items-div-container">
       {filteredItems.map((item) => (
         <div key={item.id} className="user-items-div-item">
           <img
@@ -30,12 +54,14 @@ export default function Items({ filteredItems }) {
             className="user-items-div-image"
           />
           <div className="user-items-div-content">
-            <div className='flex justify-between'>
+            <div className="flex justify-between">
               <h3 className="user-items-div-title">{item.name}</h3>
               <div className="user-items-div-wishlist">
                 <FaHeart
-                  className={`user-items-div-wishlist-icon ${wishlist[item._id] ? 'active' : ''}`}
-                  onClick={() => handleAddToWishlist(item._id)}
+                  className={`user-items-div-wishlist-icon ${
+                    wishlist.find((wishlistItem) => wishlistItem._id === item._id) ? 'active' : ''
+                  }`}
+                  onClick={() => handleAddToWishlist(item)}
                   title="Add to Wishlist"
                 />
               </div>

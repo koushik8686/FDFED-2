@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import "../../../App.css"
 import './myitems.css'
 
-export default function Items({MyfilteredItems} ) {
+export default function MyItems({MyfilteredItems} ) {
   return (
     <div className='user-myitems-div-container'>
       {MyfilteredItems.map(item => (
