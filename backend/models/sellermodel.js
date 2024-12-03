@@ -7,7 +7,8 @@ const sellerschema = mongoose.Schema({
     phone :String,
     password:String,
     items:[itemschema],
-    solditems:[itemschema]
+    solditems:[itemschema],
+    likeditems:[itemschema]
   } ,  {
     timestamps: true // This will add createdAt and updatedAt fields automatically
   } )

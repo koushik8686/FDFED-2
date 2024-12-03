@@ -13,7 +13,7 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-mongoose.connect("mongodb://127.0.0.1:27017/auction");
+mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/fdfed");
 
 app.use(cors({origin:'http://localhost:3000'}))
 app.options('*', cors()); // Enable pre-flight requests for all routes
@@ -28,7 +28,7 @@ app.use("/user", require("./routers/user-routes/user_home") )
 app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction page for users
 app.use("/auth", require("./routers/user-routes/authrouter"))
 app.use("/verify" , require("./routers/user-routes/verifymail"))
-
+app.use("/liked", require("./routers/user-routes/LikedRoutes"))
 //seller routes
 app.get("/seller", function (req, res) {  res.sendFile(__dirname+"/views/sellerintro.html")})
 app.use("/sellerregister", require("./routers/seller-routes/seller_register") )

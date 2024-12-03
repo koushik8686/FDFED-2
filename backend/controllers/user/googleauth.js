@@ -33,7 +33,8 @@ class GoogleAuthController {
             const newUser = new usermodel({
                 username: name,
                 email: email,
-                items: []
+                items: [],
+                liked:[]
             });
             await newUser.save();
             res.status(200).send({ message: "Account Created Successfully", userId: newUser._id });

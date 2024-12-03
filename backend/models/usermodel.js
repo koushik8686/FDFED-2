@@ -6,6 +6,7 @@ const userschema = mongoose.Schema({
     email:String,
     password:String,
     items:[itemschema],
+    liked:[itemschema]
 } ,  {
     timestamps: true // This will add createdAt and updatedAt fields automatically
   })
