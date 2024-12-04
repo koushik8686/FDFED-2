@@ -41,25 +41,23 @@ export default function Home() {
     
       // Set up a function to handle changes to the request's state
      
-xhr.onreadystatechange = () => {
-  if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
-    dataProcessed.current=true;
-    if (xhr.status === 200) {
-      const data = JSON.parse(xhr.responseText);
-      setemail(data.data.user.email);
-      setMyItems(data.data.user.items);
-      setItems(data.data.items);
-      data.data.user.liked.forEach((item) => {
-        console.log(item);
-        dispatch(toggleWishlist(item));
-      });
-    } else {
-      console.error('Error fetching user data:', xhr.statusText);
-    }
-  }
-};
-
-      
+        xhr.onreadystatechange = () => {
+          if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
+            dataProcessed.current=true;
+            if (xhr.status === 200) {
+              const data = JSON.parse(xhr.responseText);
+              setemail(data.data.user.email);
+              setMyItems(data.data.user.items);
+              setItems(data.data.items);
+              data.data.user.liked.forEach((item) => {
+                console.log(item);
+                dispatch(toggleWishlist(item));
+              });
+            } else {
+              console.error('Error fetching user data:', xhr.statusText);
+            }
+          }
+        };        
       // Handle network errors
       xhr.onerror = () => {
         console.error('Fetch error:', xhr.statusText);

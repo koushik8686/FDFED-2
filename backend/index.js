@@ -6,6 +6,7 @@ const cors = require("cors");
 const multer = require("multer");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
+const { itemmodel } = require("./models/itemmodel");
 const app = express();
 
 app.set('view engine', 'ejs');
@@ -19,6 +20,12 @@ app.use(cors({origin:'http://localhost:3000'}))
 app.options('*', cors()); // Enable pre-flight requests for all routes
 
 app.listen(4000, function (param) { console.log("Running on port 4000"); console.log("http://localhost:4000/"); })
+
+app.delete('/item/:id', function (req, res) {
+  itemmodel.findbyIdAndDelete(req.params.id).then(()=>{
+    res.status(200).send({message:"Item deleted successfully"});
+  })
+})
 
 //user routes
 app.get("/", function (req, res) { console.log(req.headers.host);  res.send("hello welcome to hexart")})

@@ -54,11 +54,11 @@ export default function Item() {
   }));
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-blue-500 p-8">
       <div className="max-w-6xl mx-auto">
         <Link to="/sellerhome" className="inline-flex items-center text-blue-600 hover:text-blue-800 mb-4">
           <ArrowLeftIcon className="w-5 h-5 mr-2" />
-          <span>Back to Auctions</span>
+          <span>Back </span>
         </Link>
 
         <div className="bg-white rounded-lg shadow-lg overflow-hidden">

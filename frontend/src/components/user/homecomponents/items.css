@@ -55,7 +55,6 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: #e53e3e;
   font-weight: 600;
 }
 
@@ -65,7 +64,7 @@
 
 .user-items-div-bid-button {
   padding: 0.6rem 1.2rem;
-  background: #e53e3e; /* Solid color */
+  background: #A91D3A; /* Solid color */
   color: white;
   border-radius: 0.5rem;
   font-size: 1rem;
@@ -87,10 +86,10 @@
 }
 
 .user-items-div-wishlist-icon:hover {
-  color: #e53e3e;
+  color: #A91D3A;
 }
 .user-items-div-wishlist-icon.active {
-  color: #e53e3e; /* Red color for active state */
+  color: #A91D3A; /* Red color for active state */
 }
 /* Responsive Design */
 @media (max-width: 1200px) {

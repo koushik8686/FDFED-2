@@ -6,9 +6,9 @@ const LikedItemCard = ({ item }) => {
     <li className="liked-item-card">
       <div className="liked-item-image">
         <img src={item.url} alt={item.name} />
-        <Link to={`/auction/${item._id}`} className="view-auction-button">
+        <a href={`/auction/${item._id}`} className="view-auction-button">
           View Auction <ArrowUpRight className="w-4 h-4" />
-        </Link>
+        </a>
       </div>
       
       <div className="liked-item-details">

@@ -3,6 +3,7 @@ import { Link, useParams, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import { ArrowLeft, Timer, User, TrendingUp, IndianRupee } from 'lucide-react'
 import { BidChart } from './BidChart'
+import './Home.css'
 import { motion } from 'framer-motion'
 export default function Auction() {
   const [itemData, setItemData] = useState(null);
@@ -38,7 +39,7 @@ export default function Auction() {
   if (!itemData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-teal-500"></div>
       </div>
     );
   }
@@ -66,8 +67,8 @@ export default function Auction() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-8">
-    <div className="max-w-7xl mx-auto">
+  <div style={{boxShadow:"box-shadow: 4px 5px 129px 14px rgba(0,0,0,0.75);"}} className= " m-4 shadow-xl min-h-screen bg-gradient-to-br from-teal-100 via-white to-gray-500 p-8">
+    <div className="max-w-7xl mx-auto ">
       <motion.div 
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -88,13 +89,13 @@ export default function Auction() {
           transition={{ duration: 0.5 }}
           className="lg:col-span-1"
         >
-          <div className="relative group overflow-hidden rounded-3xl shadow-lg">
+          <div className="relative group overflow-hidden rounded-3xl">
             <img
               src={`/${itemData.url}`}
               alt={itemData.name}
               className="w-full h-[300px] object-cover transition-transform duration-300 group-hover:scale-110"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            {/* <div className="absolute inset-0 bg-gradient-to-t from-gray/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" /> */}
           </div>
         </motion.div>
 
@@ -106,13 +107,13 @@ export default function Auction() {
           className="lg:col-span-1"
         >
           <div className="bg-white rounded-3xl shadow-lg p-6 space-y-6">
-            <h2 className="text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
+            <h2 className="text-3xl font-bold ">
               {itemData.name}
             </h2>
             
             <div className="grid grid-cols-2 gap-4">
               <div className="flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-500" />
+                <User className="w-5 h-5 text-teal-500" />
                 <span className="text-gray-600">{itemData.person}</span>
               </div>
             </div>
@@ -131,14 +132,14 @@ export default function Auction() {
                     step="1"
                     value={bidAmount}
                     onChange={(e) => setBidAmount(e.target.value)}
-                    className="pl-10 pr-4 py-3 w-full rounded-lg border border-gray-300 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-shadow"
+                    className="pl-10 pr-4 py-3 w-full rounded-lg border border-gray-300 shadow-sm focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-shadow"
                     placeholder="Enter amount"
                   />
                 </div>
               </div>
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-blue-600 to-purple-600 text-white py-3 rounded-lg font-medium hover:from-blue-700 hover:to-purple-700 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                className="w-full bg-gradient-to-r from-teal-600 to-gray-600 text-white py-3 rounded-lg shadow-md hover:shadow-lg font-medium hover:from-teal-700 hover:to-gray-700 transition-all duration-300 transform hover:-translate-y-1 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
               >
                 Place Bid
               </button>
@@ -160,31 +161,31 @@ export default function Auction() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-4 rounded-xl">
-                <p className="text-sm text-blue-600 mb-1">Current Price</p>
-                <p className="text-2xl font-bold text-blue-700">₹{itemData.current_price}</p>
+              <div className="bg-gradient-to-br from-teal-50 to-teal-100 p-4 rounded-xl shadow-sm">
+                <p className="text-sm text-teal-600 mb-1">Current Price</p>
+                <p className="text-2xl font-bold text-teal-700">₹{itemData.current_price}</p>
               </div>
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-4 rounded-xl">
-                <p className="text-sm text-purple-600 mb-1">Base Price</p>
-                <p className="text-2xl font-bold text-purple-700">₹{itemData.base_price}</p>
+              <div className="bg-gradient-to-br from-gray-50 to-gray-100 p-4 rounded-xl shadow-sm">
+                <p className="text-sm text-gray-600 mb-1">Base Price</p>
+                <p className="text-2xl font-bold text-gray-700">₹{itemData.base_price}</p>
               </div>
             </div>
 
             <div className="space-y-4">
               <h4 className="font-semibold flex items-center gap-2">
-                <User className="w-5 h-5 text-blue-500" />
+                <User className="w-5 h-5 text-teal-500" />
                 Bid History
               </h4>
-              <div className="max-h-[200px] overflow-y-auto">
+              <div className="max-h-[200px] overflow-y-auto shadow-inner rounded-lg p-2">
                 {itemData.auction_history.length > 0 ? (
                   <div className="space-y-2">
                     {itemData.auction_history.slice().reverse().map((history, index) => (
-                      <div key={index} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg">
+                      <div key={index} className="flex justify-between items-center bg-gray-50 p-3 rounded-lg shadow-sm">
                         <div>
                           <p className="font-medium">{history.bidder}</p>
                           <p className="text-sm text-gray-500">2 minutes ago</p>
                         </div>
-                        <p className="text-blue-600 font-medium">₹{history.price}</p>
+                        <p className="text-teal-600 font-medium">₹{history.price}</p>
                       </div>
                     ))}
                   </div>
@@ -210,6 +211,5 @@ export default function Auction() {
       </motion.div>
     </div>
   </div>
-
   );
 }

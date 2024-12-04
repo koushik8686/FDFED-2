@@ -16,7 +16,7 @@ class UserController {
                 return res.status(200).send({ message: "No Email" });
             }
             if (!user.password) {
-                return res.status(200).send({ message: "Login Successfully", userId: userId });
+                return res.status(200).send({ message: "PLease Sign In With Google" });
             }
             const isMatch = await bcrypt.compare(pass, user.password);
             if (isMatch) {

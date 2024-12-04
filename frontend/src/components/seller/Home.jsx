@@ -99,10 +99,10 @@ export default function SellerHome() {
                   {/* <AiOutlineDelete className="delete-icon" /> */}
                 </div>
                   <div className="item-prices">
-                    <span>Base Price: ₹{item.base_price}</span>
-                    <span>Current Price: ₹{item.current_price}</span>
+                    <span> <b>Base Price: </b> ₹{item.base_price}</span>
+                    <span><b>Current Price:</b> ₹{item.current_price}</span>
                   </div>
-                  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
+                  <button className="view-item-button">  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link></button>
                 </div>
               </div>
             ))}

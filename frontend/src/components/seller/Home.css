@@ -1,24 +1,29 @@
 /* Seller Home Styles */
 
+/* Sidebar Styles */
 .seller-sidebar {
   position: fixed;
   top: 0;
   left: -250px;
   width: 250px;
   height: 100%;
-  background-color: #2d3748;
+  background: linear-gradient(180deg, #2d3748, #1a202c);
   color: #fff;
   padding: 20px;
-  transition: left 0.3s ease;
+  transition: transform 0.4s ease, opacity 0.3s ease;
   z-index: 1000;
+  box-shadow: 3px 0 10px rgba(0, 0, 0, 0.3);
+  opacity: 0;
 }
 
 .seller-sidebar.open {
-  left: 0;
+  transform: translateX(250px);
+  opacity: 1;
 }
 
 .sidebar-content {
   margin-bottom: 20px;
+  animation: fadeIn 0.6s ease;
 }
 
 .sidebar-title {
@@ -30,38 +35,49 @@
 .sidebar-nav .nav-item {
   display: block;
   margin-bottom: 15px;
-  color: #fff;
+  color: #ffffff;
   text-decoration: none;
+  font-size: 1.1em;
+  transition: color 0.3s ease;
 }
 
 .sidebar-nav .nav-item:hover {
-  color: #ddd;
+  color: #63b3ed;
 }
 
+/* Main Section Styles */
 .seller-main {
   margin-left: 0;
-  transition: margin-left 0.3s ease;
-  background-color: #f7fafc;
+  transition: margin-left 0.4s ease, background-color 0.3s ease;
+  background: #f7fafc;
 }
 
 .seller-home-div.sidebar-open .seller-main {
   margin-left: 250px;
 }
 
+/* Header Styles */
 .seller-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #2d3748;
-  color: white;
+  padding: 15px 20px;
+  background: linear-gradient(90deg, #2d3748, #1a202c);
+  color: #fff;
   border-bottom: 1px solid #e2e8f0;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .menu-btn {
   background: none;
   border: none;
   cursor: pointer;
+  color: #fff;
+  transition: transform 0.3s ease;
+}
+
+.menu-btn:hover {
+  transform: rotate(90deg);
 }
 
 .menu-icon {
@@ -70,39 +86,44 @@
 }
 
 .seller-welcome {
-  font-size: 1.2em;
-  color: #eeeeee;
+  font-size: 1.3em;
+  color: #e2e8f0;
+  font-weight: 600;
 }
 
+/* Items Container */
 .items-container {
   display: flex;
   flex-wrap: wrap;
   gap: 20px;
-  padding: 10px;
+  padding: 20px;
 }
 
 .item-card {
-  background-color: white;
+  background-color: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
-  padding: 10px;
-  width: calc(25.333% - 20px);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  transition: box-shadow 0.3s ease;
+  padding: 15px;
+  width: calc(25% - 20px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .item-card:hover {
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  transform: translateY(-5px);
+  box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
 }
 
 .item-image {
   width: 100%;
   height: 200px;
-  object-fit: contain;
+  object-fit: cover;
+  border-radius: 0.5rem;
 }
 
 .item-content {
   margin-top: 10px;
+  animation: slideInUp 0.6s ease;
 }
 
 .item-title {
@@ -119,23 +140,41 @@
   color: #4a5568;
 }
 
-.qwe {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
 .view-item-button {
+  background-color: #2b6cb0;
+  width: 100%;
+  height: 100%;
   text-decoration: none;
-  color: #3182ce;
-  background-color: transparent;
+  color: #fff;
+  font-weight: bold;
+  transition: color 0.3s ease;
 }
 
 .view-item-button:hover {
-  text-decoration: underline;
   color: #2b6cb0;
+  text-decoration: underline;
 }
 
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInUp {
+  from {
+    transform: translateY(20px);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Adjustments */
 @media (max-width: 1024px) {
   .item-card {
     width: calc(33.333% - 20px);
@@ -186,33 +225,5 @@
 
   .seller-welcome {
     font-size: 1em;
-  }
-}
-.seller-main {
-  margin-left: 0;
-  transition: margin-left 0.3s ease;
-  background-color: #f7fafc;
-}
-
-.seller-home-div.sidebar-open .seller-main {
-  margin-left: 250px; /* Ensure this matches the sidebar width */
-}
-
-/* Adjust for responsive widths if necessary */
-@media (max-width: 1024px) {
-  .seller-home-div.sidebar-open .seller-main {
-    margin-left: 200px; /* Ensure this matches the sidebar width */
-  }
-}
-
-@media (max-width: 768px) {
-  .seller-home-div.sidebar-open .seller-main {
-    margin-left: 150px; /* Ensure this matches the sidebar width */
-  }
-}
-
-@media (max-width: 480px) {
-  .seller-home-div.sidebar-open .seller-main {
-    margin-left: 0; /* Reset margin for small screens */
   }
 }
