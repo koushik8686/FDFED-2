@@ -9,14 +9,17 @@ class UserController {
         console.log(email, pass);
         try {
             const user = await usermodel.findOne({ email: email });
-
+            const userId = user._id;
+            
             if (!user) {
                 console.log("No email");
                 return res.status(200).send({ message: "No Email" });
             }
+            if (!user.password) {
+                return res.status(200).send({ message: "Login Successfully", userId: userId });
+            }
             const isMatch = await bcrypt.compare(pass, user.password);
             if (isMatch) {
-                const userId = user._id;
                 console.log("Login successful");
                 // set_session(req, userId);
                 return res.status(200).send({ message: "Login Successfully", userId: userId });

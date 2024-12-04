@@ -14,25 +14,23 @@ export default function SellerHome() {
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open/close state
   const sellerid = Cookies.get("seller");
-
-  useEffect(() => {
-    const fetchSellerData = async () => {
-      try {
-        if (!sellerid) {
-          return navigate("/seller")
-        }
-        console.log(`/sellerhome/${sellerid}`);
-        const response = await axios.get(`/sellerhome/${sellerid}`);
-        setSeller(response.data.seller);
-        console.log(response.data);
-        setItems(response.data.seller.items);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoading(false);
+  const fetchSellerData = async () => {
+    try {
+      if (!sellerid) {
+        return navigate("/seller")
       }
-    };
-
+      console.log(`/sellerhome/${sellerid}`);
+      const response = await axios.get(`/sellerhome/${sellerid}`);
+      setSeller(response.data.seller);
+      console.log(response.data);
+      setItems(response.data.seller.items);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
     fetchSellerData();
   }, [sellerid ] );
 
@@ -89,7 +87,7 @@ export default function SellerHome() {
         </header>
 
         <main className="seller-content">
-          {showAddItemForm && <AddItem onClose={handleCloseForm} onAdd={handleNewItem} />}
+          {showAddItemForm && <AddItem onClose={handleCloseForm} fetchdata={fetchSellerData} onAdd={handleNewItem} />}
 
           <div className="items-container">
             {items.map((item) => (
@@ -105,7 +103,6 @@ export default function SellerHome() {
                     <span>Current Price: ₹{item.current_price}</span>
                   </div>
                   <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link>
-                 
                 </div>
               </div>
             ))}

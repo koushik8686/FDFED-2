@@ -1,23 +1,137 @@
-.liked-items-sidebar {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 300px;
-    height: 100%;
-    background: #f4f4f4;
-    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    overflow-y: auto;
-    z-index: 1000;
+/* Drawer Animation */
+.liked-items-drawer {
+  width: 20rem; /* 80px */
+  background-color: white;
+  height: 100%;
+  overflow: hidden;
+  border-left: 1px solid #e5e7eb; /* gray-200 */
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
   }
-  .liked-items-sidebar h2 {
-    margin-bottom: 20px;
+  to {
+    transform: translateX(0);
   }
-  .liked-items-sidebar ul {
-    list-style: none;
-    padding: 0;
+}
+
+/* Header Styles */
+.liked-items-header {
+  position: sticky;
+  top: 0;
+  background: linear-gradient(to right, #dc2626, #b91c1c); /* red-600 to red-700 */
+  color: white;
+  padding: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.close-button {
+  padding: 0.25rem;
+  border-radius: 9999px;
+  transition: background-color 0.2s;
+}
+
+.close-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Content Styles */
+.liked-items-content {
+  padding: 1rem;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 3rem;
+}
+
+/* List Styles */
+.liked-items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem; /* space-y-4 */
+  max-height: calc(100vh - 4rem);
+  overflow-y: auto;
+}
+
+/* Item Card Styles */
+.liked-item-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.liked-item-card:hover {
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.liked-item-image {
+  position: relative;
+}
+
+.liked-item-image img {
+  width: 100%;
+  height: 12rem; /* 48px */
+  object-fit: cover;
+}
+
+.view-auction-button {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.6);
+  color: white;
+  opacity: 0;
+  font-weight: 500;
+  transition: opacity 0.2s;
+}
+
+.liked-item-card:hover .view-auction-button {
+  opacity: 1;
+}
+
+.liked-item-details {
+  padding: 1rem;
+}
+
+.liked-item-title {
+  font-weight: bold;
+  font-size: 1.125rem; /* text-lg */
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.liked-item-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.25rem;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
   }
-  .liked-items-sidebar li {
-    margin-bottom: 15px;
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
-  
+}
