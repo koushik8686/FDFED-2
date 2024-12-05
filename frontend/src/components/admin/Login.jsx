@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import './AdminLogin.css';  // Import the CSS file
-
+import { ArrowBigLeft } from "lucide-react";
 export default function AdminLogin() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -46,9 +46,7 @@ export default function AdminLogin() {
           <div className="admin-login-icon-container">
             <div className="admin-login-icon">
               {/* SVG icon */}
-              <svg className="admin-login-svg-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
-              </svg>
+              <a style={{textAlign:"center"}} href="/"><ArrowBigLeft/></a>
             </div>
           </div>
           <h2 className="admin-login-title">Admin Login</h2>

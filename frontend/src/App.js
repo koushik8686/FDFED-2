@@ -15,7 +15,8 @@ import VerifyEmail from './components/user/VerifyEmail';
 import VerifySellerEmail from './components/seller/Verifyseller';
 import SellerSoldItems from './components/seller/solditems';
 import TimeFrame from './components/admin/TimeFrame';
-
+import FeedBack from './components/user/FeedBAckForm';
+import Reviews from './components/admin/Reviews';
 function App() {
   return (
     <BrowserRouter>
@@ -25,6 +26,7 @@ function App() {
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/verify/:userid" element={<VerifyEmail />} />
         <Route path="/home" element={<Home />} />
+        <Route path='/feedback' element={<FeedBack/>} />
         <Route path="/seller" element={<SellerAuth />} />
         <Route path="/sellerhome" element={<SellerHome />} />
         <Route path="/seller/solditems" element = {<SellerSoldItems/>} />
@@ -34,6 +36,7 @@ function App() {
         <Route path='/admin/login' element={<AdminLogin/>}/>
         <Route path='/admin/' element={<Admin/>}/>
         <Route path='/admin/calender' element={<TimeFrame/>} />
+        <Route path='/reviews'  element={<Reviews/>} />
       </Routes>
     </BrowserRouter>
   );

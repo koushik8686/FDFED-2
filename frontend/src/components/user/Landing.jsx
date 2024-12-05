@@ -5,7 +5,7 @@ import { Gavel , ArrowRight } from 'lucide-react';
 import { Navbar } from "./LandingComponents/NavBAr";
 import Hero from './LandingComponents/Hero'
 import { Features } from "./LandingComponents/Features";
-import Parllax from "./LandingComponents/Parllax";
+import FeedBack from "./LandingComponents/FeedBack";
 
 //landing page
 
@@ -16,6 +16,7 @@ export default function Component() {
       <main>
         <Hero />
         <Features />
+        <FeedBack/>
       </main>
     </div>
   );

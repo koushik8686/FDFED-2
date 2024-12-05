@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Cookies from 'js-cookie';
 import './Login.css';
-
+import { ArrowBigLeft } from 'lucide-react';
 export default function SellerAuth() {
   const [activeTab, setActiveTab] = useState('login');
   const [name, setName] = useState('');
@@ -68,7 +68,7 @@ export default function SellerAuth() {
     <div className="seller-login-container">
       <div className="seller-login-box">
         <div className="seller-login-header">
-          <h1 className="seller-login-title">Welcome to HexArt</h1>
+          <h1 className="seller-login-title"> <a style={{textAlign:"center"}} href="/"><ArrowBigLeft/></a> Welcome to HexArt</h1>
           <p className="seller-login-subtitle">Sign in to your account or create a new one</p>
         </div>
         <div className="seller-login-tabs">
@@ -94,7 +94,7 @@ export default function SellerAuth() {
                 type="text"
                 placeholder="Jared Palmer"
                 value={name}
-                onChange={(e) => setName(e.target.value)}
+                onChange={(e) => {setName(e.target.value); console.log(e.target.value);setServerMessage('')}}
                 required
                 className="seller-login-input"
               />
@@ -107,7 +107,7 @@ export default function SellerAuth() {
               type="email"
               placeholder="m@example.com"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) =>{ setEmail(e.target.value); console.log(e.target.value);setServerMessage('')}}
               required
               className="seller-login-input"
             />
@@ -131,6 +131,8 @@ export default function SellerAuth() {
                 } else {
                   setServerMessage("");
                 }
+                console.log(e.target.value);
+                setServerMessage('')
                 setPassword(value);
               } else{
                 setPassword(value)
@@ -155,6 +157,7 @@ export default function SellerAuth() {
                   } else {
                     setServerMessage("");
                   }
+                 console.log(e.target.value);
                   setPhone(value);
                 }}
                 required

@@ -7,7 +7,18 @@ const multer = require("multer");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const { itemmodel } = require("./models/itemmodel");
+const FeedBack= require('./models/FeedBackModel')
 const app = express();
+const nodemailer = require('nodemailer');
+const email = "hexart637@gmail.com";
+
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: email, // Replace with your email
+    pass: 'zetk dsdm imvx keoa', // Replace with your app password
+  },
+});
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
@@ -25,6 +36,50 @@ app.delete('/item/:id', function (req, res) {
   itemmodel.findbyIdAndDelete(req.params.id).then(()=>{
     res.status(200).send({message:"Item deleted successfully"});
   })
+})
+
+app.post('/feedback', async (req, res) => {
+  const { name, email, feedback, rating } = req.body;
+
+  try {
+    // Save Feedback to DB
+    const newFeedback = new FeedBack({
+      name,
+      email,
+      Feedback: feedback,
+      Rating: rating,
+      CreatedAt: new Date(),
+    });
+    await newFeedback.save();
+
+    // Send Email Notification
+    const mailOptions = {
+      from: 'your-email@gmail.com', // Replace with your email
+      to: 'pinnukoushikp@gmail.com',
+      subject: 'New Feedback Received',
+      text: `
+          You have received new feedback:
+          ---------------------------------------
+          Name: ${name}
+          Email: ${email}
+          Feedback: ${feedback}
+          Rating: ${rating}/5
+          ---------------------------------------
+      `,
+    };
+    await transporter.sendMail(mailOptions);
+    res.status(200).json({ message: 'Feedback saved and email sent successfully!' });
+  } catch (error) {
+    console.error('Error:', error);
+    res.status(500).json({ error: 'An error occurred while processing your request.' });
+  }
+});
+app.get('/feedbacks', function (req, res) {
+  FeedBack.find().then(feedbacks => {
+    res.json(feedbacks);
+  }).catch(err => {
+    res.status(500).json({ error: 'An error occurred while retrieving feedbacks.' });
+  });
 })
 
 //user routes

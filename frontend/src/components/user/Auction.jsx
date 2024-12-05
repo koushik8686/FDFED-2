@@ -35,7 +35,6 @@ export default function Auction() {
     const intervalId = setInterval(fetchItemData, 1000);
     return () => clearInterval(intervalId);
   }, [item, userid]);
-
   if (!itemData) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -46,6 +45,14 @@ export default function Auction() {
 
   const handleBidSubmit = (e) => {
     e.preventDefault();
+    if (itemData && itemData.auction_history && itemData.auction_history.length > 0) {
+      const lastBidderId = itemData.current_bidder_id;
+      console.log(userid , lastBidderId);
+      if (userid === lastBidderId) {
+        return alert("You can't bid yet.");
+      }
+    }
+
     fetch(`/auction/${userid}/item/${item}`, {
       method: "POST",
       headers: {

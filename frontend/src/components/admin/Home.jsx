@@ -8,9 +8,12 @@ import { Link, useNavigate } from "react-router-dom";
 export default function Admin() {
   const [data, setData] = useState({ users: [], sellers: [], items: [] });
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [searchQueryUsers, setSearchQueryUsers] = useState("");
+  const [searchQuerySellers, setSearchQuerySellers] = useState("");
+  const [searchQueryItems, setSearchQueryItems] = useState("");
   const navigate = useNavigate();
 
- async function fetchData() {
+  async function fetchData() {
     try {
       const response = await axios.get('/admin/home');
       console.log(response.data);
@@ -19,6 +22,7 @@ export default function Admin() {
       console.error("Error fetching data", error);
     }
   }
+
   useEffect(() => {
     if (!Cookies.get('admin')) {
       navigate("/admin/login");
@@ -27,40 +31,40 @@ export default function Admin() {
   }, []);
 
   const deleteUser = (id) => {
-    axios.get(`/delete/user/${id}`)
-      .then((response) => {
-      console.log(response);
-       fetchData();
-      })
-      .catch((error) => {
-        console.error("Error deleting user", error);
-      });
+    axios.get( `/delete/user/${id}`)
+      .then(() => fetchData())
+      .catch((error) => console.error("Error deleting user", error));
   };
 
   const deleteSeller = (id) => {
     axios.get(`/delete/seller/${id}`)
-      .then(() => {
-        fetchData();
-      })
-      .catch((error) => {
-        console.error("Error deleting seller", error);
-      });
+      .then(() => fetchData())
+      .catch((error) => console.error("Error deleting seller", error));
   };
 
   const deleteItem = (id) => {
     axios.get(`/delete/item/${id}`)
-      .then(() => {
-        fetchData();
-      })
-      .catch((error) => {
-        console.error("Error deleting item", error);
-      });
+      .then(() => fetchData())
+      .catch((error) => console.error("Error deleting item", error));
   };
 
   const logout = () => {
     Cookies.remove('admin');
     navigate('/');
   };
+
+  // Filter users, sellers, and items based on their respective search queries
+  const filteredUsers = data.users.filter(user =>
+    user.username.toLowerCase().includes(searchQueryUsers.toLowerCase())
+  );
+
+  const filteredSellers = data.sellers.filter(seller =>
+    seller.name.toLowerCase().includes(searchQuerySellers.toLowerCase())
+  );
+
+  const filteredItems = data.items.filter(item =>
+    item.name.toLowerCase().includes(searchQueryItems.toLowerCase())
+  );
 
   return (
     <div className="admin-home-div">
@@ -75,7 +79,7 @@ export default function Admin() {
           <a href="#sellers" className="nav-item">Sellers</a>
           <a href="#items" className="nav-item">Items</a>
           <Link to="/admin/calender" className="nav-item">Calender</Link>
-
+          <a href="/reviews" className='nav-item'>Reviews</a>
           <p onClick={logout} className="nav-item">Log Out</p>
         </nav>
       </aside>
@@ -114,6 +118,13 @@ export default function Admin() {
           {/* Users */}
           <section id="users">
             <h2 className="section-title">Users</h2>
+            <input
+              type="text"
+              placeholder="Search by username"
+              value={searchQueryUsers}
+              onChange={(e) => setSearchQueryUsers(e.target.value)}
+              className="search-bar"
+            />
             <table className="table">
               <thead>
                 <tr>
@@ -124,8 +135,8 @@ export default function Admin() {
                 </tr>
               </thead>
               <tbody>
-                {data.users.map((user) => (
-                  <tr className='table-row' key={user._id}>
+                {filteredUsers.map(user => (
+                  <tr className="table-row" key={user._id}>
                     <td className="table-cell">{user.username}</td>
                     <td className="table-cell">{user.email}</td>
                     <td className="table-cell">{user.items.length}</td>
@@ -141,6 +152,13 @@ export default function Admin() {
           {/* Sellers */}
           <section id="sellers">
             <h2 className="section-title">Sellers</h2>
+            <input
+              type="text"
+              placeholder="Search by seller name"
+              value={searchQuerySellers}
+              onChange={(e) => setSearchQuerySellers(e.target.value)}
+              className="search-bar"
+            />
             <table className="table">
               <thead>
                 <tr>
@@ -152,8 +170,8 @@ export default function Admin() {
                 </tr>
               </thead>
               <tbody>
-                {data.sellers.map((seller) => (
-                  <tr className='table-row' key={seller._id}>
+                {filteredSellers.map(seller => (
+                  <tr className="table-row" key={seller._id}>
                     <td className="table-cell">{seller.name}</td>
                     <td className="table-cell">{seller.email}</td>
                     <td className="table-cell">{seller.phone}</td>
@@ -170,6 +188,13 @@ export default function Admin() {
           {/* Items */}
           <section id="items">
             <h2 className="section-title">Items</h2>
+            <input
+              type="text"
+              placeholder="Search by item name"
+              value={searchQueryItems}
+              onChange={(e) => setSearchQueryItems(e.target.value)}
+              className="search-bar"
+            />
             <table className="table">
               <thead>
                 <tr>
@@ -182,7 +207,7 @@ export default function Admin() {
                 </tr>
               </thead>
               <tbody>
-                {data.items.map((item) => (
+                {filteredItems.map(item => (
                   <tr key={item._id}>
                     <td className="table-cell">{item.name}</td>
                     <td className="table-cell">{item.person}</td>

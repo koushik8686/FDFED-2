@@ -1,5 +1,5 @@
 import React from "react";
-import { BarChart, Verified, Users, Settings } from "lucide-react";
+import {  Verified, Users, Settings } from "lucide-react";
 import { motion } from "framer-motion";
 
 const features = [

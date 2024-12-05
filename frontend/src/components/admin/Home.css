@@ -208,3 +208,12 @@
     max-height: 6rem;
   }
 }
+
+.search-bar {
+  width: 20%;
+  padding: 10px;
+  margin-bottom: 15px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
