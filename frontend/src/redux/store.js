@@ -5,5 +5,6 @@ import wishlistReducer from './LikedReducer';
 export const store = configureStore({
   reducer: {
     liked: wishlistReducer,
+
   },
 });

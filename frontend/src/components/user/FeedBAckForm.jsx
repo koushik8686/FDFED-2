@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Send, Star, Mail, MapPin } from 'lucide-react';
+import { Send, Star, Mail } from 'lucide-react';
 
 function App() {
   const [formData, setFormData] = useState({
@@ -50,6 +50,7 @@ function App() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 to-indigo-50">
       <div className="container mx-auto px-4 py-16">
+        <a href='/'>Back</a>
         <div className="max-w-4xl mx-auto">
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-4">Contact HexArt</h1>
@@ -80,20 +81,6 @@ function App() {
                       <p className="text-gray-600">support@hexart.com</p>
                     </div>
                   </div>
-
-                  <div className="flex items-start space-x-4">
-                    <div className="bg-purple-100 p-3 rounded-full">
-                      <MapPin className="w-6 h-6 text-purple-600" />
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-medium text-gray-900">Office</h3>
-                      <p className="text-gray-600">
-                        123 Auction Street
-                        <br />
-                        Art District, AC 12345
-                      </p>
-                    </div>
-                  </div>
                 </div>
               </div>
 
@@ -111,7 +98,6 @@ function App() {
                     onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
                   />
                 </div>
-
                 <div>
                   <label htmlFor="email" className="block text-sm font-medium text-gray-700">
                     Email

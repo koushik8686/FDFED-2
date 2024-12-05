@@ -40,7 +40,6 @@ app.delete('/item/:id', function (req, res) {
 
 app.post('/feedback', async (req, res) => {
   const { name, email, feedback, rating } = req.body;
-
   try {
     // Save Feedback to DB
     const newFeedback = new FeedBack({
@@ -54,7 +53,7 @@ app.post('/feedback', async (req, res) => {
 
     // Send Email Notification
     const mailOptions = {
-      from: 'your-email@gmail.com', // Replace with your email
+      from: email, // Replace with your email
       to: 'pinnukoushikp@gmail.com',
       subject: 'New Feedback Received',
       text: `

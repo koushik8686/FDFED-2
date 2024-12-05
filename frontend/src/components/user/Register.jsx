@@ -16,7 +16,6 @@ const RegisterPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    
     // Check if password is at least 8 characters
     if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password) ) {
       alert("Password Invalid");
@@ -127,7 +126,18 @@ const RegisterPage = () => {
                 type="email"
                 id="email"
                 value={email}
-                onChange={(e) =>{ setEmail(e.target.value);setError(''); console.log(e.target.value);} }
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setEmail(value);
+                  setError('');
+                  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+                  if (!emailRegex.test(value)) {
+                    setError("Invalid Email");
+                  } else {
+                    setError(''); // Clear error if valid
+                  }
+                  console.log(value);
+                }}
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"
                 placeholder="Enter your email"
@@ -153,18 +163,18 @@ const RegisterPage = () => {
                 value={password}
                 onChange={(e) => {
                   const value = e.target.value;
+                  setPassword(value);
+                  console.log(value);
                   if (value.length < 8) {
-                    setError("Password must be at least 8 characters long");
+                   return  setError("Password must be at least 8 characters long");
                   } else if (!/[a-zA-Z]/.test(value)) {
-                    setError("Password must contain at least one alphabet");
+                    return setError("Password must contain at least one alphabet");
                   } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) {
-                    setError("Password must contain at least one special character");
+                    return setError("Password must contain at least one special character");
                   } else {
                     setError("");
                   }
-                  setError('');
                   console.log(e.target.value);
-                  setPassword(value);
                 }}
                 required
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-teal-500 focus:border-teal-500"

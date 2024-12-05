@@ -16,7 +16,6 @@ class SellerService {
         try {
             const unverifiedSeller = await unverified_sellers.findOne({ email: this.email });
             const verifiedSeller = await sellermodel.findOne({ email: this.email });
-
             if (unverifiedSeller || verifiedSeller) {
                 return true; // Email exists in either collection
             }
@@ -96,14 +95,12 @@ class SellerController {
     static async sellerregister_post(req, res) {
         const { name, email, phone, password } = req.body;
         const sellerService = new SellerService(name, email, phone, password);
-
         try {
             // Check if seller already exists
             const existingSeller = await sellerService.checkIfSellerExists();
             if (existingSeller) {
                 return res.status(200).send({ message: "Email Already Exists" });
             }
-
             // Hash password and save new seller
             const hashedPassword = await sellerService.hashPassword();
             await sellerService.saveSeller(hashedPassword);

@@ -11,16 +11,17 @@ export default function Reviews() {
   const [averageRating, setAverageRating] = useState(0);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const navigate = useNavigate();
-
   async function fetchFeedbacks() {
     try {
       const response = await axios.get('/feedbacks');
       const feedbackData = response.data;
       setFeedbacks(feedbackData);
-
       // Calculate average rating
-      const totalRating = feedbackData.reduce((sum, feedback) => sum + feedback.Rating, 0);
-      setAverageRating((totalRating / feedbackData.length).toFixed(1));
+      let totalRating = 0;
+        for (const feedback of feedbackData) {
+          totalRating += feedback.Rating;
+        }
+        setAverageRating((totalRating / feedbackData.length).toFixed(1));
     } catch (error) {
       console.error('Error fetching feedbacks:', error);
     }

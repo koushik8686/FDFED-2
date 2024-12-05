@@ -14,7 +14,6 @@ export default function Items({ filteredItems }) {
 
   const handleAddToWishlist = async (item) => {
     dispatch(toggleWishlist(item)); // Dispatch the action with the entire item
-
     if (user) {
       try {
         if (wishlist.find((wishlistItem) => wishlistItem._id === item._id)) {

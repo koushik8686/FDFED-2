@@ -40,7 +40,6 @@ export default function Home() {
       xhr.open('GET', `/user/${userid}`, true);
     
       // Set up a function to handle changes to the request's state
-     
         xhr.onreadystatechange = () => {
           if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
             dataProcessed.current=true;

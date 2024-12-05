@@ -20,7 +20,6 @@ export default function SellerAuth() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     // Validate password and phone number before sending
     if (activeTab === 'register') {
       if (password.length < 8 || !/[a-zA-Z]/.test(password) || !/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
@@ -107,10 +106,20 @@ export default function SellerAuth() {
               type="email"
               placeholder="m@example.com"
               value={email}
-              onChange={(e) =>{ setEmail(e.target.value); console.log(e.target.value);setServerMessage('')}}
+              onChange={(e) => {
+                const value = e.target.value;
+                setEmail(value);
+                console.log(value);
+                setServerMessage('');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Basic email regex
+                if (!emailRegex.test(value)) {
+                  setServerMessage("Invalid email format");
+                }
+              }}
               required
               className="seller-login-input"
             />
+
           </div>
           <div className="seller-login-field">
             <label htmlFor="password" className="seller-login-label">Password</label>
@@ -121,19 +130,19 @@ export default function SellerAuth() {
               value={password}
               onChange={(e) => {
                 const value = e.target.value;
+                setPassword(value);
                 if (activeTab === "register") {  
                 if (value.length < 8) {
-                  setServerMessage("Password must be at least 8 characters long");
+                 return setServerMessage("Password must be at least 8 characters long");
                 } else if (!/[a-zA-Z]/.test(value)) { // Check for at least one letter
-                  setServerMessage("Password must contain at least one letter");
+                  return setServerMessage("Password must contain at least one letter");
                 } else if (!/[!@#$%^&*(),.?":{}|<>]/.test(value)) { // Check for at least one special character
-                  setServerMessage("Password must contain at least one special character");
+                  return setServerMessage("Password must contain at least one special character");
                 } else {
                   setServerMessage("");
                 }
                 console.log(e.target.value);
                 setServerMessage('')
-                setPassword(value);
               } else{
                 setPassword(value)
               }}
