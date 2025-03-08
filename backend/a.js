@@ -11,6 +11,7 @@ mongoose.connect('mongodb://localhost:27017/your_database_name', {
     // Perform the update operation
     updateItemsWithRandomDates();
   })
+  //hi
   .catch(err => {
     console.error("Database connection error:", err);
   });
