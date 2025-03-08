@@ -9,6 +9,7 @@ const AddItem = ({ onClose, onAdd }) => {
     name: "",
     basePrice: 0,
     type: "",
+    date: "",
   });
 
   const handleInputChange = (e) => {
@@ -30,8 +31,6 @@ const AddItem = ({ onClose, onAdd }) => {
         method: 'POST',
         body: formData,
       });
-
-      console.log(result.data);
       // Assuming the server returns the added item, you can pass it back to the parent
       // Reset the form
       setNewItem({
@@ -116,6 +115,19 @@ const AddItem = ({ onClose, onAdd }) => {
               <option value="Antique">Antique</option>
               <option value="Used">Used</option>
             </select>
+          <div className="space-y-2">
+            <label htmlFor="date" className="block text-sm font-medium text-gray-700">
+              Date
+            </label>
+            <input
+              id="date"
+              name="date"
+              type="date"
+              value={newItem.date}
+              onChange={handleInputChange}
+              className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+            />
+          </div>
           </div>
           <div className="mt-4 flex justify-end space-x-4">
             <button
