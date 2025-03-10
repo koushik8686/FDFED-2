@@ -11,7 +11,7 @@ const FeedBack= require('./models/FeedBackModel')
 const app = express();
 const nodemailer = require('nodemailer');
 const email = "hexart637@gmail.com";
-
+const morgan = require('morgan');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -22,11 +22,21 @@ const transporter = nodemailer.createTransport({
 
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+
+//Inbuilt middleware
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/fdfed");
+app.use(express.json()); // To parse JSON body
 
+
+//Third party middleware
+morgan.token('body', (req) => JSON.stringify(req.body)); // Logs request body
+morgan.token('response-time-ms', (req, res) => `${res.getHeader('X-Response-Time') || 'N/A'}ms`);
+app.use(
+  morgan(':method :url :status :response-time ms - :body')
+);
 app.use(cors({origin:'http://localhost:3000'}))
 app.options('*', cors()); // Enable pre-flight requests for all routes
 
@@ -37,7 +47,6 @@ app.delete('/item/:id', function (req, res) {
     res.status(200).send({message:"Item deleted successfully"});
   })
 })
-
 app.post('/feedback', async (req, res) => {
   const { name, email, feedback, rating } = req.body;
   try {
@@ -82,6 +91,7 @@ app.get('/feedbacks', function (req, res) {
 })
 
 //user routes
+
 app.get("/", function (req, res) { console.log(req.headers.host);  res.send("hello welcome to hexart")})
 app.use("/register", require("./routers/user-routes/user_register"))
 app.use("/login",require("./routers/user-routes/user_login"))

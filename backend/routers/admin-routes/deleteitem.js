@@ -1,5 +1,6 @@
 const express = require('express');
 const AdminController = require('../../controllers/admin/deleteitem,'); 
+const {logAdminActions , AdminErrorMiddleware} = require("../../middleware/Admin")
 
 class AdminRouter {
   constructor() {
@@ -8,7 +9,7 @@ class AdminRouter {
   }
 
   initializeRoutes() {
-    this.router.get("/:type/:id", (req, res) => AdminController.deleteItem(req, res));
+    this.router.get("/:type/:id", logAdminActions , AdminErrorMiddleware, (req, res) => AdminController.deleteItem(req, res));
   }
 }
 

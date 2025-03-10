@@ -1,5 +1,6 @@
 const express = require('express');
 const SellingController = require("../../controllers/seller/sell_item");
+const {logSellerActions , sellerErrorMiddleware} = require('../../middleware/Seller')
 
 class SellerController {
     constructor() {
@@ -8,8 +9,8 @@ class SellerController {
     }
 
     initializeRoutes() {
-        this.router.get("/:seller/:itemid", SellingController.sellingPageGet);
-        this.router.post("/:seller/:itemid", SellingController.sellingPagePost);
+        this.router.get("/:seller/:itemid", logSellerActions , sellerErrorMiddleware, SellingController.sellingPageGet);
+        this.router.post("/:seller/:itemid", logSellerActions , sellerErrorMiddleware, SellingController.sellingPagePost);
     }
 
     getRouter() {

@@ -1,6 +1,6 @@
 const express = require('express');
 const GoogleAuthController = require('../../controllers/user/googleauth');
-
+const {loguserActions , userErrorMiddleware} = require('../../middleware/User')
 class AuthRouter {
     constructor() {
         this.router = express.Router();
@@ -9,7 +9,7 @@ class AuthRouter {
     }
 
     initializeRoutes() {
-        this.router.get('/google', (req, res) => this.googleAuthController.googleLogin(req, res));
+        this.router.get('/google', loguserActions , userErrorMiddleware ,  (req, res) => this.googleAuthController.googleLogin(req, res));
     }
 
     getRouter() {

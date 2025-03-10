@@ -1,5 +1,6 @@
 const express = require('express');
 const UserController = require("../../controllers/user/user_login");
+const {loguserActions , userErrorMiddleware} = require('../../middleware/User')
 
 class UserRouter {
     constructor() {
@@ -7,7 +8,7 @@ class UserRouter {
         this.initializeRoutes();
     }
     initializeRoutes() {
-        this.router.post("/", UserController.userlogin_post);
+        this.router.post("/", loguserActions , userErrorMiddleware, UserController.userlogin_post);
     }
     getRouter() {
         return this.router;

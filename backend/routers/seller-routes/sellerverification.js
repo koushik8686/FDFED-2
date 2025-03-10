@@ -1,5 +1,6 @@
 const express = require('express');
 const SellerVerificationController = require('../../controllers/seller/verifyemail');
+const {logSellerActions , sellerErrorMiddleware} = require('../../middleware/Seller')
 
 class SellerVerificationRouter {
     constructor() {
@@ -10,7 +11,7 @@ class SellerVerificationRouter {
 
     initializeRoutes() {
         // Route for verifying the seller based on the seller ID passed in the request params
-        this.router.get("/:id", (req, res) => this.sellerVerificationController.verifyEmail(req, res));
+        this.router.get("/:id",logSellerActions , sellerErrorMiddleware, (req, res) => this.sellerVerificationController.verifyEmail(req, res));
     }
 
     getRouter() {

@@ -1,5 +1,6 @@
 const express = require("express");
 const AdminController = require("../../controllers/admin/admin_login");
+const {logAdminActions , AdminErrorMiddleware} = require("../../middleware/Admin")
 
 class AdminRouter {
   constructor() {
@@ -8,7 +9,7 @@ class AdminRouter {
   }
 
   initializeRoutes() {
-    this.router.post("/", AdminController.login);
+    this.router.post("/", logAdminActions , AdminErrorMiddleware, AdminController.login);
   }
 }
 

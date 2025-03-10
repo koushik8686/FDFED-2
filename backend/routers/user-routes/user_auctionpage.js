@@ -1,5 +1,6 @@
 const express = require('express');
 const UserAuctionController = require("../../controllers/user/user_auction_page");
+const {loguserActions , userErrorMiddleware} = require('../../middleware/User')
 
 class UserAuctionRouter {
     constructor() {
@@ -8,8 +9,8 @@ class UserAuctionRouter {
     }
 
     initializeRoutes() {
-        this.router.get("/:userid/item/:itemid", UserAuctionController.renderAuctionPage);
-        this.router.post("/:userid/item/:itemid", UserAuctionController.bid);
+        this.router.get("/:userid/item/:itemid", loguserActions , userErrorMiddleware , UserAuctionController.renderAuctionPage);
+        this.router.post("/:userid/item/:itemid",  loguserActions , userErrorMiddleware, UserAuctionController.bid);
     }
 
     getRouter() {

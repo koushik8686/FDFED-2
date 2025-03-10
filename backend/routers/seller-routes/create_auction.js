@@ -2,7 +2,7 @@ const express = require('express');
 const multer = require("multer");
 const path = require('path');
 const AuctionController = require("../../controllers/seller/create_auction"); // Adjust the path as needed
-
+const {logSellerActions , sellerErrorMiddleware} = require('../../middleware/Seller')
 class AuctionRouter {
   constructor() {
     this.router = express.Router();
@@ -23,7 +23,7 @@ class AuctionRouter {
   }
 
   initializeRoutes() {
-    this.router.post("/:seller", this.upload.single('image'), (req, res) => {
+    this.router.post("/:seller", logSellerActions , sellerErrorMiddleware, this.upload.single('image'), (req, res) => {
       return AuctionController.createAuctionPost(req, res);
     });
   }
