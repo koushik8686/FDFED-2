@@ -115,3 +115,9 @@ app.use("/seller/verify" , require("./routers/seller-routes/sellerverification")
 app.use("/admin/login",require("./routers/admin-routes/admin_login"))
 app.use("/admin/home",require("./routers/admin-routes/admin_home"))
 app.use("/delete" ,require("./routers/admin-routes/deleteitem") )
+
+
+app.post('/item/unsold/:id', async (req, res) => {
+  itemmodel.findByIdAndUpdate(req.params.id, { aution_active: false });
+  res.status(200).send({ message: `Item ${req.params.id} marked as unsold` });
+})

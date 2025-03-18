@@ -5,7 +5,6 @@ import axios from "axios";
 import Cookies from "js-cookie";
 import './Home.css';
 
-
 export default function SellerHome() {
   const navigate = useNavigate();
   const [items, setItems] = useState([]);
@@ -14,25 +13,48 @@ export default function SellerHome() {
   const [showAddItemForm, setShowAddItemForm] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar open/close state
   const sellerid = Cookies.get("seller");
+
   const fetchSellerData = async () => {
     try {
       if (!sellerid) {
-        return navigate("/seller")
+        return navigate("/seller");
       }
       console.log(`/sellerhome/${sellerid}`);
       const response = await axios.get(`/sellerhome/${sellerid}`);
       setSeller(response.data.seller);
       console.log(response.data);
-      setItems(response.data.seller.items);
+
+      const currentTime = new Date();
+      const validItems = response.data.seller.items.filter(item => {
+        if (!item.EndTime) {
+          return true;
+        }
+        const endTime = new Date(item.EndTime);
+        if (endTime > currentTime) {
+          return true;
+        } else {
+          // Send API request to mark item as unsold
+          axios.post(`/item/unsold/${item._id}`)
+            .then(response => {
+              console.log(`Item ${item._id} marked as unsold`);
+            })
+            .catch(error => {
+              console.error(`Error marking item ${item._id} as unsold:`, error);
+            });
+          return false;
+        }
+      });
+      setItems(validItems.reverse());
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     fetchSellerData();
-  }, [sellerid ] );
+  }, [sellerid]);
 
   const handleAddItem = () => {
     setShowAddItemForm(true);
@@ -90,22 +112,43 @@ export default function SellerHome() {
           {showAddItemForm && <AddItem onClose={handleCloseForm} fetchdata={fetchSellerData} onAdd={handleNewItem} />}
 
           <div className="items-container">
-            {items.map((item) => (
-              <div key={item._id} className="item-card">
-                <img src={"/" + item.url} alt={item.name} className="item-image" />
-                <div className="item-content">
-                <div className="qwe">
-                  <h3 className="item-title">{item.name}</h3>
-                  {/* <AiOutlineDelete className="delete-icon" /> */}
-                </div>
-                  <div className="item-prices">
-                    <span> <b>Base Price: </b> ₹{item.base_price}</span>
-                    <span><b>Current Price:</b> ₹{item.current_price}</span>
+            {items.map((item) => {
+              const now = new Date();
+              const hasAuctionTiming = item.date && item.StartTime && item.EndTime;
+              const formattedDate = hasAuctionTiming
+                ? new Date(item.date).toLocaleDateString()
+                : 'N/A';
+              const startTime = hasAuctionTiming ? new Date(item.StartTime) : null;
+              const formattedStartTime = hasAuctionTiming
+                ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : 'N/A';
+              const endTime = hasAuctionTiming ? new Date(item.EndTime) : null;
+              const formattedEndTime = hasAuctionTiming
+                ? endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+                : 'N/A';
+
+              return (
+                <div key={item._id} className="item-card">
+                  <img src={"/" + item.url} alt={item.name} className="item-image" />
+                  <div className="item-content">
+                    <div className="qwe">
+                      <h3 className="item-title">{item.name}</h3>
+                      {/* <AiOutlineDelete className="delete-icon" /> */}
+                    </div>
+                    <div className="item-prices">
+                      <span> <b>Base Price: </b> ₹{item.base_price}</span>
+                      <span><b>Current Price:</b> ₹{item.current_price}</span>
+                    </div>
+                    <div className="auction-timing">
+                      <span>Date: {formattedDate}</span> |{' '}
+                      <span>Start: {formattedStartTime}</span> |{' '}
+                      <span>End: {formattedEndTime}</span>
+                    </div>
+                    <button className="view-item-button">  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link></button>
                   </div>
-                  <button className="view-item-button">  <Link to={`/item/${item._id}`} className="view-item-button">View Item</Link></button>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         </main>
       </div>

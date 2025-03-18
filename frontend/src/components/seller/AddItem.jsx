@@ -10,6 +10,8 @@ const AddItem = ({ onClose, onAdd }) => {
     basePrice: 0,
     type: "",
     date: "",
+    StartTime: "",
+    EndTime: "",
   });
 
   const handleInputChange = (e) => {
@@ -20,23 +22,30 @@ const AddItem = ({ onClose, onAdd }) => {
     event.preventDefault();
 
     console.log(newItem, "forndata");
-      try {
+    try {
       const formData = new FormData();
       formData.append('name', newItem.name);
       formData.append('basePrice', newItem.basePrice);
       formData.append('type', newItem.type);
+      formData.append('date', newItem.date);
+      formData.append('StartTime', newItem.StartTime);
+      formData.append('EndTime', newItem.EndTime);
       formData.append('image', image);
 
       const result = await fetch(`/create/${seller}`, {
         method: 'POST',
         body: formData,
       });
+
       // Assuming the server returns the added item, you can pass it back to the parent
       // Reset the form
       setNewItem({
         name: "",
         basePrice: 0,
         type: "",
+        date: "",
+        StartTime: "",
+        EndTime: "",
       });
       setImage(null);
       onClose(); // Close the modal
@@ -62,7 +71,7 @@ const AddItem = ({ onClose, onAdd }) => {
               Name
             </label>
             <input
-              id="image"
+              id="name"
               name="name"
               placeholder="Enter item name"
               value={newItem.name}
@@ -115,6 +124,7 @@ const AddItem = ({ onClose, onAdd }) => {
               <option value="Antique">Antique</option>
               <option value="Used">Used</option>
             </select>
+          </div>
           <div className="space-y-2">
             <label htmlFor="date" className="block text-sm font-medium text-gray-700">
               Date
@@ -128,6 +138,33 @@ const AddItem = ({ onClose, onAdd }) => {
               className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
             />
           </div>
+          <div className="flex space-x-4">
+            <div className="space-y-2 w-1/2">
+              <label htmlFor="StartTime" className="block text-sm font-medium text-gray-700">
+                Start Time
+              </label>
+              <input
+                id="StartTime"
+                name="StartTime"
+                type="time"
+                value={newItem.StartTime}
+                onChange={handleInputChange}
+                className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+              />
+            </div>
+            <div className="space-y-2 w-1/2">
+              <label htmlFor="EndTime" className="block text-sm font-medium text-gray-700">
+                End Time
+              </label>
+              <input
+                id="EndTime"
+                name="EndTime"
+                type="time"
+                value={newItem.EndTime}
+                onChange={handleInputChange}
+                className="block w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:border-blue-500"
+              />
+            </div>
           </div>
           <div className="mt-4 flex justify-end space-x-4">
             <button

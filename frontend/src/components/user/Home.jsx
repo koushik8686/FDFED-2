@@ -7,8 +7,8 @@ import Mostvisited from './homecomponents/mostvisited';
 import './Home.css'
 import LikedItems from './homecomponents/LikedItems';
 import { useDispatch } from 'react-redux';
-import {toggleWishlist} from '../../redux/LikedReducer'
-//home
+import { toggleWishlist } from '../../redux/LikedReducer';
+import axios from 'axios';
 
 export default function Home() {
   const [selectedCategory, setSelectedCategory] = useState('All');
@@ -30,6 +30,7 @@ export default function Home() {
   const toggleLikedWindow = () => {
     setShowLikedWindow((prev) => !prev);
   };
+
   useEffect(() => {
     if (Cookies.get("user") === undefined) {
       navigate("/login");
@@ -40,23 +41,43 @@ export default function Home() {
       xhr.open('GET', `/user/${userid}`, true);
     
       // Set up a function to handle changes to the request's state
-        xhr.onreadystatechange = () => {
-          if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
-            dataProcessed.current=true;
-            if (xhr.status === 200) {
-              const data = JSON.parse(xhr.responseText);
-              setemail(data.data.user.email);
-              setMyItems(data.data.user.items);
-              setItems(data.data.items);
-              data.data.user.liked.forEach((item) => {
-                console.log(item);
-                dispatch(toggleWishlist(item));
-              });
-            } else {
-              console.error('Error fetching user data:', xhr.statusText);
-            }
+      xhr.onreadystatechange = () => {
+        if (xhr.readyState === 4 && !dataProcessed.current) { // Process only once
+          dataProcessed.current = true;
+          if (xhr.status === 200) {
+            const data = JSON.parse(xhr.responseText);
+            setemail(data.data.user.email);
+            setMyItems(data.data.user.items);
+            const currentTime = new Date();
+            const validItems = data.data.items.filter(item => {
+              if (!item.EndTime) {
+                return true;
+              }
+              const endTime = new Date(item.EndTime);
+              if (endTime > currentTime) {
+                return true;
+              } else {
+                // Send API request to mark item as unsold
+                axios.post(`/item/unsold/${item._id}`)
+                  .then(response => {
+                    console.log(`Item ${item._id} marked as unsold`);
+                  })
+                  .catch(error => {
+                    console.error(`Error marking item ${item._id} as unsold:`, error);
+                  });
+                return false;
+              }
+            });
+            setItems(validItems.reverse());
+            data.data.user.liked.forEach((item) => {
+              console.log(item);
+              dispatch(toggleWishlist(item));
+            });
+          } else {
+            console.error('Error fetching user data:', xhr.statusText);
           }
-        };        
+        }
+      };        
       // Handle network errors
       xhr.onerror = () => {
         console.error('Fetch error:', xhr.statusText);
@@ -66,7 +87,7 @@ export default function Home() {
     };
     
     fetchUserData();
-  }, [userid, navigate]);
+  }, [userid, navigate, dispatch]);
 
   const filteredItems = items.filter(item =>
     (selectedCategory === 'All' || item.type === selectedCategory) &&
@@ -100,35 +121,34 @@ export default function Home() {
         </div>
       </header>
       <div className="user-home-search">
-      <div className="user-home-categories">
-    <button
-      className={`user-home-category-button ${selectedCategory === 'Art' ? 'active' : ''}`}
-      onClick={() => setSelectedCategory('Art')}
-    >
-      Arts
-    </button>
-    <button
-      className={`user-home-category-button ${selectedCategory === 'Antique' ? 'active' : ''}`}
-      onClick={() => setSelectedCategory('Antique')}
-    >
-      Antiques
-    </button>
-    <button
-      className={`user-home-category-button ${selectedCategory === 'Used' ? 'active' : ''}`}
-      onClick={() => setSelectedCategory('Used')}
-    >
-      Used
-    </button>
-    <button
-      className={`user-home-category-button ${selectedCategory === 'All' ? 'active' : ''}`}
-      onClick={() => setSelectedCategory('All')}
-    >
-      All
-    </button>
-  </div>
+        <div className="user-home-categories">
+          <button
+            className={`user-home-category-button ${selectedCategory === 'Art' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('Art')}
+          >
+            Arts
+          </button>
+          <button
+            className={`user-home-category-button ${selectedCategory === 'Antique' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('Antique')}
+          >
+            Antiques
+          </button>
+          <button
+            className={`user-home-category-button ${selectedCategory === 'Used' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('Used')}
+          >
+            Used
+          </button>
+          <button
+            className={`user-home-category-button ${selectedCategory === 'All' ? 'active' : ''}`}
+            onClick={() => setSelectedCategory('All')}
+          >
+            All
+          </button>
+        </div>
 
-  <div className="user-home-search-bar">
-  <div className="user-home-search-bar">
+        <div className="user-home-search-bar">
           <input
             type="text"
             placeholder="Search items..."
@@ -139,66 +159,65 @@ export default function Home() {
           <button className="user-home-liked-button" onClick={toggleLikedWindow}>
             Liked Items
           </button>
+          <button
+            className="user-home-filter-button"
+            onClick={() => setShowFilterPopup(true)}
+          >
+            Filter
+          </button>
         </div>
-    <button
-      className="user-home-filter-button"
-      onClick={() => setShowFilterPopup(true)}
-    >
-      Filter
-    </button>
-  </div>
-</div>
-
-{showFilterPopup && (
-  <div className="user-home-filter-popup">
-    <div className="user-home-filter-content">
-      <h2 className="user-home-filter-title">Filter Items</h2>
-      <div className="user-home-filter-options">
-        <button
-          className={`user-home-filter-option ${selectedCategory === 'Art' ? 'active' : ''}`}
-          onClick={() => { console.log("clicked arts");  setSelectedCategory('Art'); setShowFilterPopup(false); }}
-        >
-          Arts
-        </button>
-        <button
-          className={`user-home-filter-option ${selectedCategory === 'Antique' ? 'active' : ''}`}
-          onClick={() => { console.log("clicked antiques"); setSelectedCategory('Antique'); setShowFilterPopup(false); }}
-        >
-          Antiques
-        </button>
-        <button
-          className={`user-home-filter-option ${selectedCategory === 'Used' ? 'active' : ''}`}
-          onClick={() => { console.log("clicked used items");  setSelectedCategory('Used'); setShowFilterPopup(false); }}
-        >
-          Used Items
-        </button>
-        <button
-          className={`user-home-filter-option ${selectedCategory === 'All' ? 'active' : ''}`}
-          onClick={() => { console.log("clicked all ");  setSelectedCategory('All'); setShowFilterPopup(false); }}
-        >
-          All
-        </button>
       </div>
-      <button
-        className="user-home-filter-close"
-        onClick={() => setShowFilterPopup(false)}
-      >
-        Close
-      </button>
-    </div>
-  </div>
-)}
-{/* {showLikedWindow && <LikedItems closepopup={toggleLikedWindow} />} Render LikedItems if visible */}
-  <main className="flex">
-          <div className="flex-grow">
-            {display === 'items' && <Items filteredItems={filteredItems} />}
-            {display === 'myitems' && <Myitems MyfilteredItems={MyfilteredItems} />}
-            {display === 'mostvisited' && <Mostvisited Items={filteredItems} />}
+
+      {showFilterPopup && (
+        <div className="user-home-filter-popup">
+          <div className="user-home-filter-content">
+            <h2 className="user-home-filter-title">Filter Items</h2>
+            <div className="user-home-filter-options">
+              <button
+                className={`user-home-filter-option ${selectedCategory === 'Art' ? 'active' : ''}`}
+                onClick={() => { console.log("clicked arts"); setSelectedCategory('Art'); setShowFilterPopup(false); }}
+              >
+                Arts
+              </button>
+              <button
+                className={`user-home-filter-option ${selectedCategory === 'Antique' ? 'active' : ''}`}
+                onClick={() => { console.log("clicked antiques"); setSelectedCategory('Antique'); setShowFilterPopup(false); }}
+              >
+                Antiques
+              </button>
+              <button
+                className={`user-home-filter-option ${selectedCategory === 'Used' ? 'active' : ''}`}
+                onClick={() => { console.log("clicked used items"); setSelectedCategory('Used'); setShowFilterPopup(false); }}
+              >
+                Used Items
+              </button>
+              <button
+                className={`user-home-filter-option ${selectedCategory === 'All' ? 'active' : ''}`}
+                onClick={() => { console.log("clicked all "); setSelectedCategory('All'); setShowFilterPopup(false); }}
+              >
+                All
+              </button>
+            </div>
+            <button
+              className="user-home-filter-close"
+              onClick={() => setShowFilterPopup(false)}
+            >
+              Close
+            </button>
           </div>
-          {showLikedWindow && display === 'items' && (
-            <LikedItems closepopup={() => setShowLikedWindow(false)} />
-          )}
-        </main>
+        </div>
+      )}
+      {/* {showLikedWindow && <LikedItems closepopup={toggleLikedWindow} />} Render LikedItems if visible */}
+      <main className="flex">
+        <div className="flex-grow">
+          {display === 'items' && <Items filteredItems={filteredItems} />}
+          {display === 'myitems' && <Myitems MyfilteredItems={MyfilteredItems} />}
+          {display === 'mostvisited' && <Mostvisited Items={filteredItems} />}
+        </div>
+        {showLikedWindow && display === 'items' && (
+          <LikedItems closepopup={() => setShowLikedWindow(false)} />
+        )}
+      </main>
     </div>
   );
 }

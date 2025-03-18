@@ -12,6 +12,8 @@ const itemschema= mongoose.Schema({
     type:String,
     aution_active:Boolean,
     date:Date,
+    StartTime:Date,
+    EndTime:Date,
     visited_users:[{id:String ,email:String}],
     auction_history: [{bidder: String,price: String}]
   } ,  {

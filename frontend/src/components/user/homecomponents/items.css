@@ -1,13 +1,13 @@
 .user-items-div-container {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* Fixed to 4 items per row */
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   padding: 2rem;
   background: linear-gradient(135deg, #e8f0ff, #f7fafc);
 }
 
 .user-items-div-item {
-  background-color: #ffffff;
+  background: #ffffff;
   border: 1px solid #e2e8f0;
   border-radius: 1rem;
   overflow: hidden;
@@ -24,7 +24,6 @@
   width: 100%;
   height: 220px;
   object-fit: cover;
-  border-bottom: 1px solid #e2e8f0;
 }
 
 .user-items-div-content {
@@ -32,17 +31,18 @@
 }
 
 .user-items-div-title {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: #1a202c;
-  margin-bottom: 0.75rem;
+  color: #333;
+  margin-bottom: 0.5rem;
 }
 
 .user-items-div-details {
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.3rem;
   margin-bottom: 1rem;
-  color: #4a5568;
+  color: #555;
 }
 
 .user-items-div-owner,
@@ -51,31 +51,45 @@
   font-weight: 500;
 }
 
+.auction-timing {
+  font-size: 0.85rem;
+  color: #666;
+  margin-bottom: 0.75rem;
+}
+
 .user-items-div-current-price {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-weight: 600;
+  flex-direction: column;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
 }
 
 .user-items-div-current-price-text {
   font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 .user-items-div-bid-button {
   padding: 0.6rem 1.2rem;
-  background: #A91D3A; /* Solid color */
-  color: white;
+  background: #A91D3A;
+  color: #ffffff;
+  border: none;
   border-radius: 0.5rem;
   font-size: 1rem;
   font-weight: 600;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  cursor: pointer;
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-.user-items-div-bid-button:hover {
-  background: #fc4a1a; /* Darker shade on hover */
+.user-items-div-bid-button:hover:not(.disabled) {
+  background: #fc4a1a;
   box-shadow: 0 6px 10px rgba(0, 0, 0, 0.2);
+}
+
+.user-items-div-bid-button.disabled {
+  background: #ccc;
+  cursor: not-allowed;
 }
 
 .user-items-div-wishlist-icon {
@@ -88,24 +102,26 @@
 .user-items-div-wishlist-icon:hover {
   color: #A91D3A;
 }
+
 .user-items-div-wishlist-icon.active {
-  color: #A91D3A; /* Red color for active state */
+  color: #A91D3A;
 }
+
 /* Responsive Design */
 @media (max-width: 1200px) {
   .user-items-div-container {
-    grid-template-columns: repeat(3, 1fr); /* Keep 4 items per row */
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media (max-width: 768px) {
   .user-items-div-container {
-    grid-template-columns: repeat(2, 1fr); /* Keep 4 items per row */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media (max-width: 480px) {
   .user-items-div-container {
-    grid-template-columns: repeat(1, 1fr); /* Keep 4 items per row */
+    grid-template-columns: 1fr;
   }
 }
