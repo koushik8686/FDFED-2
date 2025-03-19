@@ -8,6 +8,11 @@ export function BidChart({ auctionHistory }) {
     bidder: bid.bidder,
   }));
 
+  // Determine the min and max price for the Y-axis range
+  const prices = auctionHistory.map(bid => bid.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+
   return (
     <div className="h-[300px] w-full bg-white rounded-lg shadow-md p-4 mb-6">
       <h3 className="text-lg font-semibold mb-4">Bid Progress</h3>
@@ -21,7 +26,7 @@ export function BidChart({ auctionHistory }) {
           </defs>
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="name" />
-          <YAxis />
+          <YAxis domain={[minPrice, maxPrice]} />
           <Tooltip 
             content={({ active, payload }) => {
               if (active && payload && payload.length) {

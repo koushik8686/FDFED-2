@@ -53,6 +53,11 @@ export default function Item() {
     amount: history.price,
   }));
 
+  // Determine the min and max price for the Y-axis range
+  const prices = itemData.auction_history.map(history => history.price);
+  const minPrice = Math.min(...prices);
+  const maxPrice = Math.max(...prices);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-200 via-white to-blue-500 p-8">
       <div className="max-w-6xl mx-auto">
@@ -121,7 +126,7 @@ export default function Item() {
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={chartData}>
                 <XAxis dataKey="name" />
-                <YAxis />
+                <YAxis domain={[minPrice, maxPrice]} />
                 <Tooltip />
                 <Line type="monotone" dataKey="amount" stroke="#3b82f6" strokeWidth={2} />
               </LineChart>
@@ -160,4 +165,3 @@ function UserIcon(props) {
     </svg>
   );
 }
-
