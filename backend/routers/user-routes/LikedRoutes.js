@@ -1,24 +1,11 @@
 const express = require('express');
 const LikedController = require('../../controllers/user/LikedItems');
-const {loguserActions , userErrorMiddleware} = require('../../middleware/User')
+const { loguserActions, userErrorMiddleware } = require('../../middleware/User');
 
-class AuthRouter {
-    constructor() {
-        this.router = express.Router();
-        this.LikedController = new LikedController();
-        this.initializeRoutes();
-    }
+const router = express.Router();
 
-    initializeRoutes() {
-        this.router.get('/:id', loguserActions , userErrorMiddleware,  (req, res) => this.LikedController.getLikedItems(req, res));
-        this.router.post('/:userid/:itemid',  loguserActions , userErrorMiddleware , (req, res) => this.LikedController.addlikedItems(req, res));
-        this.router.delete('/:userid/:itemid', loguserActions , userErrorMiddleware, (req, res) => this.LikedController.deleteLikedItems(req, res));
-    }
+router.get('/:id', loguserActions, userErrorMiddleware, (req, res) => LikedController.getLikedItems(req, res));
+router.post('/:userid/:itemid', loguserActions, userErrorMiddleware, (req, res) => LikedController.addlikedItems(req, res));
+router.delete('/:userid/:itemid', loguserActions, userErrorMiddleware, (req, res) => LikedController.deleteLikedItems(req, res));
 
-    getRouter() {
-        return this.router;
-    }
-}
-
-const authRouter = new AuthRouter();
-module.exports = authRouter.getRouter();
+module.exports = router;

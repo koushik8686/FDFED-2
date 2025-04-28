@@ -1,14 +1,21 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowUpRight } from 'lucide-react';
+
 const LikedItemCard = ({ item }) => {
   return (
     <li className="liked-item-card">
       <div className="liked-item-image">
         <img src={item.url} alt={item.name} />
-        <a href={`/auction/${item._id}`} className="view-auction-button">
-          View Auction <ArrowUpRight className="w-4 h-4" />
-        </a>
+        {item.auction_active ? (
+          <a href={`/auction/${item._id}`} className="view-auction-button">
+            View Auction <ArrowUpRight className="w-4 h-4" />
+          </a>
+        ) : (
+          <span className="view-auction-button-disabled">
+            Auction Not Started
+          </span>
+        )}
       </div>
       
       <div className="liked-item-details">
@@ -23,4 +30,4 @@ const LikedItemCard = ({ item }) => {
   );
 };
 
-export default  LikedItemCard
+export default LikedItemCard;

@@ -1,21 +1,9 @@
-const express = require('express')
-const router = express.Router()
-const SellerController  = require("../../controllers/seller/seller_register")
-const {logSellerActions , sellerErrorMiddleware} = require('../../middleware/Seller')
+const express = require('express');
+const SellerController = require("../../controllers/seller/seller_register");
+const { logSellerActions, sellerErrorMiddleware } = require('../../middleware/Seller');
 
+const router = express.Router();
 
-class SellerRouter{
-       constructor(){
-           this.router = express.Router()
-           this.initializeRoutes()
-       }
-       initializeRoutes(){
-           this.router.post("/", logSellerActions , sellerErrorMiddleware,SellerController.sellerregister_post)
-       }
-       getRouter(){
-           return this.router
-       }
-}
+router.post("/", logSellerActions, sellerErrorMiddleware, SellerController.sellerregister_post);
 
-const sellerRouter = new SellerRouter();
-module.exports = sellerRouter.getRouter();
+module.exports = router;

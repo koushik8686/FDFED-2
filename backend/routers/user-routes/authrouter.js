@@ -1,21 +1,9 @@
 const express = require('express');
-const GoogleAuthController = require('../../controllers/user/googleauth');
-const {loguserActions , userErrorMiddleware} = require('../../middleware/User')
-class AuthRouter {
-    constructor() {
-        this.router = express.Router();
-        this.googleAuthController = new GoogleAuthController();
-        this.initializeRoutes();
-    }
+const { googleLogin } = require('../../controllers/user/googleauth');
+const { loguserActions, userErrorMiddleware } = require('../../middleware/User');
 
-    initializeRoutes() {
-        this.router.get('/google', loguserActions , userErrorMiddleware ,  (req, res) => this.googleAuthController.googleLogin(req, res));
-    }
+const authRouter = express.Router();
 
-    getRouter() {
-        return this.router;
-    }
-}
+authRouter.get('/google', loguserActions, userErrorMiddleware, googleLogin);
 
-const authRouter = new AuthRouter();
-module.exports = authRouter.getRouter();
+module.exports = authRouter;

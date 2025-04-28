@@ -66,7 +66,7 @@ export default function Items({ filteredItems }) {
         return (
           <div key={item.id} className="user-items-div-item">
             <img
-              src={"/" + item.url}
+              src={ item.url}
               alt={item.name}
               className="user-items-div-image"
             />
