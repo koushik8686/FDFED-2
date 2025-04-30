@@ -30,6 +30,6 @@ jobs:
       - name: Install & Test Backend
         working-directory: backend
         run: |
-          npm install
-          # npm run lint       # uncomment if you have a lint script
-          # npm run test       # uncomment if you have tests
+          npm install --legacy-peer-deps
+          # npm run lint
+          # npm run test
