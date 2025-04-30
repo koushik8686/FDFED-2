@@ -12,7 +12,7 @@ const VerifyEmail = () => {
         const verifyUserEmail = async () => {
             try {
                 // Send GET request to verify the user
-                const response = await axios.get(`http://localhost:4000/verify/${userid}`);
+                const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/verify/${userid}`);
                 console.log(response);
                 // Redirect to /login after 3 seconds
                 setTimeout(() => {

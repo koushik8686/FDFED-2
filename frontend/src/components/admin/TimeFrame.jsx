@@ -12,7 +12,7 @@ export default function TimeFrame() {
 
   async function fetchData() {
     try {
-      const response = await axios.get('/admin/home');
+      const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/admin/home`);
       console.log(response.data);
       setData(response.data.data);
       groupDataByDate(response.data.data);

@@ -32,7 +32,7 @@ const AddItem = ({ onClose, onAdd }) => {
       formData.append('EndTime', newItem.EndTime);
       formData.append('image', image);
 
-      const result = await fetch(`/create/${seller}`, {
+      const result = await fetch(`${process.env.REACT_APP_BACKENDURL}/create/${seller}`, {
         method: 'POST',
         body: formData,
       });

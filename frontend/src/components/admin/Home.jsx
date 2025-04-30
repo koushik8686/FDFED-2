@@ -15,7 +15,7 @@ export default function Admin() {
 
   async function fetchData() {
     try {
-      const response = await axios.get('/admin/home');
+      const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/admin/home`);
       console.log(response.data);
       setData(response.data.data);
     } catch (error) {
@@ -31,19 +31,19 @@ export default function Admin() {
   }, []);
 
   const deleteUser = (id) => {
-    axios.get( `/delete/user/${id}`)
+    axios.get(`${process.env.REACT_APP_BACKENDURL}/delete/user/${id}`)
       .then(() => fetchData())
       .catch((error) => console.error("Error deleting user", error));
   };
 
   const deleteSeller = (id) => {
-    axios.get(`/delete/seller/${id}`)
+    axios.get(`${process.env.REACT_APP_BACKENDURL}/delete/seller/${id}`)
       .then(() => fetchData())
       .catch((error) => console.error("Error deleting seller", error));
   };
 
   const deleteItem = (id) => {
-    axios.get(`/delete/item/${id}`)
+    axios.get(`${process.env.REACT_APP_BACKENDURL}/delete/item/${id}`)
       .then(() => fetchData())
       .catch((error) => console.error("Error deleting item", error));
   };
