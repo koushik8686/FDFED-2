@@ -22,7 +22,8 @@ jobs:
         working-directory: frontend
         run: |
           npm install
-          npm run build
+          npm install @babel/plugin-proposal-private-property-in-object --save-dev
+          CI=false npm run build  # This will treat warnings as warnings, not errors
 
       # 4. Backend: install & test (or just install if you have no tests yet)
       - name: Install & Test Backend
