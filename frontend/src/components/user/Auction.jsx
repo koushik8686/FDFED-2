@@ -32,8 +32,6 @@ export default function Auction() {
     };
 
     fetchItemData();
-    const intervalId = setInterval(fetchItemData, 1000);
-    return () => clearInterval(intervalId);
   }, [item, userid]);
   if (!itemData) {
     return (

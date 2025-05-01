@@ -19,8 +19,7 @@ export default function Item() {
 
   useEffect(() => {
     fetchItemData();
-    const intervalId = setInterval(fetchItemData, 1000);
-    return () => clearInterval(intervalId);
+
   }, [item, sellerid]);
 
   const handleBidSubmit = (e) => {
