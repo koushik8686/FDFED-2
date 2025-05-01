@@ -1,0 +1,35 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build-on-windows:
+    runs-on: windows-latest
+
+    steps:
+      # 1. Check out your code
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      # 2. Install Node.js (choose your version)
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # 3. Frontend: install & build
+      - name: Install & Build Frontend
+        working-directory: frontend
+        run: |
+          npm install
+          npm install @babel/plugin-proposal-private-property-in-object --save-dev
+          $env:CI = 'false'
+          npm run build
+            
+      # 4. Backend: install & test (or just install if you have no tests yet)
+      - name: Install & Test Backend
+        working-directory: backend
+        run: |
+          npm install --legacy-peer-deps
+          # npm run lint
+          # npm run test
