@@ -13,7 +13,7 @@ export default function Reviews() {
   const navigate = useNavigate();
   async function fetchFeedbacks() {
     try {
-      const response = await axios.get('/feedbacks');
+      const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/feedbacks`);
       const feedbackData = response.data;
       setFeedbacks(feedbackData);
       // Calculate average rating

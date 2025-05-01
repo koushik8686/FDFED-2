@@ -20,7 +20,7 @@ export default function AdminLogin() {
     event.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:4000/admin/login", {
+      const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/admin/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -23,7 +23,7 @@ const RegisterPage = () => {
     }
    //ajax
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', '/register', true);
+    xhr.open('POST', `${process.env.REACT_APP_BACKENDURL}/register`, true);
     xhr.setRequestHeader('Content-Type', 'application/json');
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) { // Request is complete
@@ -49,7 +49,7 @@ const RegisterPage = () => {
     try {
       console.log(authtesult);
       if (authtesult) {
-        const response = await axios.get(`http://localhost:4000/auth/google`, { params: { tokens: authtesult } });
+        const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/auth/google`, { params: { tokens: authtesult } });
         if (response.data.message) {
           Cookies.set('user', response.data.userId);
           console.log('Registration successful:', response.data);

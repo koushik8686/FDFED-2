@@ -17,7 +17,7 @@ function App() {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch('http://localhost:4000/feedback', {
+      const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/feedback`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

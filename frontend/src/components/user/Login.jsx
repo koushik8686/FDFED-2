@@ -12,7 +12,7 @@ export default function Component() {
   const [errormsg, seterrormsg] = useState("");
   const navigate = useNavigate();
   const user = Cookies.get("user");
-
+  console.log(process.env.REACT_APP_BACKENDURL);
   useEffect(() => {
     if (user !== undefined) {
       navigate("/home");
@@ -22,7 +22,7 @@ export default function Component() {
   const handleSubmit = (event) => {
     event.preventDefault();
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", "/login", true);
+    xhr.open("POST", `${process.env.REACT_APP_BACKENDURL}/login`, true);
     xhr.setRequestHeader("Content-Type", "application/json");
     xhr.onreadystatechange = function () {
       if (xhr.readyState === 4) {
@@ -44,7 +44,7 @@ export default function Component() {
 
   const responseGoogle = async (authResult) => {
     try {
-      const response = await axios.get("http://localhost:4000/auth/google", {
+      const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/auth/google`, {
         params: { tokens: authResult }
       });
       if (response.status === 200) {

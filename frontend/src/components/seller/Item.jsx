@@ -11,7 +11,7 @@ export default function Item() {
   const navigate = useNavigate();
 
   const fetchItemData = () => {
-    fetch(`/sell/${sellerid}/${item}`)
+    fetch(`${process.env.REACT_APP_BACKENDURL}/sell/${sellerid}/${item}`)
       .then((response) => response.json())
       .then((data) => setItemData(data.data.item))
       .catch((error) => console.error("Error fetching item data:", error));
@@ -29,7 +29,7 @@ export default function Item() {
       alert("No bids have been placed yet. You cannot sell this item.");
       return;
     }
-    axios.post(`/sell/${sellerid}/${item}`, {}, {
+    axios.post(`${process.env.REACT_APP_BACKENDURL}/sell/${sellerid}/${item}`, {}, {
       headers: {
         "Content-Type": "application/json",
       },

@@ -13,7 +13,11 @@ export default function File() {
     formdata.append('ne', seller )
     console.log(formdata, "formdata");
     console.log(file);
-    axios.post('http://localhost:4000/create/66b89cb7441d1d67cc4a0296' , formdata).then().catch((err)=>{console.log(err);})
+    axios.post(`${process.env.REACT_APP_BACKENDURL}/create/66b89cb7441d1d67cc4a0296`, formdata)
+      .then()
+      .catch((err) => {
+        console.log(err);
+      })
     }
   return (
     <div>

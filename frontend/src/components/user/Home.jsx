@@ -38,7 +38,7 @@ export default function Home() {
     const fetchUserData = () => {
       const xhr = new XMLHttpRequest();
       //true for asynchrnous
-      xhr.open('GET', `/user/${userid}`, true);
+      xhr.open('GET', `${process.env.REACT_APP_BACKENDURL}/user/${userid}`, true);
     
       // Set up a function to handle changes to the request's state
       xhr.onreadystatechange = () => {
@@ -58,7 +58,7 @@ export default function Home() {
                 return true;
               } else {
                 // Send API request to mark item as unsold
-                axios.post(`/item/unsold/${item._id}`)
+                axios.post(`${process.env.REACT_APP_BACKENDURL}/item/unsold/${item._id}`)
                   .then(response => {
                     console.log(`Item ${item._id} marked as unsold`);
                   })

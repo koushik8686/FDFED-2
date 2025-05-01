@@ -19,8 +19,8 @@ export default function SellerHome() {
       if (!sellerid) {
         return navigate("/seller");
       }
-      console.log(`/sellerhome/${sellerid}`);
-      const response = await axios.get(`/sellerhome/${sellerid}`);
+      console.log(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
+      const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
       setSeller(response.data.seller);
       console.log(response.data);
 
@@ -34,7 +34,7 @@ export default function SellerHome() {
           return true;
         } else {
           // Send API request to mark item as unsold
-          axios.post(`/item/unsold/${item._id}`)
+          axios.post(`${process.env.REACT_APP_BACKENDURL}/item/unsold/${item._id}`)
             .then(response => {
               console.log(`Item ${item._id} marked as unsold`);
             })
