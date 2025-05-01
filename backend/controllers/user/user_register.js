@@ -1,5 +1,4 @@
 const bcrypt = require('bcryptjs');
-const unverified_users = require("../../models/unverifiedusers_model");
 const users = require("../../models/usermodel");
 const nodemailer = require('nodemailer');
 
@@ -7,7 +6,7 @@ async function userregister_post(req, res) {
     const { username, email, password } = req.body;
 
     try {
-        const unverifiedUser = await unverified_users.findOne({ email });
+        const unverifiedUser = await users.findOne({ email });
         const verifiedUser = await users.findOne({ email });
 
         if (unverifiedUser || verifiedUser) {
@@ -15,7 +14,7 @@ async function userregister_post(req, res) {
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const newUser = new unverified_users({
+        const newUser = new users({
             username,
             email,
             password: hashedPassword,

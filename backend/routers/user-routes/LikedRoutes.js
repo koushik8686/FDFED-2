@@ -5,7 +5,7 @@ const { loguserActions, userErrorMiddleware } = require('../../middleware/User')
 const router = express.Router();
 
 router.get('/:id', loguserActions, userErrorMiddleware, (req, res) => LikedController.getLikedItems(req, res));
-router.post('/:userid/:itemid', loguserActions, userErrorMiddleware, (req, res) => LikedController.addlikedItems(req, res));
+router.post('/:userid/:itemid', loguserActions, userErrorMiddleware, (req, res) => LikedController.addLikedItems(req, res));
 router.delete('/:userid/:itemid', loguserActions, userErrorMiddleware, (req, res) => LikedController.deleteLikedItems(req, res));
 
 module.exports = router;

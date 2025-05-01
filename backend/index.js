@@ -8,8 +8,8 @@ require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const { itemmodel } = require("./models/itemmodel");
 const FeedBack= require('./models/FeedBackModel')
-const app = express();
 const nodemailer = require('nodemailer');
+const app = express();
 const email = "hexart637@gmail.com";
 const morgan = require('morgan');
 const transporter = nodemailer.createTransport({
@@ -33,7 +33,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'OPTIONS'],
+  methods: ['GET', 'POST', 'OPTIONS' , 'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true // only needed if using cookies/sessions
 }));
@@ -140,3 +140,5 @@ app.post('/item/unsold/:id', async (req, res) => {
   itemmodel.findByIdAndUpdate(req.params.id, { aution_active: false });
   res.status(200).send({ message: `Item ${req.params.id} marked as unsold` });
 })
+
+module.exports = app;

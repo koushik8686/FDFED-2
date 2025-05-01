@@ -1,13 +1,13 @@
 const bcrypt = require('bcryptjs');
 const sellermodel = require("../../models/sellermodel");
-const unverified_sellers = require("../../models/unverifiedsellers");
+// const sellermodel = require("../../models/unverifiedsellers");
 const nodemailer = require('nodemailer');
 
 async function sellerregister_post(req, res) {
     const { name, email, phone, password } = req.body;
 
     try {
-        const unverifiedSeller = await unverified_sellers.findOne({ email });
+        const unverifiedSeller = await sellermodel.findOne({ email });
         const verifiedSeller = await sellermodel.findOne({ email });
         if (unverifiedSeller || verifiedSeller) {
             return res.status(200).send({ message: "Email Already Exists" });
@@ -15,7 +15,7 @@ async function sellerregister_post(req, res) {
 
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        const newSeller = new unverified_sellers({
+        const newSeller = new sellermodel({
             name,
             email,
             phone,
