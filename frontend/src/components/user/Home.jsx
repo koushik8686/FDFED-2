@@ -31,6 +31,8 @@ export default function Home() {
     setShowLikedWindow((prev) => !prev);
   };
 
+
+  // This function is called when the component mounts
   useEffect(() => {
     if (Cookies.get("user") === undefined) {
       navigate("/login");
