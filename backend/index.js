@@ -20,6 +20,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+app.use(cors())
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
@@ -39,9 +40,11 @@ morgan.token('response-time-ms', (req, res) => `${res.getHeader('X-Response-Time
 app.use(
   morgan(':method :url :status :response-time ms - :body')
 );
-app.use(cors())
 app.listen(4000, function (param) { console.log("Running on port 4000"); console.log("http://localhost:4000/"); })
-
+app.get('/' , function (req, res) {
+  res.send("hello welcome to hexart")
+}
+)
 app.delete('/item/:id', function (req, res) {
   itemmodel.findbyIdAndDelete(req.params.id).then(()=>{
     res.status(200).send({message:"Item deleted successfully"});
