@@ -40,8 +40,6 @@ app.use(
   morgan(':method :url :status :response-time ms - :body')
 );
 app.use(cors())
-app.options('*', cors()); // Enable pre-flight requests for all routes
-
 app.listen(4000, function (param) { console.log("Running on port 4000"); console.log("http://localhost:4000/"); })
 
 app.delete('/item/:id', function (req, res) {
