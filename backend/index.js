@@ -20,7 +20,23 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-app.use(cors())
+const allowedOrigins = [
+  'http://localhost:3000',
+  'https://fdfed-iota.vercel.app'
+];
+
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true // only needed if using cookies/sessions
+}));
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 

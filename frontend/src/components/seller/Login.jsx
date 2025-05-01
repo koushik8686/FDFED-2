@@ -31,7 +31,7 @@ export default function SellerAuth() {
         return; // Prevent submission
       }
     }
-    const url = activeTab === 'login' ? '/sellerlogin' : '/sellerregister';
+    const url = activeTab === 'login' ? `${process.env.REACT_APP_BACKENDURL}/sellerlogin` : `${process.env.REACT_APP_BACKENDURL}/sellerregister`;
     const body = activeTab === 'login'
       ? { email, password }
       : { name, email, password, phone };
