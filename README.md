@@ -58,6 +58,11 @@ node index.js
 ```
 Backend will be available at `http://localhost:4000`.
 
+To run it using docker run the following command:
+```bash
+docker-compose down -v && docker-compose up --build
+```
+
 ### Note
 Ensure MongoDB is running locally or update the connection string in the backend configuration to point to your MongoDB instance.
 
