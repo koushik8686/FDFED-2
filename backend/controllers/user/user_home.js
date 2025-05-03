@@ -21,14 +21,16 @@ async function renderUserHome(req, res) {
         const client = await getRedisClient(); // Ensure Redis client is connected
         let user;
         let source;
-
+        let time = 0;
         const cachedUser = await client.get(`user:${email}`);
         if (cachedUser) {
             user = JSON.parse(cachedUser);
+            time = Date.now() - start;
             source = 'cache';
         } else {
             user = await usermodel.findOne({ _id: email });
             if (!user) return res.status(404).send("User not found");
+            time = Date.now() - start;
             await client.set(`user:${email}`, JSON.stringify(user), { EX: 3600 });
             source = 'db';
         }
@@ -41,7 +43,6 @@ async function renderUserHome(req, res) {
             items
         };
 
-        const time = Date.now() - start;
         await logPerformance(req, source, time);
 
         res.status(200).send({ message: "Data Fetched Successfully", source, responseTime: time, data });

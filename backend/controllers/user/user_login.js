@@ -11,13 +11,17 @@ async function userlogin_post(req, res) {
         let user;
         let source;
         const client = await getRedisClient(); // Ensure Redis client is connected
-
+        var responseTime=0
         const cachedUser = await client.get(`user:${email}`);
         if (cachedUser) {
             user = JSON.parse(cachedUser);
             source = 'cache';
+             responseTime = Date.now() - start;
+
         } else {
             user = await usermodel.findOne({ email });
+            responseTime = Date.now() - start;
+
             if (!user) {
                 return res.status(200).send({ message: "No Email" });
             }
@@ -30,7 +34,6 @@ async function userlogin_post(req, res) {
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        const responseTime = Date.now() - start;
 
         await PerformanceLog.create({
             endpoint: '/user/login',

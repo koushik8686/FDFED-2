@@ -1,16 +1,9 @@
 const express = require("express");
 const AdminController = require("../../controllers/admin/admin_login");
-const {logAdminActions , AdminErrorMiddleware} = require("../../middleware/Admin")
+const { logAdminActions, AdminErrorMiddleware } = require("../../middleware/Admin");
 
-class AdminRouter {
-  constructor() {
-    this.router = express.Router();
-    this.initializeRoutes();
-  }
+const router = express.Router();
 
-  initializeRoutes() {
-    this.router.post("/", logAdminActions , AdminErrorMiddleware, AdminController.login);
-  }
-}
+router.post("/", logAdminActions, AdminErrorMiddleware, AdminController.login);
 
-module.exports = new AdminRouter().router;
+module.exports = router;

@@ -17,6 +17,8 @@ import SellerSoldItems from './components/seller/solditems';
 import TimeFrame from './components/admin/TimeFrame';
 import FeedBack from './components/user/FeedBAckForm';
 import Reviews from './components/admin/Reviews';
+import Performance from './Performance';
+
 function App() {
   return (
     <BrowserRouter>
@@ -37,6 +39,8 @@ function App() {
         <Route path='/admin/' element={<Admin/>}/>
         <Route path='/admin/calender' element={<TimeFrame/>} />
         <Route path='/reviews'  element={<Reviews/>} />
+        <Route path='/performance' element={<Performance/>} />
+        {/* Add other routes here */}
       </Routes>
     </BrowserRouter>
   );

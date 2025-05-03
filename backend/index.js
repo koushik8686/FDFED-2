@@ -13,6 +13,7 @@ const app = express();
 const email = "hexart637@gmail.com";
 const morgan = require('morgan');
 const PerformanceLog = require('./models/PerformanceLog');
+const getRedisClient = require('./redis'); // Import Redis client
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {

@@ -2,6 +2,7 @@ const sellermodel = require("../../models/sellermodel");
 const usermodel = require("../../models/usermodel");
 const { itemmodel } = require("../../models/itemmodel");
 const nodemailer = require('nodemailer');
+const getRedisClient = require("../../redis");
 
 async function sellingPageGet(req, res) {
     try {
@@ -24,6 +25,8 @@ async function sellingPageGet(req, res) {
 
 async function sellingPagePost(req, res) {
     try {
+        const client = await getRedisClient();
+
         const item = await itemmodel.findById(req.params.itemid);
         if (!item) {
             return res.status(404).send({ message: "Item already sold" });
@@ -75,6 +78,7 @@ async function sellingPagePost(req, res) {
         await user.save();
 
         await itemmodel.deleteOne({ _id: req.params.itemid });
+        await client.flushAll();
 
         res.status(200).send({ message: "Item sold successfully", item });
     } catch (error) {

@@ -1,5 +1,6 @@
 const sellermodel = require("../../models/sellermodel");
 const { itemmodel } = require("../../models/itemmodel");
+const getRedisClient = require("../../redis");
 const cloudinary = require("cloudinary").v2;
 
 // Configure Cloudinary
@@ -11,31 +12,26 @@ cloudinary.config({
 
 async function createAuctionPost(req, res) {
   try {
+    const client = await getRedisClient(); // Redis client
 
     const seller = await sellermodel.findById(req.params.seller);
+    if (!seller) return res.status(404).send({ message: "Seller not found" });
 
-    if (!seller) {
-      return res.status(404).send({ message: "Seller not found" });
-    }
-
-    // Upload image to Cloudinary using the file buffer
-  
-    // Combine date and time strings into proper Date objects.
-    const dateString = req.body.date; // expect format "YYYY-MM-DD"
+    const dateString = req.body.date;
     const startTime = new Date(`${dateString}T${req.body.StartTime}:00`);
     const endTime = new Date(`${dateString}T${req.body.EndTime}:00`);
-    console.log(req.body)
+
     const item = new itemmodel({
       name: req.body.name,
       person: seller.name,
       pid: req.params.seller,
-      url: req.file.path, // Use Cloudinary URL
+      url: req.file.path, // Assuming multer or similar is saving it here
       base_price: req.body.basePrice,
       type: req.body.type,
       current_price: req.body.basePrice,
       current_bidder: "",
       current_bidder_id: "",
-      aution_active: true, // Auction is active initially
+      aution_active: true,
       date: new Date(dateString),
       StartTime: startTime,
       EndTime: endTime,
@@ -44,11 +40,11 @@ async function createAuctionPost(req, res) {
     });
 
     await item.save();
-    console.log("Item saved");
-
     seller.items.push(item);
     await seller.save();
-    console.log("Seller updated with new item");
+
+    // Invalidate cache
+    await client.flushAll();
 
     return res.status(200).send({ message: "Item created successfully" });
   } catch (error) {

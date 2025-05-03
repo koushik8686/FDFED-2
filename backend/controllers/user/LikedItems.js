@@ -1,13 +1,41 @@
 const usermodel = require('../../models/usermodel');
 const { itemmodel } = require('../../models/itemmodel');
+const getRedisClient = require('../../redis');
+const PerformanceLog = require('../../models/PerformanceLog');
 
 async function getLikedItems(req, res) {
+    const start = Date.now();
+    const client = await getRedisClient();
+    let source;
+    let responseTime;
+
     try {
-        const user = await usermodel.findById(req.params.id);
-        if (!user) {
-            return res.status(404).send({ message: 'User not found' });
+        const cacheKey = `liked:${req.params.id}`;
+        const cachedLikedItems = await client.get(cacheKey);
+        let likedItems;
+
+        if (cachedLikedItems) {
+            likedItems = JSON.parse(cachedLikedItems);
+            source = 'cache';
+            responseTime = Date.now() - start;
+        } else {
+            const user = await usermodel.findById(req.params.id).populate('liked');
+            if (!user) return res.status(404).send({ message: 'User not found' });
+
+            likedItems = user.liked;
+            await client.set(cacheKey, JSON.stringify(likedItems), { EX: 3600 });
+            source = 'db';
+            responseTime = Date.now() - start;
         }
-        res.status(200).json(user.liked);
+
+        await PerformanceLog.create({
+            endpoint: '/liked/:id',
+            method: req.method,
+            source,
+            responseTime,
+        });
+
+        res.status(200).json(likedItems);
     } catch (error) {
         console.error("Error fetching liked items:", error);
         res.status(500).send("Internal Server Error");
@@ -16,8 +44,10 @@ async function getLikedItems(req, res) {
 
 async function addLikedItems(req, res) {
     try {
-        const user = await usermodel.findById(req.params.userid);
-        const item = await itemmodel.findById(req.params.itemid);
+        const client = await getRedisClient();
+        const { userid, itemid } = req.params;
+        const user = await usermodel.findById(userid);
+        const item = await itemmodel.findById(itemid);
 
         if (!user || !item) {
             return res.status(404).send({ message: 'User or Item not found' });
@@ -25,6 +55,10 @@ async function addLikedItems(req, res) {
 
         user.liked.push(item);
         await user.save();
+
+        // Invalidate cache
+        await client.del(`liked:${userid}`);
+
         res.status(200).json({ message: "Added to Liked items" });
     } catch (error) {
         console.error("Error adding liked item:", error);
@@ -34,15 +68,21 @@ async function addLikedItems(req, res) {
 
 async function deleteLikedItems(req, res) {
     try {
-        const user = await usermodel.findById(req.params.userid);
-        const item = await itemmodel.findById(req.params.itemid);
+        const client = await getRedisClient();
+        const { userid, itemid } = req.params;
+        const user = await usermodel.findById(userid);
+        const item = await itemmodel.findById(itemid);
 
         if (!user || !item) {
             return res.status(404).send({ message: 'User or Item not found' });
         }
 
-        user.liked = user.liked.filter(i => i._id.toString() !== item._id.toString());
+        user.liked = user.liked.filter(i => i.toString() !== item._id.toString());
         await user.save();
+
+        // Invalidate cache
+        await client.del(`liked:${userid}`);
+
         res.status(200).json({ message: "Deleted from Liked items" });
     } catch (error) {
         console.error("Error deleting liked item:", error);

@@ -1,7 +1,10 @@
 const usermodel = require("../../models/usermodel");
 const { itemmodel } = require("../../models/itemmodel");
+const getRedisClient = require("../../redis");
+const client = await getRedisClient(); // Redis client
 
 async function renderAuctionPage(req, res) {
+   
     try {
         const user = await usermodel.findOne({ _id: req.params.userid });
         if (!user) {
@@ -37,6 +40,7 @@ async function renderAuctionPage(req, res) {
 
 async function bid(req, res) {
     const price = Number(req.body.bid);
+    await client.flushAll();
 
     try {
         const user = await usermodel.findOne({ _id: req.params.userid });

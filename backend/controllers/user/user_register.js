@@ -8,10 +8,11 @@ async function userregister_post(req, res) {
     const start = Date.now();
     const { username, email, password } = req.body;
     const client = await getRedisClient(); // Ensure Redis client is connected
-
+    let responseTime = 0;
     try {
         const cachedUser = await client.get(`user:${email}`);
         if (cachedUser) {
+            responseTime = Date.now() - start;
             return res.status(200).send({ message: "Email Already Exists" });
         }
 
@@ -19,6 +20,7 @@ async function userregister_post(req, res) {
         const verifiedUser = await users.findOne({ email });
 
         if (unverifiedUser || verifiedUser) {
+             responseTime = Date.now() - start;
             return res.status(200).send({ message: "Email Already Exists" });
         }
 
@@ -64,8 +66,8 @@ async function userregister_post(req, res) {
                 console.log("Mail sent successfully to receiver");
             }
         });
-
-        const responseTime = Date.now() - start;
+        responseTime = Date.now() - start;
+        
         await PerformanceLog.create({
             endpoint: '/user/register',
             method: req.method,
