@@ -1,11 +1,20 @@
 const bcrypt = require('bcryptjs');
 const users = require("../../models/usermodel");
 const nodemailer = require('nodemailer');
+const getRedisClient = require('../../redis');
+const PerformanceLog = require('../../models/PerformanceLog');
 
 async function userregister_post(req, res) {
+    const start = Date.now();
     const { username, email, password } = req.body;
+    const client = await getRedisClient(); // Ensure Redis client is connected
 
     try {
+        const cachedUser = await client.get(`user:${email}`);
+        if (cachedUser) {
+            return res.status(200).send({ message: "Email Already Exists" });
+        }
+
         const unverifiedUser = await users.findOne({ email });
         const verifiedUser = await users.findOne({ email });
 
@@ -22,6 +31,7 @@ async function userregister_post(req, res) {
         });
 
         await newUser.save();
+        await client.set(`user:${newUser.email}`, JSON.stringify(newUser), { EX: 3600 });
 
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -53,6 +63,14 @@ async function userregister_post(req, res) {
             } else {
                 console.log("Mail sent successfully to receiver");
             }
+        });
+
+        const responseTime = Date.now() - start;
+        await PerformanceLog.create({
+            endpoint: '/user/register',
+            method: req.method,
+            source: 'db',
+            responseTime
         });
 
         res.status(200).send({ message: "Verification Email Sent To Your Email" });

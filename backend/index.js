@@ -12,6 +12,7 @@ const nodemailer = require('nodemailer');
 const app = express();
 const email = "hexart637@gmail.com";
 const morgan = require('morgan');
+const PerformanceLog = require('./models/PerformanceLog');
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -139,6 +140,11 @@ app.use("/delete" ,require("./routers/admin-routes/deleteitem") )
 app.post('/item/unsold/:id', async (req, res) => {
   itemmodel.findByIdAndUpdate(req.params.id, { aution_active: false });
   res.status(200).send({ message: `Item ${req.params.id} marked as unsold` });
+})
+
+app.get("/performance" , async (req, res) => {
+  const logs = await PerformanceLog.find();
+  res.json(logs);
 })
 
 module.exports = app;

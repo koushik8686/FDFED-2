@@ -4,7 +4,11 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 
-
+const create_auction = require("../routers/seller-routes/create_auction");
+const sell_item = require("../routers/seller-routes/sell_item");
+const seller_home = require("../routers/seller-routes/seller_home");
+const seller_login = require("../routers/seller-routes/seller_login");
+const seller_register = require("../routers/seller-routes/seller_register");
 
 // Initialize Express app
 const app = express();
@@ -13,22 +17,13 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-// Import controllers
+// Use imported routers
+app.use("/seller/register", seller_register);
+app.use("/seller/login", seller_login);
+app.use("/seller/home", seller_home);
+app.use("/seller/sell", sell_item);
+app.use("/seller/auction", create_auction);
 
-// Routes
-app.get("/sellers", getAllSellers);
-app.get("/sellers/:id", getSellerById);
-app.post("/sellers", createSeller);
-app.put("/sellers/:id", updateSeller);
-app.delete("/sellers/:id", deleteSeller);
-
-app.get("/items", getAllItems);
-app.get("/items/:id", getItemById);
-app.post("/items", createItem);
-app.put("/items/:id", updateItem);
-app.delete("/items/:id", deleteItem);
-
-app.use('/sellers', require('./routers/seller-routes/seller_login'));
 // Import models
 const Seller = require("../../models/sellerModel");
 const Item = require("../../models/itemModel");
@@ -67,130 +62,89 @@ afterAll(async () => {
 });
 
 describe("Seller APIs", () => {
-  describe("Seller CRUD Operations", () => {
-    it("should fetch all sellers", async () => {
-      const res = await request(app).get("/sellers");
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ _id: testSellerId })
-        ])
-      );
-    });
-
-    it("should fetch a specific seller", async () => {
-      const res = await request(app).get(`/sellers/${testSellerId}`);
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.objectContaining({ 
-          _id: testSellerId, 
-          name: "Test Seller" 
-        })
-      );
-    });
-
-    it("should create a new seller", async () => {
-      const newSellerData = { 
-        name: "New Seller", 
-        email: "new@seller.com",
-        password: "Test@1234"
-      };
-      const res = await request(app).post("/sellers").send(newSellerData);
-      expect(res.statusCode).toBe(201);
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          name: newSellerData.name,
-          email: newSellerData.email
-        })
-      );
-
-      await Seller.findByIdAndDelete(res.body._id);
-    });
-
-    it("should update a seller", async () => {
-      const updatedData = { name: "Updated Seller" };
-      const res = await request(app)
-        .put(`/sellers/${testSellerId}`)
-        .send(updatedData);
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.objectContaining(updatedData)
-      );
-    });
-
-    it("should delete a seller", async () => {
-      const tempSeller = await Seller.create({ 
-        name: "Temp Seller", 
-        email: "temp@seller.com",
-        password: "Test@1234"
+  describe("Seller Registration", () => {
+    it("should register a new seller successfully", async () => {
+      const res = await request(app).post("/seller/register").send({
+        name: "New Seller",
+        email: "newseller@example.com",
+        password: "NewSeller@1234",
       });
-      const res = await request(app).delete(`/sellers/${tempSeller._id}`);
       expect(res.statusCode).toBe(200);
 
-      const deletedSeller = await Seller.findById(tempSeller._id);
-      expect(deletedSeller).toBeNull();
+      // Cleanup
+      const seller = await Seller.findOne({ email: "newseller@example.com" });
+      if (seller) await Seller.findByIdAndDelete(seller._id);
+    });
+
+    it("should not allow duplicate email registration", async () => {
+      const res = await request(app).post("/seller/register").send({
+        name: "Test Seller",
+        email: "test@seller.com",
+        password: "Test@1234",
+      });
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toBe("Email Already Exists");
     });
   });
 
-  describe("Item CRUD Operations", () => {
-    it("should fetch all items", async () => {
-      const res = await request(app).get("/items");
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.arrayContaining([
-          expect.objectContaining({ _id: testItemId })
-        ])
-      );
-    });
-
-    it("should fetch a specific item", async () => {
-      const res = await request(app).get(`/items/${testItemId}`);
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.objectContaining({ 
-          _id: testItemId, 
-          name: "Test Item" 
-        })
-      );
-    });
-
-    it("should create a new item", async () => {
-      const newItemData = { 
-        name: "New Item", 
-        price: 200, 
-        sellerId: testSellerId 
-      };
-      const res = await request(app).post("/items").send(newItemData);
-      expect(res.statusCode).toBe(201);
-      expect(res.body).toEqual(
-        expect.objectContaining(newItemData)
-      );
-
-      await Item.findByIdAndDelete(res.body._id);
-    });
-
-    it("should update an item", async () => {
-      const updatedData = { name: "Updated Item", price: 150 };
-      const res = await request(app)
-        .put(`/items/${testItemId}`)
-        .send(updatedData);
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toEqual(
-        expect.objectContaining(updatedData)
-      );
-    });
-
-    it("should delete an item", async () => {
-      const tempItem = await Item.create({ 
-        name: "Temp Item", 
-        price: 50, 
-        sellerId: testSellerId 
+  describe("Seller Login", () => {
+    it("should login successfully with correct credentials", async () => {
+      const res = await request(app).post("/seller/login").send({
+        email: "test@seller.com",
+        password: "Test@1234",
       });
-      const res = await request(app).delete(`/items/${tempItem._id}`);
       expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe("Login Successfully");
+    });
 
-      const deletedItem = await Item.findById(tempItem._id);
-      expect(deletedItem).toBeNull();
+    it("should return error for incorrect password", async () => {
+      const res = await request(app).post("/seller/login").send({
+        email: "test@seller.com",
+        password: "WrongPassword",
+      });
+      expect(res.statusCode).toBe(400);
+      expect(res.body.message).toBe("Wrong Password");
+    });
+  });
+
+  describe("Seller Home", () => {
+    it("should return seller data for a valid ID", async () => {
+      const res = await request(app).get(`/seller/home/${testSellerId}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+    });
+
+    it("should return 404 for an invalid ID", async () => {
+      const res = await request(app).get("/seller/home/invalidId");
+      expect(res.statusCode).toBe(404);
+    });
+  });
+
+  describe("Sell Item", () => {
+    it("should render the selling page", async () => {
+      const res = await request(app).get(`/seller/sell/${testSellerId}/${testItemId}`);
+      expect(res.statusCode).toBe(200);
+    });
+
+    it("should post an item for sale", async () => {
+      const res = await request(app).post(`/seller/sell/${testSellerId}/${testItemId}`).send({
+        price: 100,
+        description: "Test Item Description",
+      });
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe("Item Posted Successfully");
+    });
+  });
+
+  describe("Create Auction", () => {
+    it("should create a new auction", async () => {
+      const res = await request(app)
+        .post(`/seller/auction/${testSellerId}`)
+        .attach("image", Buffer.from("test image"), "test.jpg")
+        .field("title", "Test Auction")
+        .field("startingBid", 100);
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe("Auction Created Successfully");
     });
   });
 });
