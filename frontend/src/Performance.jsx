@@ -549,46 +549,45 @@ export default function PerformanceAnalytics() {
         ))}
       </div>
 
-      {/* Current Stats List */}
-      <div className="bg-white rounded-xl shadow-md overflow-hidden">
-        <div className="p-6">
-          <h3 className="text-xl font-bold text-gray-800 mb-4">Current API Stats</h3>
-          <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead>
-                <tr className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Endpoint</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Source</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Response Time (ms)</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Timestamp</th>
-                </tr>
-              </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
-                {apiData.slice(0, 10).map((item) => (
-                  <tr key={item._id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.endpoint}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                        item.source === 'db' 
-                          ? 'bg-red-100 text-red-800' 
-                          : 'bg-teal-100 text-teal-800'
-                      }`}>
-                        {item.source}
-                      </span>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.responseTime}</td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(item.timestamp).toLocaleString()}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+    <div className="bg-white rounded-xl shadow-md overflow-hidden">
+          <div className="p-6">
+            <h3 className="text-xl font-bold text-gray-800 mb-4">Current API Stats</h3>
+            <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead>
+              <tr className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Endpoint</th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Source</th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Response Time (ms)</th>
+            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Timestamp</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {apiData.slice().reverse().slice(0, 20).map((item) => (
+            <tr key={item._id} className="hover:bg-gray-50">
+              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.endpoint}</td>
+              <td className="px-6 py-4 whitespace-nowrap">
+                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+              item.source === 'db' 
+                ? 'bg-red-100 text-red-800' 
+                : 'bg-teal-100 text-teal-800'
+                }`}>
+              {item.source}
+                </span>
+              </td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.responseTime}</td>
+              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                {new Date(item.timestamp).toLocaleString()}
+              </td>
+            </tr>
+              ))}
+            </tbody>
+          </table>
+            </div>
           </div>
         </div>
-      </div>
 
-      {/* Endpoint Performance Cards */}
+        {/* Endpoint Performance Cards */}
    
     </div>
   )

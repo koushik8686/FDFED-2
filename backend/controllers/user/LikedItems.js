@@ -5,28 +5,15 @@ const PerformanceLog = require('../../models/PerformanceLog');
 
 async function getLikedItems(req, res) {
     const start = Date.now();
-    const client = await getRedisClient();
-    let source;
+    let source = 'db';
     let responseTime;
 
     try {
-        const cacheKey = `liked:${req.params.id}`;
-        const cachedLikedItems = await client.get(cacheKey);
-        let likedItems;
+        const user = await usermodel.findById(req.params.id).populate('liked');
+        if (!user) return res.status(404).send({ message: 'User not found' });
 
-        if (cachedLikedItems) {
-            likedItems = JSON.parse(cachedLikedItems);
-            source = 'cache';
-            responseTime = Date.now() - start;
-        } else {
-            const user = await usermodel.findById(req.params.id).populate('liked');
-            if (!user) return res.status(404).send({ message: 'User not found' });
-
-            likedItems = user.liked;
-            await client.set(cacheKey, JSON.stringify(likedItems), { EX: 3600 });
-            source = 'db';
-            responseTime = Date.now() - start;
-        }
+        const likedItems = user.liked;
+        responseTime = Date.now() - start;
 
         await PerformanceLog.create({
             endpoint: '/liked/:id',
@@ -57,7 +44,7 @@ async function addLikedItems(req, res) {
         await user.save();
 
         // Invalidate cache
-        await client.del(`liked:${userid}`);
+        await client.flushAll();
 
         res.status(200).json({ message: "Added to Liked items" });
     } catch (error) {
@@ -77,11 +64,12 @@ async function deleteLikedItems(req, res) {
             return res.status(404).send({ message: 'User or Item not found' });
         }
 
-        user.liked = user.liked.filter(i => i.toString() !== item._id.toString());
+        user.liked = user.liked.filter(i => i._id.toString() !== itemid);
+        console.log("bef",user.liked.length)
         await user.save();
-
+        console.log("aft",user.liked.length) 
         // Invalidate cache
-        await client.del(`liked:${userid}`);
+        await client.flushAll();
 
         res.status(200).json({ message: "Deleted from Liked items" });
     } catch (error) {

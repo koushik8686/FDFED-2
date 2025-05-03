@@ -21,11 +21,11 @@ export default function SellerHome() {
       }
       console.log(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
       const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
-      setSeller(response.data.seller);
-      console.log(response.data);
+      setSeller(response.data.data.seller);
+      console.log(response.data.seller);
 
       const currentTime = new Date();
-      const validItems = response.data.seller.items.filter(item => {
+      const validItems = response.data.data.seller.items.filter(item => {
         if (!item.EndTime) {
           return true;
         }
@@ -129,7 +129,7 @@ export default function SellerHome() {
 
               return (
                 <div key={item._id} className="item-card">
-                  <img src={"/" + item.url} alt={item.name} className="item-image" />
+                  <img src={item.url} alt={item.name} className="item-image" />
                   <div className="item-content">
                     <div className="qwe">
                       <h3 className="item-title">{item.name}</h3>

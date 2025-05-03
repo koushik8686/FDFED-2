@@ -13,6 +13,7 @@ export default function Items({ filteredItems }) {
   const wishlist = useSelector((state) => state.liked);
 
   const handleAddToWishlist = async (item) => {
+    console.log(item)
     dispatch(toggleWishlist(item)); // Dispatch the action with the entire item
     if (user) {
       try {

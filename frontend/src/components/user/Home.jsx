@@ -72,7 +72,6 @@ export default function Home() {
             });
             setItems(validItems.reverse());
             data.data.user.liked.forEach((item) => {
-              console.log(item);
               dispatch(toggleWishlist(item));
             });
           } else {
