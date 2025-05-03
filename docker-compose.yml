@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: ./frontend
+    ports: ["3000:80"]
+    depends_on: ["backend"]
+    environment:
+      - NODE_ENV=production
+
+  backend:
+    build: ./backend
+    ports: ["4000:4000"]
+    environment:
+      - NODE_ENV=production
+    # Uncomment if using MongoDB
+    depends_on: ["mongodb"]
+
+  mongodb:
+    image: mongo:latest
+    volumes: ["mongo-data:/data/db"]
+    ports: ["27017:27017"]
+
+volumes:
+  mongo-data:
