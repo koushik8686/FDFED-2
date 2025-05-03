@@ -1,0 +1,780 @@
+openapi: 3.0.0
+info:
+  title: FDFED API Documentation
+  version: 1.0.0
+  description: API documentation for the FDFED application.
+
+servers:
+  - url: http://localhost:4000
+    description: Local server
+
+components:
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: token
+
+  schemas:
+    Feedback:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        feedback:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        createdAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - email
+        - feedback
+        - rating
+
+    VisitedUser:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+
+    AuctionHistoryEntry:
+      type: object
+      properties:
+        bidder:
+          type: string
+        price:
+          type: number
+
+    Item:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        person:
+          type: string
+        pid:
+          type: string
+        url:
+          type: string
+          format: uri
+        base_price:
+          type: number
+        current_bidder:
+          type: string
+        current_bidder_id:
+          type: string
+        current_price:
+          type: number
+        type:
+          type: string
+        auction_active:
+          type: boolean
+        date:
+          type: string
+          format: date-time
+        StartTime:
+          type: string
+          format: date-time
+        EndTime:
+          type: string
+          format: date-time
+        visited_users:
+          type: array
+          items:
+            $ref: '#/components/schemas/VisitedUser'
+        auction_history:
+          type: array
+          items:
+            $ref: '#/components/schemas/AuctionHistoryEntry'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        liked:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - email
+        - password
+
+    Seller:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+          format: email
+        phone:
+          type: string
+        password:
+          type: string
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        solditems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        likeditems:
+          type: array
+          items:
+            $ref: '#/components/schemas/Item'
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required:
+        - name
+        - email
+        - password
+
+paths:
+  /:
+    get:
+      summary: Welcome message
+      responses:
+        '200':
+          description: Returns a welcome message.
+
+  /item/{id}:
+    delete:
+      summary: Delete an item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item to delete
+      responses:
+        '200':
+          description: Item deleted successfully.
+
+  /feedback:
+    post:
+      summary: Submit feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                feedback:
+                  type: string
+                rating:
+                  type: integer
+              required:
+                - name
+                - email
+                - feedback
+                - rating
+      responses:
+        '200':
+          description: Feedback saved and email sent successfully.
+
+  /feedbacks:
+    get:
+      summary: Get all feedbacks
+      responses:
+        '200':
+          description: Returns a list of feedbacks.
+
+  /register:
+    post:
+      summary: Register a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - username
+                - email
+                - password
+      responses:
+        '200':
+          description: Verification email sent.
+
+  /login:
+    post:
+      summary: Login a user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Login successful.
+
+  /user/{email}:
+    get:
+      summary: Get user home data
+      parameters:
+        - name: email
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Email of the user
+      responses:
+        '200':
+          description: Returns user home data.
+
+  /auction/{userid}/{itemid}:
+    get:
+      summary: Render auction page
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Returns auction page data.
+
+    post:
+      summary: Place a bid
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                bid:
+                  type: number
+              required:
+                - bid
+      responses:
+        '200':
+          description: Bid placed successfully.
+
+  /liked/{id}:
+    get:
+      summary: Get liked items
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+      responses:
+        '200':
+          description: Returns liked items.
+
+  /liked/{userid}/{itemid}:
+    post:
+      summary: Add an item to liked items
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Item added to liked items.
+
+    delete:
+      summary: Remove an item from liked items
+      parameters:
+        - name: userid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Item removed from liked items.
+
+  /auth/google:
+    get:
+      summary: Google login
+      responses:
+        '200':
+          description: Google login successful.
+
+  /verify/{id}:
+    get:
+      summary: Verify email
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the user to verify
+      responses:
+        '200':
+          description: Email verified successfully.
+
+  /user:
+    get:
+      summary: Get user profile
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: User data
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+
+  /auction:
+    get:
+      summary: Get active auctions
+      responses:
+        '200':
+          description: List of active auctions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Item'
+
+  /sellerregister:
+    post:
+      summary: Seller registration
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Seller'
+      responses:
+        '201':
+          description: Seller created successfully
+
+  /sellerlogin:
+    post:
+      summary: Seller login
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email: 
+                  type: string
+                  format: email
+                password: 
+                  type: string
+              required: 
+                - email
+                - password
+      responses:
+        '200':
+          description: Successfully logged in
+          headers:
+            Set-Cookie:
+              schema:
+                type: string
+                example: token=abcde12345; Path=/; HttpOnly
+
+  /admin/home:
+    get:
+      summary: Admin dashboard
+      security:
+        - cookieAuth: []
+      responses:
+        '200':
+          description: Admin dashboard data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  source:
+                    type: string
+                  responseTime:
+                    type: number
+                  data:
+                    type: object
+                    properties:
+                      users:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/User'
+                      sellers:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Seller'
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Item'
+
+  /delete:
+    post:
+      summary: Delete item
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+                type:
+                  type: string
+                  enum: [user, seller, item]
+              required:
+                - id
+                - type
+      responses:
+        '200':
+          description: Item deleted successfully
+        '400':
+          description: Invalid type
+        '404':
+          description: Not found
+        '500':
+          description: Internal Server Error
+
+  /item/unsold/{id}:
+    post:
+      summary: Mark item as unsold
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Item status updated
+        '404':
+          description: Item not found
+        '500':
+          description: Internal Server Error
+
+  /delete:
+    post:
+      summary: Delete item
+      security:
+        - cookieAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: string
+              required:
+                - id
+      responses:
+        '200':
+          description: Item deleted successfully
+
+  /item/unsold/{id}:
+    post:
+      summary: Mark item as unsold
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Item status updated
+
+  /seller/login:
+    post:
+      summary: Seller login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Successfully logged in
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  sellerId:
+                    type: string
+
+  /seller/home/{id}:
+    get:
+      summary: Get seller home data
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the seller
+      responses:
+        '200':
+          description: Returns seller home data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  source:
+                    type: string
+                  responseTime:
+                    type: number
+                  data:
+                    type: object
+                    properties:
+                      seller:
+                        $ref: '#/components/schemas/Seller'
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Item'
+
+  /seller/sell/{seller}/{itemid}:
+    get:
+      summary: Get selling page data
+      parameters:
+        - name: seller
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the seller
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Returns selling page data
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: string
+                      username:
+                        type: string
+                      item:
+                        $ref: '#/components/schemas/Item'
+
+    post:
+      summary: Mark item as sold
+      parameters:
+        - name: seller
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the seller
+        - name: itemid
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the item
+      responses:
+        '200':
+          description: Item sold successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                  item:
+                    $ref: '#/components/schemas/Item'
+
+  /seller/auction/{seller}:
+    post:
+      summary: Create a new auction
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                basePrice:
+                  type: number
+                type:
+                  type: string
+                date:
+                  type: string
+                  format: date
+                StartTime:
+                  type: string
+                  format: time
+                EndTime:
+                  type: string
+                  format: time
+                image:
+                  type: string
+                  format: binary
+              required:
+                - name
+                - basePrice
+                - type
+                - date
+                - StartTime
+                - EndTime
+                - image
+      parameters:
+        - name: seller
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ID of the seller
+      responses:
+        '200':
+          description: Auction created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+
+security:
+  - cookieAuth: []

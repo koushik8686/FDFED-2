@@ -15,7 +15,7 @@ export default function Auction() {
 
   useEffect(() => {
     const fetchItemData = () => {
-      fetch(`/auction/${userid}/item/${item}`)
+      fetch(`${process.env.REACT_APP_BACKENDURL}/auction/${userid}/item/${item}`)
         .then((response) => {
           if (response.status === 404) {
             navigate("/home");
@@ -51,7 +51,7 @@ export default function Auction() {
       }
     }
 
-    fetch(`/auction/${userid}/item/${item}`, {
+    fetch(`${process.env.REACT_APP_BACKENDURL}/auction/${userid}/item/${item}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -61,7 +61,7 @@ export default function Auction() {
       .then((response) => response.json())
       .then((data) => {
         setBidAmount("");
-        fetch(`/auction/${userid}/item/${item}`)
+        fetch(`${process.env.REACT_APP_BACKENDURL}/auction/${userid}/item/${item}`)
           .then((response) => response.json())
           .then((newData) => {
             setItemData(newData.data.item);
@@ -96,7 +96,7 @@ export default function Auction() {
         >
           <div className="relative group overflow-hidden rounded-3xl">
             <img
-              src={`/${itemData.url}`}
+              src={`${itemData.url}`}
               alt={itemData.name}
               className="w-full h-[300px] object-cover transition-transform duration-300 group-hover:scale-110"
             />

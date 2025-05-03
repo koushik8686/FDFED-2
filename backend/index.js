@@ -14,6 +14,10 @@ const email = "hexart637@gmail.com";
 const morgan = require('morgan');
 const PerformanceLog = require('./models/PerformanceLog');
 const getRedisClient = require('./redis'); // Import Redis client
+const YAML = require('yamljs');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDoc = YAML.load('./swagger.yaml');
+
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -42,6 +46,7 @@ app.use(cors({
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 //Inbuilt middleware
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
