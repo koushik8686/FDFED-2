@@ -1,7 +1,6 @@
 const sellermodel = require("../../models/sellermodel");
 const usermodel = require("../../models/usermodel");
 const { itemmodel } = require("../../models/itemmodel");
-const nodemailer = require('nodemailer');
 const getRedisClient = require("../../redis");
 
 async function sellingPageGet(req, res) {
@@ -51,28 +50,6 @@ async function sellingPagePost(req, res) {
         if (!user) {
             return res.status(404).send({ message: "Buyer not found" });
         }
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: "hexart637@gmail.com",
-                pass: 'zetk dsdm imvx keoa',
-            }
-        });
-
-        const mailOptions = {
-            from: seller.email,
-            to: user.email,
-            subject: 'Item Bid Successful',
-            html: `<h3>Congratulations</h3>
-                   <p>The seller has sold the item you were bidding on to you</p>
-                   <h5>Item Details :</h5>
-                   <p>Name: ${item.name}</p>
-                   <p>Price: ${item.base_price}</p>
-                   <p>Email: ${seller.email}</p>`
-        };
-
-        await transporter.sendMail(mailOptions);
 
         user.items.push(item);
         await user.save();
