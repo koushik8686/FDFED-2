@@ -19,11 +19,11 @@ export default function Items({ filteredItems }) {
       try {
         if (wishlist.find((wishlistItem) => wishlistItem._id === item._id)) {
           // Remove from wishlist
-          await axios.delete(`http://localhost:4000/liked/${user}/${item._id}`);
+          await axios.delete(`${process.env.REACT_APP_BACKENDURL}/liked/${user}/${item._id}`);
           console.log(`Removed from wishlist: ${item.name}`);
         } else {
           // Add to wishlist
-          await axios.post(`http://localhost:4000/liked/${user}/${item._id}`);
+          await axios.post(`${process.env.REACT_APP_BACKENDURL}/liked/${user}/${item._id}`);
           console.log(`Added to wishlist: ${item.name}`);
         }
       } catch (error) {
