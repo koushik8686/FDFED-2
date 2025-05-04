@@ -9,7 +9,7 @@ export default function MyItems({MyfilteredItems} ) {
       {MyfilteredItems.map(item => (
         <div key={item.id} className="user-myitems-div-item">
           <img
-            src={"/"+item.url}
+            src={item.url}
             alt={item.name}
             className="user-myitems-div-image"
           />
