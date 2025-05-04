@@ -48,21 +48,13 @@ export default function Items({ filteredItems }) {
     <div style={boxStyle} className="user-items-div-container">
       {filteredItems.map((item) => {
         // Auction timing details for each item
-        const now = new Date();
+        const now = new Date(new Date().toISOString()); // Ensure `now` is in UTC
         const hasAuctionTiming = item.date && item.StartTime && item.EndTime;
-        const formattedDate = hasAuctionTiming
-          ? new Date(item.date).toLocaleDateString()
-          : 'N/A';
-        const startTime = hasAuctionTiming ? new Date(item.StartTime) : null;
-        const formattedStartTime = hasAuctionTiming
-          ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          : 'N/A';
-        const endTime = hasAuctionTiming ? new Date(item.EndTime) : null;
-        const formattedEndTime = hasAuctionTiming
-          ? endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-          : 'N/A';
-
-        const auctionStarted = hasAuctionTiming ? now >= startTime : false;
+        const formattedDate = hasAuctionTiming ? new Date(item.date).toISOString().split('T')[0] : 'N/A';
+        const formattedStartTime = hasAuctionTiming ? item.StartTime.split('T')[1].slice(0, 5) + '' : 'N/A';
+        const formattedEndTime = hasAuctionTiming ? item.EndTime.split('T')[1].slice(0, 5) + '' : 'N/A';
+         
+        const auctionStarted = hasAuctionTiming ? now >= new Date(item.StartTime) : false;
 
         return (
           <div key={item.id} className="user-items-div-item">
@@ -105,9 +97,11 @@ export default function Items({ filteredItems }) {
                       </button>
                     </Link>
                   ) : (
-                    <button className="user-items-div-bid-button disabled" disabled>
-                      Auction Not Started Yet
+                    <Link to={`/auction/${item._id}`}>
+                    <button className="user-items-div-bid-button">
+                      Bid
                     </button>
+                  </Link>
                   )
                 ) : (
                   <Link to={`/auction/${item._id}`}>
