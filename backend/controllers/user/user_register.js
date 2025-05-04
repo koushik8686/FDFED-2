@@ -75,7 +75,7 @@ async function userregister_post(req, res) {
             responseTime
         });
 
-        res.status(200).send({ message: "Verification Email Sent To Your Email" });
+        res.status(201).send({ message: "Verification Email Sent To Your Email" });
     } catch (error) {
         console.error("Error during registration:", error);
         res.status(500).send({ message: "Internal Server Error" });

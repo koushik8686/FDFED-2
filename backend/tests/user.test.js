@@ -1,6 +1,7 @@
 const request = require("supertest");
 const express = require("express");
 const mongoose = require("mongoose");
+
 const LikedRoutes = require("../routers/user-routes/LikedRoutes");
 const authRouter = require("../routers/user-routes/authrouter");
 const userRegisterRouter = require("../routers/user-routes/user_register");
@@ -16,53 +17,66 @@ app.use("/register", userRegisterRouter);
 app.use("/login", userLoginRouter);
 app.get("/user/:email", renderUserHome);
 
-let testUserId = '675151588c433d7090169ddc';
-const testItemId = "675151588c433d7090169ddc"; // Assumed to be a valid ObjectId string
+// Test credentials
+const testUser = {
+  username: "jestuser",
+  email: "jestuser@example.com",
+  password: "Test@1234",
+};
+
 beforeAll(async () => {
-  try {
-  mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/fdfed").then(()=>{
-    console.log("MongoDB Connected ")
+  await mongoose.connect("mongodb://localhost:27017/wbd", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
   });
-    // Generate a random email for the test user
-  } catch (err) {
-    console.error("Error setting up test DB:", err);
-  }
+
+  // Ensure clean state
+  await usermodel.deleteOne({ email: testUser.email });
 });
 
+afterAll(async () => {
+  // Clean up test user
+  await usermodel.deleteOne({ email: testUser.email });
+  await mongoose.disconnect();
+});
 
 describe("User APIs", () => {
-  describe("UserHome Controller", () => {
-    it("should return user data for a valid ID", async () => {
-      const res = await request(app).get(`/user/${testUserId}`);
-      console.log(res.statusCode)
-      console.log(res.body)
-      expect(res.statusCode).toBe(200);
-      expect(res.body).toHaveProperty("data");
-    });
-
-    it("should return 404 for an invalid ID", async () => {
-      const res = await request(app).get("/user/123");
-      expect(res.statusCode).toBe(500);
-    });
-  });
-
   describe("User Registration", () => {
+    it("should register a new user", async () => {
+      const newUser = {
+        username: "jestuser_" + Date.now(), // makes the username unique
+        email: `jestuser_${Date.now()}@example.com`, // ensures unique email
+        password: "Test@1234"
+      };
+  
+      const res = await request(app).post("/register").send(newUser);
+      expect(res.statusCode).toBe(201);
+      expect(res.body.message).toBe("Verification Email Sent To Your Email");
+    });
+  
     it("should not allow duplicate email registration", async () => {
-      const res = await request(app).post("/register").send({
-        username: "testuser",
-        email: "testuser@example.com",
-        password: "Test@1234",
-      });
+      const duplicateUser = {
+        username: "existinguser",
+        email: "jestduplicate@example.com",
+        password: "Test@1234"
+      };
+  
+      // First register
+      await request(app).post("/register").send(duplicateUser);
+  
+      // Try again
+      const res = await request(app).post("/register").send(duplicateUser);
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("Email Already Exists");
     });
   });
+  
 
   describe("User Login", () => {
     it("should login successfully with correct credentials", async () => {
       const res = await request(app).post("/login").send({
-        email: "testuser@example.com",
-        password: "Test@1234",
+        email: testUser.email,
+        password: testUser.password,
       });
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("Login Successfully");
@@ -70,7 +84,7 @@ describe("User APIs", () => {
 
     it("should return error for incorrect password", async () => {
       const res = await request(app).post("/login").send({
-        email: "testuser@example.com",
+        email: testUser.email,
         password: "WrongPassword",
       });
       expect(res.statusCode).toBe(200);
@@ -80,10 +94,23 @@ describe("User APIs", () => {
     it("should return error for non-existent email", async () => {
       const res = await request(app).post("/login").send({
         email: "nonexistent@example.com",
-        password: "Test@1234",
+        password: testUser.password,
       });
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("No Email");
+    });
+  });
+
+  describe("User Home", () => {
+    it("should return user data for a valid email", async () => {
+      const res = await request(app).get(`/user/${testUser.email}`);
+      expect(res.statusCode).toBe(200);
+      expect(res.body).toHaveProperty("data");
+    });
+
+    it("should return error for invalid email", async () => {
+      const res = await request(app).get(`/user/invalid_email`);
+      expect(res.statusCode).toBe(500); // Or 404 depending on your controller
     });
   });
 });
