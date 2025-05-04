@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: FDFED API Documentation
+  title: FDFED API
   version: 1.0.0
   description: API documentation for the FDFED application.
 
@@ -177,7 +177,7 @@ components:
 paths:
   /:
     get:
-      summary: Welcome message
+      summary: Welcome endpoint
       responses:
         '200':
           description: Returns a welcome message.

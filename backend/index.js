@@ -16,7 +16,21 @@ const PerformanceLog = require('./models/PerformanceLog');
 const getRedisClient = require('./redis'); // Import Redis client
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
-const swaggerDoc = YAML.load('./swagger.yaml');
+const fs = require('fs');
+
+let swaggerDoc;
+try {
+  swaggerDoc = YAML.load(`${__dirname}/swagger.yaml`); // Use absolute path
+} catch (error) {
+  console.error('Error loading swagger.yaml:', error.message);
+  swaggerDoc = null; // Fallback if the file is missing
+}
+
+if (swaggerDoc) {
+  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
+} else {
+  console.warn('Swagger documentation is not available.');
+}
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
@@ -46,7 +60,6 @@ app.use(cors({
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 //Inbuilt middleware
 app.use(express.static("uploads"));
 app.use(express.urlencoded({ extended: true }));
