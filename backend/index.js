@@ -99,22 +99,7 @@ app.post('/feedback', async (req, res) => {
     });
     await newFeedback.save();
 
-    // Send Email Notification
-    const mailOptions = {
-      from: email, // Replace with your email
-      to: 'pinnukoushikp@gmail.com',
-      subject: 'New Feedback Received',
-      text: `
-          You have received new feedback:
-          ---------------------------------------
-          Name: ${name}
-          Email: ${email}
-          Feedback: ${feedback}
-          Rating: ${rating}/5
-          ---------------------------------------
-      `,
-    };
-    await transporter.sendMail(mailOptions);
+
     res.status(200).json({ message: 'Feedback saved and email sent successfully!' });
   } catch (error) {
     console.error('Error:', error);
