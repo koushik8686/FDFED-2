@@ -1,6 +1,5 @@
 const bcrypt = require('bcryptjs');
 const sellermodel = require("../../models/sellermodel");
-const getRedisClient = require('../../redis');
 const PerformanceLog = require('../../models/PerformanceLog');
 
 async function sellerlogin_post(req, res) {
@@ -8,19 +7,8 @@ async function sellerlogin_post(req, res) {
     const start = Date.now();
 
     try {
-        const client = await getRedisClient();
-        const cachedSeller = await client.get(`seller:${email}`);
-        let seller;
-        let source;
-        if (cachedSeller) {
-            seller = JSON.parse(cachedSeller);
-            source = 'cache';
-        } else {
-            seller = await sellermodel.findOne({ email });
-            if (!seller) return res.status(200).send({ message: "Wrong Email" });
-            await client.set(`seller:${email}`, JSON.stringify(seller), { EX: 3600 });
-            source = 'db';
-        }
+        const seller = await sellermodel.findOne({ email });
+        if (!seller) return res.status(200).send({ message: "Wrong Email" });
 
         const isMatch = await bcrypt.compare(password, seller.password);
         if (!isMatch) {
@@ -32,7 +20,7 @@ async function sellerlogin_post(req, res) {
         await PerformanceLog.create({
             endpoint: '/seller/login',
             method: req.method,
-            source,
+            source: 'db',
             responseTime: Date.now() - start,
         });
     } catch (error) {
