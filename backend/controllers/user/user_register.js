@@ -35,6 +35,9 @@ async function userregister_post(req, res) {
         await newUser.save();
         await client.set(`user:${newUser.email}`, JSON.stringify(newUser), { EX: 3600 });
 
+        // Remove admin data cache
+        await client.del("admin:data");
+
         const transporter = nodemailer.createTransport({
             service: 'gmail',
             auth: {
@@ -75,7 +78,7 @@ async function userregister_post(req, res) {
             responseTime
         });
 
-        res.status(201).send({ message: "Verification Email Sent To Your Email" });
+        res.status(201).send({ message: "Registration Successful" });
     } catch (error) {
         console.error("Error during registration:", error);
         res.status(500).send({ message: "Internal Server Error" });

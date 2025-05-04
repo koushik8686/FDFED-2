@@ -2,10 +2,13 @@
 const mongoose = require('mongoose');
 
 const performanceLogSchema = new mongoose.Schema({
-  endpoint: String,
-  source: String, // 'cache' or 'db'
+  endpoint: { type: String, index: true }, // Indexing the 'endpoint' field
+  source: { type: String, index: true }, // Indexing the 'source' field
   responseTime: Number,
-  timestamp: { type: Date, default: Date.now },
+  timestamp: { type: Date, default: Date.now, index: true }, // Indexing the 'timestamp' field
 });
+
+// Compound index for 'endpoint' and 'source'
+performanceLogSchema.index({ endpoint: 1, source: 1 });
 
 module.exports = mongoose.model('PerformanceLog', performanceLogSchema);

@@ -130,7 +130,6 @@ app.get('/feedbacks', function (req, res) {
 })
 
 //user routes
-
 app.get("/", function (req, res) { console.log(req.headers.host);  res.send("hello welcome to hexart")})
 app.use("/register", require("./routers/user-routes/user_register"))
 app.use("/login",require("./routers/user-routes/user_login"))
@@ -139,6 +138,8 @@ app.use("/auction", require("./routers/user-routes/user_auctionpage")) //auction
 app.use("/auth", require("./routers/user-routes/authrouter"))
 app.use("/verify" , require("./routers/user-routes/verifymail"))
 app.use("/liked", require("./routers/user-routes/LikedRoutes"))
+
+
 //seller routes
 app.get("/seller", function (req, res) {  res.sendFile(__dirname+"/views/sellerintro.html")})
 app.use("/sellerregister", require("./routers/seller-routes/seller_register") )

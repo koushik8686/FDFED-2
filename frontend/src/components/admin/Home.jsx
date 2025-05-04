@@ -11,6 +11,8 @@ export default function Admin() {
   const [searchQueryUsers, setSearchQueryUsers] = useState("");
   const [searchQuerySellers, setSearchQuerySellers] = useState("");
   const [searchQueryItems, setSearchQueryItems] = useState("");
+  const [newUser, setNewUser] = useState({ username: "", email: "", password: "" });
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
   const navigate = useNavigate();
 
   async function fetchData() {
@@ -51,6 +53,20 @@ export default function Admin() {
   const logout = () => {
     Cookies.remove('admin');
     navigate('/');
+  };
+
+  const handleAddUser = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`${process.env.REACT_APP_BACKENDURL}/register`, newUser);
+      alert("User added successfully!");
+      setNewUser({ username: "", email: "", password: "" });
+      setIsPopupOpen(false);
+      fetchData();
+    } catch (error) {
+      console.error("Error adding user", error);
+      alert("Failed to add user.");
+    }
   };
 
   // Filter users, sellers, and items based on their respective search queries
@@ -118,6 +134,7 @@ export default function Admin() {
           {/* Users */}
           <section id="users">
             <h2 className="section-title">Users</h2>
+            <button onClick={() => setIsPopupOpen(true)} className="add-user-btn">Add User</button>
             <input
               type="text"
               placeholder="Search by username"
@@ -148,6 +165,45 @@ export default function Admin() {
               </tbody>
             </table>
           </section>
+
+          {/* Add User Popup */}
+          {isPopupOpen && (
+            <div className="popup-overlay">
+              <div className="popup-content">
+                <h2 className="popup-title">Add User</h2>
+                <form onSubmit={handleAddUser} className="popup-form">
+                  <input
+                    type="text"
+                    placeholder="Username"
+                    value={newUser.username}
+                    onChange={(e) => setNewUser({ ...newUser, username: e.target.value })}
+                    required
+                    className="form-input"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email"
+                    value={newUser.email}
+                    onChange={(e) => setNewUser({ ...newUser, email: e.target.value })}
+                    required
+                    className="form-input"
+                  />
+                  <input
+                    type="password"
+                    placeholder="Password"
+                    value={newUser.password}
+                    onChange={(e) => setNewUser({ ...newUser, password: e.target.value })}
+                    required
+                    className="form-input"
+                  />
+                  <div className="popup-actions">
+                    <button type="submit" className="form-submit-btn">Add User</button>
+                    <button type="button" onClick={() => setIsPopupOpen(false)} className="form-cancel-btn">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          )}
 
           {/* Sellers */}
           <section id="sellers">
