@@ -3,14 +3,22 @@ import { Link } from 'react-router-dom';
 import { Heart } from 'lucide-react';
 
 const ItemCard = ({ item, isLiked, onLikeToggle }) => {
-  const now = new Date(new Date().toISOString()); // Ensure `now` is in UTC
+  const now = new Date();
   console.log(item.startTime)
   const hasAuctionTiming = item.date && item.StartTime && item.EndTime;
-  const formattedDate = hasAuctionTiming ? new Date(item.date).toISOString().split('T')[0] + ' UTC' : 'N/A';
-  const formattedStartTime = hasAuctionTiming ? item.StartTime.split('T')[1].slice(0, 5) + ' UTC' : 'N/A';
-  const formattedEndTime = hasAuctionTiming ? item.EndTime.split('T')[1].slice(0, 5) + ' UTC' : 'N/A';
-  console.log(formattedDate , formattedStartTime , formattedEndTime) 
-  const auctionStarted = hasAuctionTiming ? now >= new Date(item.StartTime) : false;
+  const formattedDate = hasAuctionTiming
+    ? new Date(item.date).toLocaleDateString()
+    : 'N/A';
+  const startTime = hasAuctionTiming ? new Date(item.StartTime) : null;
+  const formattedStartTime = hasAuctionTiming
+    ? startTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : 'N/A';
+  const endTime = hasAuctionTiming ? new Date(item.EndTime) : null;
+  const formattedEndTime = hasAuctionTiming
+    ? endTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    : 'N/A';
+
+  const auctionStarted = hasAuctionTiming ? now >= startTime : false;
 
   return (
     <div className="item-card">
