@@ -17,6 +17,7 @@ const getRedisClient = require('./redis'); // Import Redis client
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
+const stripe = require('stripe');
 
 let swaggerDoc;
 try {
@@ -151,5 +152,27 @@ app.get("/performance" , async (req, res) => {
   const logs = await PerformanceLog.find();
   res.json(logs);
 })
+
+
+app.post('/create-checkout-session', async (req, res) => {
+  const { items } = req.body;
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    mode: 'payment',
+    line_items: items.map(item => ({
+      price_data: {
+        currency: 'usd',
+        product_data: { name: item.name },
+        unit_amount: item.price * 100,
+      },
+      quantity: item.quantity,
+    })),
+    success_url: `${process.env.FRONTEND_URL}/success`,
+    cancel_url: `${process.env.FRONTEND_URL}/cancel`,
+  });
+
+  res.json({ id: session.id });
+});
 
 module.exports = app;

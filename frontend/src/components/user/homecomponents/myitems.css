@@ -58,6 +58,26 @@
     font-size: 1rem;
   }
   
+  .payment-button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+  
+  .payment-button:hover {
+    background-color: #45a049;
+  }
+  
+  .payment-button:disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+  }
+  
   /* Responsive Design */
   @media (max-width: 1024px) { /* Medium devices */
     .user-myitems-div-container {
@@ -76,4 +96,3 @@
       grid-template-columns: 1fr; /* 1 column */
     }
   }
-  
