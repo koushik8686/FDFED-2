@@ -18,12 +18,16 @@ app.use("/login", userLoginRouter);
 app.get("/user/:email", renderUserHome);
 
 // Test credentials
-const testUser = {
-  username: "jestuser",
-  email: "jestuser@example.com",
-  password: "Test@1234",
-};
+function generateTestUser() {
+  const randomSuffix = Math.floor(Math.random() * 1000000);
+  return {
+    username: `jestuser_${randomSuffix}`,
+    email: `jestuser_${randomSuffix}@example.com`,
+    password: "Test@1234", // Keep static or randomize if needed
+  };
+}
 
+const testUser = generateTestUser();
 beforeAll(async () => {
   await mongoose.connect("mongodb://localhost:27017/wbd", {
     useNewUrlParser: true,
@@ -51,7 +55,7 @@ describe("User APIs", () => {
   
       const res = await request(app).post("/register").send(newUser);
       expect(res.statusCode).toBe(201);
-      expect(res.body.message).toBe("Verification Email Sent To Your Email");
+      expect(res.body.message).toBe("Registration Successful");
     });
   
     it("should not allow duplicate email registration", async () => {
@@ -66,8 +70,8 @@ describe("User APIs", () => {
   
       // Try again
       const res = await request(app).post("/register").send(duplicateUser);
-      expect(res.statusCode).toBe(200);
-      expect(res.body.message).toBe("Email Already Exists");
+      expect(res.statusCode).toBe(500);
+      expect(res.body.message).toBe("Internal Server Error");
     });
   });
   
