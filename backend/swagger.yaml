@@ -5,8 +5,10 @@ info:
   description: API documentation for the FDFED application.
 
 servers:
-  - url: https://fdfed-2-server.vercel.app/
+  - url: http://localhost:4000
     description: Local server
+  - url: https://fdfed-2-server.vercel.app
+    description: Deployed server
 
 components:
   securitySchemes:
