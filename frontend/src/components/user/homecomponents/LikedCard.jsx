@@ -7,15 +7,9 @@ const LikedItemCard = ({ item }) => {
     <li className="liked-item-card">
       <div className="liked-item-image">
         <img src={item.url} alt={item.name} />
-        {item.auction_active ? (
           <a href={`/auction/${item._id}`} className="view-auction-button">
             View Auction <ArrowUpRight className="w-4 h-4" />
           </a>
-        ) : (
-          <span className="view-auction-button-disabled">
-            Auction Not Started
-          </span>
-        )}
       </div>
       
       <div className="liked-item-details">
