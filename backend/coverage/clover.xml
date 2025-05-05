@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1746466081563" clover="3.2.0">
-  <project timestamp="1746466081564" name="All files">
-    <metrics statements="511" coveredstatements="248" conditionals="120" coveredconditionals="21" methods="51" coveredmethods="13" elements="682" coveredelements="282" complexity="0" loc="511" ncloc="511" packages="9" files="32" classes="32"/>
+<coverage generated="1746474537957" clover="3.2.0">
+  <project timestamp="1746474537958" name="All files">
+    <metrics statements="511" coveredstatements="291" conditionals="120" coveredconditionals="33" methods="51" coveredmethods="24" elements="682" coveredelements="348" complexity="0" loc="511" ncloc="511" packages="9" files="32" classes="32"/>
     <package name="backend">
-      <metrics statements="8" coveredstatements="7" conditionals="4" coveredconditionals="2" methods="3" coveredmethods="1"/>
+      <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
       <file name="redis.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/redis.js">
-        <metrics statements="8" coveredstatements="7" conditionals="4" coveredconditionals="2" methods="3" coveredmethods="1"/>
+        <metrics statements="8" coveredstatements="8" conditionals="4" coveredconditionals="3" methods="3" coveredmethods="3"/>
         <line num="2" count="3" type="stmt"/>
-        <line num="7" count="8" type="cond" truecount="2" falsecount="0"/>
-        <line num="8" count="1" type="stmt"/>
-        <line num="12" count="1" type="stmt"/>
-        <line num="14" count="1" type="stmt"/>
-        <line num="17" count="8" type="stmt"/>
+        <line num="7" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="14" count="2" type="stmt"/>
+        <line num="17" count="10" type="stmt"/>
         <line num="20" count="3" type="stmt"/>
-        <line num="27" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="27" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
     </package>
     <package name="backend.controllers.admin">
@@ -69,7 +69,7 @@
       </file>
     </package>
     <package name="backend.controllers.seller">
-      <metrics statements="132" coveredstatements="26" conditionals="36" coveredconditionals="0" methods="13" coveredmethods="0"/>
+      <metrics statements="132" coveredstatements="67" conditionals="36" coveredconditionals="10" methods="13" coveredmethods="8"/>
       <file name="create_auction.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/seller/create_auction.js">
         <metrics statements="22" coveredstatements="6" conditionals="4" coveredconditionals="0" methods="2" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -96,21 +96,21 @@
         <line num="63" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
       <file name="sell_item.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/seller/sell_item.js">
-        <metrics statements="37" coveredstatements="5" conditionals="12" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="37" coveredstatements="10" conditionals="12" coveredconditionals="1" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
         <line num="9" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="10" count="0" type="stmt"/>
         <line num="13" count="0" type="stmt"/>
         <line num="14" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="15" count="0" type="stmt"/>
         <line num="18" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
         <line num="26" count="0" type="stmt"/>
         <line num="27" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
@@ -133,27 +133,27 @@
         <line num="62" count="0" type="stmt"/>
         <line num="63" count="0" type="stmt"/>
         <line num="67" count="1" type="stmt"/>
-        <line num="74" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="74" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
       <file name="seller_home.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/seller/seller_home.js">
-        <metrics statements="29" coveredstatements="6" conditionals="6" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="29" coveredstatements="17" conditionals="6" coveredconditionals="2" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
         <line num="8" count="0" type="stmt"/>
-        <line num="17" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="20" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
-        <line num="24" count="0" type="stmt"/>
-        <line num="27" count="0" type="stmt"/>
-        <line num="28" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="17" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="20" count="1" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+        <line num="27" count="1" type="stmt"/>
+        <line num="28" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="29" count="0" type="stmt"/>
         <line num="30" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
-        <line num="33" count="0" type="stmt"/>
+        <line num="33" count="1" type="stmt"/>
         <line num="34" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="35" count="0" type="stmt"/>
         <line num="36" count="0" type="stmt"/>
@@ -162,27 +162,27 @@
         <line num="43" count="0" type="stmt"/>
         <line num="48" count="0" type="stmt"/>
         <line num="50" count="0" type="stmt"/>
-        <line num="57" count="0" type="stmt"/>
-        <line num="58" count="0" type="stmt"/>
+        <line num="57" count="1" type="stmt"/>
+        <line num="58" count="1" type="stmt"/>
         <line num="62" count="1" type="stmt"/>
-        <line num="69" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="69" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
       <file name="seller_login.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/seller/seller_login.js">
-        <metrics statements="20" coveredstatements="5" conditionals="6" coveredconditionals="0" methods="2" coveredmethods="0"/>
+        <metrics statements="20" coveredstatements="14" conditionals="6" coveredconditionals="2" methods="2" coveredmethods="1"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="8" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="stmt"/>
-        <line num="13" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="15" count="0" type="stmt"/>
-        <line num="16" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
+        <line num="13" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="15" count="1" type="stmt"/>
+        <line num="16" count="1" type="cond" truecount="1" falsecount="1"/>
         <line num="17" count="0" type="stmt"/>
-        <line num="21" count="0" type="stmt"/>
+        <line num="21" count="1" type="stmt"/>
         <line num="22" count="0" type="stmt"/>
         <line num="24" count="0" type="stmt"/>
         <line num="31" count="0" type="stmt"/>
@@ -191,35 +191,35 @@
         <line num="43" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
       <file name="seller_register.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/seller/seller_register.js">
-        <metrics statements="24" coveredstatements="4" conditionals="8" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="24" coveredstatements="20" conditionals="8" coveredconditionals="5" methods="3" coveredmethods="3"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="4" count="1" type="stmt"/>
-        <line num="7" count="0" type="stmt"/>
-        <line num="9" count="0" type="stmt"/>
-        <line num="10" count="0" type="stmt"/>
-        <line num="11" count="0" type="stmt"/>
-        <line num="12" count="0" type="cond" truecount="0" falsecount="4"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="cond" truecount="3" falsecount="1"/>
         <line num="13" count="0" type="stmt"/>
-        <line num="16" count="0" type="stmt"/>
-        <line num="18" count="0" type="stmt"/>
-        <line num="26" count="0" type="stmt"/>
-        <line num="28" count="0" type="stmt"/>
-        <line num="36" count="0" type="stmt"/>
-        <line num="37" count="0" type="stmt"/>
-        <line num="52" count="0" type="stmt"/>
-        <line num="53" count="0" type="cond" truecount="0" falsecount="2"/>
-        <line num="54" count="0" type="stmt"/>
+        <line num="16" count="1" type="stmt"/>
+        <line num="18" count="1" type="stmt"/>
+        <line num="26" count="1" type="stmt"/>
+        <line num="28" count="1" type="stmt"/>
+        <line num="36" count="1" type="stmt"/>
+        <line num="37" count="1" type="stmt"/>
+        <line num="52" count="1" type="stmt"/>
+        <line num="53" count="1" type="cond" truecount="1" falsecount="1"/>
+        <line num="54" count="1" type="stmt"/>
         <line num="56" count="0" type="stmt"/>
-        <line num="60" count="0" type="stmt"/>
+        <line num="60" count="1" type="stmt"/>
         <line num="62" count="0" type="stmt"/>
         <line num="63" count="0" type="stmt"/>
         <line num="67" count="1" type="stmt"/>
-        <line num="74" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="74" count="1" type="cond" truecount="1" falsecount="1"/>
       </file>
     </package>
     <package name="backend.controllers.user">
-      <metrics statements="169" coveredstatements="79" conditionals="44" coveredconditionals="10" methods="16" coveredmethods="6"/>
+      <metrics statements="169" coveredstatements="77" conditionals="44" coveredconditionals="9" methods="16" coveredmethods="5"/>
       <file name="LikedItems.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/user/LikedItems.js">
         <metrics statements="45" coveredstatements="5" conditionals="12" coveredconditionals="0" methods="5" coveredmethods="0"/>
         <line num="1" count="1" type="stmt"/>
@@ -364,7 +364,7 @@
         <line num="63" count="0" type="cond" truecount="0" falsecount="2"/>
       </file>
       <file name="user_register.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/controllers/user/user_register.js">
-        <metrics statements="38" coveredstatements="33" conditionals="10" coveredconditionals="6" methods="3" coveredmethods="3"/>
+        <metrics statements="38" coveredstatements="31" conditionals="10" coveredconditionals="5" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
         <line num="2" count="1" type="stmt"/>
         <line num="3" count="1" type="stmt"/>
@@ -393,8 +393,8 @@
         <line num="49" count="1" type="stmt"/>
         <line num="50" count="1" type="stmt"/>
         <line num="65" count="1" type="stmt"/>
-        <line num="66" count="1" type="cond" truecount="1" falsecount="1"/>
-        <line num="67" count="1" type="stmt"/>
+        <line num="66" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="67" count="0" type="stmt"/>
         <line num="69" count="0" type="stmt"/>
         <line num="72" count="1" type="stmt"/>
         <line num="74" count="1" type="stmt"/>
@@ -402,11 +402,11 @@
         <line num="83" count="2" type="stmt"/>
         <line num="84" count="2" type="stmt"/>
         <line num="88" count="1" type="stmt"/>
-        <line num="95" count="3" type="cond" truecount="1" falsecount="1"/>
+        <line num="95" count="2" type="cond" truecount="1" falsecount="1"/>
       </file>
     </package>
     <package name="backend.middleware">
-      <metrics statements="54" coveredstatements="15" conditionals="24" coveredconditionals="4" methods="9" coveredmethods="4"/>
+      <metrics statements="54" coveredstatements="18" conditionals="24" coveredconditionals="6" methods="9" coveredmethods="6"/>
       <file name="Admin.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/middleware/Admin.js">
         <metrics statements="20" coveredstatements="6" conditionals="9" coveredconditionals="2" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
@@ -431,10 +431,10 @@
         <line num="39" count="2" type="cond" truecount="2" falsecount="0"/>
       </file>
       <file name="Seller.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/middleware/Seller.js">
-        <metrics statements="20" coveredstatements="3" conditionals="9" coveredconditionals="0" methods="3" coveredmethods="0"/>
+        <metrics statements="20" coveredstatements="6" conditionals="9" coveredconditionals="2" methods="3" coveredmethods="2"/>
         <line num="1" count="1" type="stmt"/>
-        <line num="2" count="0" type="stmt"/>
-        <line num="3" count="0" type="stmt"/>
+        <line num="2" count="4" type="stmt"/>
+        <line num="3" count="4" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="0" type="cond" truecount="0" falsecount="2"/>
         <line num="8" count="0" type="stmt"/>
@@ -451,7 +451,7 @@
         <line num="26" count="0" type="stmt"/>
         <line num="29" count="0" type="stmt"/>
         <line num="32" count="1" type="stmt"/>
-        <line num="39" count="0" type="cond" truecount="0" falsecount="2"/>
+        <line num="39" count="4" type="cond" truecount="2" falsecount="0"/>
       </file>
       <file name="User.js" path="/home/koushik-pinnu/Downloads/E/FDFED-2/backend/middleware/User.js">
         <metrics statements="14" coveredstatements="6" conditionals="6" coveredconditionals="2" methods="3" coveredmethods="2"/>

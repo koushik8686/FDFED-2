@@ -30,7 +30,7 @@ let sellerId = null;
 let itemId = null;
 
 beforeAll(async () => {
-    await mongoose.connect("mongodb://localhost:27017/wbd", {
+    await mongoose.connect("mongodb://localhost:27017/abc", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
     });

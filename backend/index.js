@@ -19,19 +19,16 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const stripe = require('stripe');
 
-let swaggerDoc;
-try {
-  swaggerDoc = YAML.load(`${__dirname}/swagger.yaml`); // Use absolute path
-} catch (error) {
-  console.error('Error loading swagger.yaml:', error.message);
-  swaggerDoc = null; // Fallback if the file is missing
-}
+const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
-if (swaggerDoc) {
-  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDoc));
-} else {
-  console.warn('Swagger documentation is not available.');
-}
+// Swagger setup
+const swaggerSpec = YAML.load(`${__dirname}/swagger.yaml`); // Use absolute path
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+  customCss:
+    '.swagger-ui .opblock .opblock-summary-path-description-wrapper { align-items: center; display: flex; flex-wrap: wrap; gap: 0 10px; padding: 0 10px; width: 100%; }',
+  customCssUrl: CSS_URL,
+}));
 
 const transporter = nodemailer.createTransport({
   service: 'gmail',
