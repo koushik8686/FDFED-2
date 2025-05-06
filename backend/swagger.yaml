@@ -891,6 +891,3 @@ paths:
   #                 error:
   #                   type: string
   #                   example: "Database operation failed"
-
-security:
-  - cookieAuth: []
