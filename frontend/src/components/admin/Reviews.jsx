@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Star, MessageSquare, User, Mail, AlertCircle, Calendar, ThumbsUp } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
 import AdminNav from "./AdminNav"
+import Cookies from "js-cookie"
+import { Link, useNavigate } from "react-router-dom"
 
 const ReviewsDashboard = () => {
   const [feedbacks, setFeedbacks] = useState([])
@@ -13,8 +15,15 @@ const ReviewsDashboard = () => {
   const [selectedFeedback, setSelectedFeedback] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [filterRating, setFilterRating] = useState(0) // 0 means no filter
+  const navigate = useNavigate()
+  const admin = Cookies.get("admin")
 
   useEffect(() => {
+
+    if (!admin) {
+      navigate("/admin/login")
+    }
+
     const fetchFeedbacks = async () => {
       try {
         // Replace with your actual API endpoint

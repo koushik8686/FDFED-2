@@ -158,9 +158,8 @@ export default function SellerSoldItems() {
     }
 
     return items.filter((item) => {
-      // Use soldDate for sold items, EndTime for unsold items
-      const itemDate = new Date(item.soldDate || item.EndTime || item.updatedAt)
-      return itemDate >= filterDate
+      const itemDate = new Date(item.updatedAt)
+      return itemDate >= filterDate && itemDate <= now
     })
   }
 

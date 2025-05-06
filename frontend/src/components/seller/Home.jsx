@@ -7,11 +7,103 @@ import axios from "axios"
 import Cookies from "js-cookie"
 
 export default function SellerHome() {
+  // Component for the Edit Item Form
+  const EditItemForm = ({ item, onSave, onClose }) => {
+    const [formData, setFormData] = useState({
+      name: item.name || "",
+      base_price: item.base_price || 0,
+      type: item.type || "",
+      date: item.date ? new Date(item.date).toISOString().split('T')[0] : "", // Format date for input
+      StartTime: item.StartTime ? new Date(item.StartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : "",
+      EndTime: item.EndTime ? new Date(item.EndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : "",
+      // Add other fields as necessary, e.g., description, image
+    })
+    const [imagePreview, setImagePreview] = useState(item.url || null)
+    const [imageFile, setImageFile] = useState(null)
+
+    const handleInputChange = (e) => {
+      const { name, value } = e.target
+      setFormData((prev) => ({ ...prev, [name]: value }))
+    }
+
+    const handleImageChange = (e) => {
+      const file = e.target.files[0]
+      if (file) {
+        setImageFile(file)
+        setImagePreview(URL.createObjectURL(file))
+      }
+    }
+
+    const handleSubmit = (e) => {
+      e.preventDefault()
+      const updatedData = new FormData();
+      Object.keys(formData).forEach(key => {
+        updatedData.append(key, formData[key]);
+      });
+      if (imageFile) {
+        updatedData.append('image', imageFile);
+      }
+      // If no new image, but we want to keep the old one, ensure backend handles this.
+      // Or, send item.url if no new imageFile to indicate keeping the old one, if backend supports.
+      onSave(updatedData)
+    }
+
+    return (
+      <form onSubmit={handleSubmit} className="p-6 space-y-4">
+        <div>
+          <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
+          <input type="text" name="name" id="name" value={formData.name} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        </div>
+        <div>
+          <label htmlFor="base_price" className="block text-sm font-medium text-gray-700">Base Price</label>
+          <input type="number" name="base_price" id="base_price" value={formData.base_price} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        </div>
+        <div>
+          <label htmlFor="type" className="block text-sm font-medium text-gray-700">Type</label>
+          <select name="type" id="type" value={formData.type} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2">
+            <option value="" disabled>Select item type</option>
+            <option value="Art">Art</option>
+            <option value="Antique">Antique</option>
+            <option value="Used">Used</option>
+            {/* Add other types as needed */}
+          </select>
+        </div>
+        <div>
+          <label htmlFor="date" className="block text-sm font-medium text-gray-700">Auction Date</label>
+          <input type="date" name="date" id="date" value={formData.date} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        </div>
+        <div>
+          <label htmlFor="StartTime" className="block text-sm font-medium text-gray-700">Start Time</label>
+          <input type="time" name="StartTime" id="StartTime" value={formData.StartTime} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        </div>
+        <div>
+          <label htmlFor="EndTime" className="block text-sm font-medium text-gray-700">End Time</label>
+          <input type="time" name="EndTime" id="EndTime" value={formData.EndTime} onChange={handleInputChange} className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+        </div>
+        <div>
+          <label htmlFor="image" className="block text-sm font-medium text-gray-700">Image</label>
+          <input type="file" name="image" id="image" onChange={handleImageChange} accept="image/*" className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2" />
+          {imagePreview && <img src={imagePreview} alt="Preview" className="mt-2 max-h-40 rounded" />}
+        </div>
+        <div className="flex justify-end space-x-3">
+          <button type="button" onClick={onClose} className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Cancel
+          </button>
+          <button type="submit" className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium">
+            Save Changes
+          </button>
+        </div>
+      </form>
+    )
+  }
+
   const navigate = useNavigate()
   const [items, setItems] = useState([])
   const [seller, setSeller] = useState(null)
   const [loading, setLoading] = useState(true)
   const [showAddItemForm, setShowAddItemForm] = useState(false)
+  const [showEditModal, setShowEditModal] = useState(false) // New state for edit modal
+  const [editingItem, setEditingItem] = useState(null) // New state for item being edited
   const [isSidebarOpen, setIsSidebarOpen] = useState(false)
   const [activeTab, setActiveTab] = useState("dashboard")
   const sellerid = Cookies.get("seller")
@@ -95,6 +187,39 @@ export default function SellerHome() {
 
   const handleCloseForm = () => {
     setShowAddItemForm(false)
+  }
+
+  const handleEditItem = (item) => {
+    setEditingItem(item)
+    setShowEditModal(true)
+  }
+
+  const handleCloseEditModal = () => {
+    setShowEditModal(false)
+    setEditingItem(null)
+  }
+
+    const handleUpdateItem = async (updatedItemData) => {
+      if (!editingItem) return
+
+      try {
+        await axios.put(`${process.env.REACT_APP_BACKENDURL}/item/update/${editingItem._id}`, updatedItemData)
+        fetchSellerData() // Refresh data
+        handleCloseEditModal() // Close modal on success
+      } catch (error) {
+        console.error("Error updating item:", error)
+      }
+    }
+
+  const handleDeleteItem = async (itemId) => {
+    if (window.confirm("Are you sure you want to delete this item?")) {
+      try {
+        await axios.delete(`${process.env.REACT_APP_BACKENDURL}/item/delete/${itemId}`)
+        fetchSellerData()
+      } catch (error) {
+        console.error("Error deleting item:", error)
+      }
+    }
   }
 
   const handleNewItem = (newItem) => {
@@ -326,6 +451,7 @@ export default function SellerHome() {
         </header>
 
         <main className="flex-1 overflow-y-auto p-4">
+          {/* Add Item Modal */}
           {showAddItemForm && (
             <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
               <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
@@ -351,9 +477,25 @@ export default function SellerHome() {
                 <AddItem
                   onClose={handleCloseForm}
                   sellerdata={seller}
-                  fetchdata={fetchSellerData}
+                  fetchdata={fetchSellerData} // Pass fetchSellerData to AddItem
                   onAdd={handleNewItem}
                 />
+              </div>
+            </div>
+          )}
+
+          {/* Edit Item Modal */}
+          {showEditModal && editingItem && (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+              <div className="bg-white rounded-lg shadow-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                <div className="p-4 border-b border-gray-200 flex justify-between items-center">
+                  <h3 className="text-lg font-semibold">Edit Item</h3>
+                  <button onClick={handleCloseEditModal} className="text-gray-500 hover:text-gray-700">
+                    {/* Close Icon */}
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                  </button>
+                </div>
+                <EditItemForm item={editingItem} onSave={handleUpdateItem} onClose={handleCloseEditModal} />
               </div>
             </div>
           )}
@@ -591,106 +733,130 @@ export default function SellerHome() {
 
                   return (
                     <div
-                      key={item._id}
-                      className="bg-white rounded-lg shadow-sm overflow-hidden border border-gray-100 flex flex-col"
-                    >
-                      <div className="relative h-48">
-                        <img
-                          src={item.url || "/placeholder.svg"}
-                          alt={item.name}
-                          className="w-full h-full object-cover"
-                        />
-                        {isActive && (
-                          <div className="absolute top-2 right-2 px-2 py-1 bg-violet-500 text-white text-xs font-medium rounded">
-                            Live Auction
-                          </div>
-                        )}
+                    key={item._id}
+                    className="bg-white rounded-xl shadow-md hover:shadow-lg transition-shadow border border-gray-100 flex flex-col"
+                  >
+                    <div className="relative h-48">
+                      <img
+                        src={item.url || "/placeholder.svg"}
+                        alt={item.name}
+                        className="w-full h-full object-cover rounded-t-xl"
+                      />
+                      {isActive && (
+                        <div className="absolute top-2 right-2 px-2 py-1 bg-violet-600 text-white text-xs font-medium rounded-full shadow-sm">
+                          Live Auction
+                        </div>
+                      )}
+                    </div>
+                  
+                    <div className="p-4 flex-1 flex flex-col">
+                      <div className="flex justify-between items-start">
+                        <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
+                        <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full text-gray-600">
+                          {item.type}
+                        </span>
                       </div>
-
-                      <div className="p-4 flex-1 flex flex-col">
-                        <div className="flex justify-between items-start">
-                          <h3 className="text-lg font-semibold text-gray-900">{item.name}</h3>
-                          <span className="text-xs font-medium px-2 py-1 bg-gray-100 rounded-full">{item.type}</span>
+                  
+                      <div className="mt-4 grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <p className="text-xs text-gray-500">Base Price</p>
+                          <p className="font-medium">₹{Number.parseInt(item.base_price).toLocaleString()}</p>
                         </div>
-
-                        <div className="mt-4 grid grid-cols-2 gap-4">
-                          <div>
-                            <p className="text-xs text-gray-500">Base Price</p>
-                            <p className="text-sm font-medium">₹{Number.parseInt(item.base_price).toLocaleString()}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Current Price</p>
-                            <div className="flex items-center">
-                              <p className="text-sm font-medium">
-                                ₹{Number.parseInt(item.current_price).toLocaleString()}
-                              </p>
-                              {priceIncrease > 0 && (
-                                <span className="ml-1 text-xs text-blue-600">+{priceIncrease}%</span>
-                              )}
-                            </div>
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Bids</p>
-                            <p className="text-sm font-medium">{bidCount}</p>
-                          </div>
-                          <div>
-                            <p className="text-xs text-gray-500">Visits</p>
-                            <p className="text-sm font-medium">{visitCount}</p>
+                        <div>
+                          <p className="text-xs text-gray-500">Current Price</p>
+                          <div className="flex items-center">
+                            <p className="font-medium">
+                              ₹{Number.parseInt(item.current_price).toLocaleString()}
+                            </p>
+                            {priceIncrease > 0 && (
+                              <span className="ml-1 text-xs text-green-600">+{priceIncrease}%</span>
+                            )}
                           </div>
                         </div>
-
-                        <div className="mt-4 text-xs text-gray-500">
-                          <div className="flex justify-between mb-1">
-                            <span>Auction Date:</span>
-                            <span className="font-medium">{formattedDate}</span>
-                          </div>
-                          <div className="flex justify-between mb-1">
-                            <span>Start Time:</span>
-                            <span className="font-medium">{formattedStartTime}</span>
-                          </div>
-                          <div className="flex justify-between">
-                            <span>End Time:</span>
-                            <span className="font-medium">{formattedEndTime}</span>
-                          </div>
+                        <div>
+                          <p className="text-xs text-gray-500">Bids</p>
+                          <p className="font-medium">{bidCount}</p>
                         </div>
-
-                        {item.current_bidder && (
-                          <div className="mt-3 flex items-center">
-                            <span className="text-xs text-gray-500">Current Bidder:</span>
-                            <span className="ml-2 text-xs font-medium">{item.current_bidder}</span>
-                          </div>
-                        )}
-
-                        <div className="mt-4 pt-4 border-t border-gray-100">
-                          <Link
-                            to={`/item/${item._id}`}
-                            className="w-full py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-md transition-colors flex items-center justify-center"
+                        <div>
+                          <p className="text-xs text-gray-500">Visits</p>
+                          <p className="font-medium">{visitCount}</p>
+                        </div>
+                      </div>
+                  
+                      <div className="mt-4 text-xs text-gray-500 space-y-1">
+                        <div className="flex justify-between">
+                          <span>Auction Date:</span>
+                          <span className="font-medium">{formattedDate}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>Start Time:</span>
+                          <span className="font-medium">{formattedStartTime}</span>
+                        </div>
+                        <div className="flex justify-between">
+                          <span>End Time:</span>
+                          <span className="font-medium">{formattedEndTime}</span>
+                        </div>
+                      </div>
+                  
+                      {item.current_bidder && (
+                        <div className="mt-3 flex items-center text-xs text-gray-500">
+                          <span>Current Bidder:</span>
+                          <span className="ml-2 font-medium">{item.current_bidder}</span>
+                        </div>
+                      )}
+                  
+                      <div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-between">
+                        <Link
+                          to={`/item/${item._id}`}
+                          className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white text-sm rounded-md transition-colors flex items-center justify-center"
+                        >
+                          <svg
+                            className="w-4 h-4 mr-2"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                            xmlns="http://www.w3.org/2000/svg"
                           >
-                            <svg
-                              className="w-4 h-4 mr-1"
-                              fill="none"
-                              stroke="currentColor"
-                              viewBox="0 0 24 24"
-                              xmlns="http://www.w3.org/2000/svg"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                              ></path>
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                              ></path>
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth="2"
+                              d="M2.458 12C3.732 7.943 7.523 5 12 5s8.268 2.943 9.542 7-.002.026-.007.075l-.03.105a11.95 11.95 0 01-.41 1.566A11.95 11.95 0 0112 19c-4.478 0-8.268-2.943-9.542-7a11.95 11.95 0 01-.41-1.566l-.03-.105C2.46 12.05 2.458 12.026 2.458 12z"
+                            />
+                          </svg>
+                          View Details
+                        </Link>
+                  
+                        <div className="flex space-x-2">
+                          <button
+                            onClick={() => handleEditItem(item)}
+                            className="p-2 rounded-md hover:bg-gray-100 transition-colors text-gray-600"
+                            title="Edit"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                             </svg>
-                            Sell Item
-                          </Link>
+                          </button>
+                          <button
+                            onClick={() => handleDeleteItem(item._id)}
+                            className="p-2 rounded-md hover:bg-gray-100 transition-colors text-red-500"
+                            title="Delete"
+                          >
+                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                            </svg>
+                          </button>
                         </div>
                       </div>
                     </div>
+                  </div>
+                  
                   )
                 })}
               </div>
