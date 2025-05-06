@@ -38,9 +38,9 @@ async function renderSellerHome(req, res) {
         }
 
         // Get items (consider caching these as well if they don't change often)
-        const items = await itemmodel.find({ _id: { $in: seller.items } });
-
-
+        const itemIds = seller.items.map(item => item._id); // extract all _id values
+        const items = await itemmodel.find({ _id: { $in: itemIds } });
+        
         await logPerformance(req, source, time);
 
         res.status(200).send({ 

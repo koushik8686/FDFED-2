@@ -177,30 +177,21 @@ components:
         - password
 
 paths:
+  # ====================== #
+  #        User Routes      #
+  # ====================== #
   /:
     get:
+      tags: [User]
       summary: Welcome endpoint
       responses:
         '200':
           description: Returns a welcome message.
 
-  /item/{id}:
-    delete:
-      summary: Delete an item
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the item to delete
-      responses:
-        '200':
-          description: Item deleted successfully.
-
-  /feedback:
+  /register:
     post:
-      summary: Submit feedback
+      tags: [User]
+      summary: User registration
       requestBody:
         required: true
         content:
@@ -212,44 +203,11 @@ paths:
                   type: string
                 email:
                   type: string
-                feedback:
-                  type: string
-                rating:
-                  type: integer
-              required:
-                - name
-                - email
-                - feedback
-                - rating
-      responses:
-        '200':
-          description: Feedback saved and email sent successfully.
-
-  /feedbacks:
-    get:
-      summary: Get all feedbacks
-      responses:
-        '200':
-          description: Returns a list of feedbacks.
-
-  /register:
-    post:
-      summary: Register a new user
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                email:
-                  type: string
+                  format: email
                 password:
                   type: string
               required:
-                - username
+                - name
                 - email
                 - password
       responses:
@@ -258,7 +216,8 @@ paths:
 
   /login:
     post:
-      summary: Login a user
+      tags: [User]
+      summary: User login
       requestBody:
         required: true
         content:
@@ -268,6 +227,7 @@ paths:
               properties:
                 email:
                   type: string
+                  format: email
                 password:
                   type: string
               required:
@@ -277,72 +237,91 @@ paths:
         '200':
           description: Login successful.
 
-  /user/{email}:
+  
+  paths:
+  # ====================== #
+  #        User Routes      #
+  # ====================== #
+  /user/{userid}:
     get:
-      summary: Get user home data
-      parameters:
-        - name: email
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Email of the user
-      responses:
-        '200':
-          description: Returns user home data.
-
-  /auction/{userid}/{itemid}:
-    get:
-      summary: Render auction page
+      tags: [User]
+      summary: Get user profile by ID
+      description: Retrieves the profile information of the specified user
+      security:
+        - cookieAuth: []
       parameters:
         - name: userid
           in: path
           required: true
+          description: The unique identifier of the user
           schema:
             type: string
-          description: ID of the user
-        - name: itemid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the item
       responses:
         '200':
-          description: Returns auction page data.
+          description: User data retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '404':
+          description: User not found
+        '500':
+          description: Internal server error
 
-    post:
-      summary: Place a bid
-      parameters:
-        - name: userid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the user
-        - name: itemid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the item
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                bid:
-                  type: number
-              required:
-                - bid
-      responses:
-        '200':
-          description: Bid placed successfully.
+
+  # /auction/{userid}/{itemid}:
+  #   get:
+  #     tags: [User]
+  #     summary: Render auction page
+  #     parameters:
+  #       - name: userid
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #       - name: itemid
+  #         in: path
+  #         required: true
+  #         schema:
+  #           type: string
+  #     responses:
+  #       '200':
+  #         description: Returns auction page data.
+
+    # post:
+    #   tags: [User]
+    #   summary: Place a bid
+    #   parameters:
+    #     - name: userid
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #     - name: itemid
+    #       in: path
+    #       required: true
+    #       schema:
+    #         type: string
+    #   requestBody:
+    #     required: true
+    #     content:
+    #       application/json:
+    #         schema:
+    #           type: object
+    #           properties:
+    #             bid:
+    #               type: number
+    #           required:
+    #             - bid
+    #   responses:
+    #     '200':
+    #       description: Bid placed successfully.
 
   /liked/{id}:
     get:
+      tags: [User]
       summary: Get liked items
       parameters:
         - name: id
@@ -350,113 +329,108 @@ paths:
           required: true
           schema:
             type: string
-          description: ID of the user
       responses:
         '200':
           description: Returns liked items.
 
   /liked/{userid}/{itemid}:
     post:
-      summary: Add an item to liked items
+      tags: [User]
+      summary: Add to liked items
       parameters:
         - name: userid
           in: path
           required: true
           schema:
             type: string
-          description: ID of the user
         - name: itemid
           in: path
           required: true
           schema:
             type: string
-          description: ID of the item
       responses:
         '200':
           description: Item added to liked items.
 
     delete:
-      summary: Remove an item from liked items
+      tags: [User]
+      summary: Remove from liked items
       parameters:
         - name: userid
           in: path
           required: true
           schema:
             type: string
-          description: ID of the user
         - name: itemid
           in: path
           required: true
           schema:
             type: string
-          description: ID of the item
       responses:
         '200':
           description: Item removed from liked items.
 
-  /auth/google:
-    get:
-      summary: Google login
-      responses:
-        '200':
-          description: Google login successful.
-
-  /verify/{id}:
-    get:
-      summary: Verify email
-      parameters:
-        - name: id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the user to verify
-      responses:
-        '200':
-          description: Email verified successfully.
-
-  /user:
-    get:
-      summary: Get user profile
-      security:
-        - cookieAuth: []
-      responses:
-        '200':
-          description: User data
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-
-  /auction:
-    get:
-      summary: Get active auctions
-      responses:
-        '200':
-          description: List of active auctions
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Item'
-
+  # ====================== #
+  #      Seller Routes      #
+  # ====================== #
   /sellerregister:
     post:
+      tags: [Seller]
       summary: Seller registration
+      description: Register a new seller account
       security: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Seller'
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: "John Doe"
+                email:
+                  type: string
+                  format: email
+                  example: "john@example.com"
+                password:
+                  type: string
+                  format: password
+                  minLength: 8
+                  example: "securePassword123"
+                phone:
+                  type: string
+                  pattern: '^\+?[0-9]{10,15}$'
+                  example: "1234567890"
+              required:
+                - name
+                - email
+                - password
+                - phone
       responses:
         '201':
           description: Seller created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Seller registered successfully"
+                  seller:
+                    $ref: '#/components/schemas/Seller'
+        '400':
+          description: Bad Request - Missing or invalid fields
+        '409':
+          description: Conflict - Email already registered
+        '500':
+          description: Internal server error
+
 
   /sellerlogin:
     post:
+      tags: [Seller]
       summary: Seller login
       security: []
       requestBody:
@@ -483,8 +457,254 @@ paths:
                 type: string
                 example: token=abcde12345; Path=/; HttpOnly
 
+  /sellerhome/{id}:
+    get:
+      tags: [Seller]
+      summary: Get seller home data
+      description: Retrieves seller profile and their listed items
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: The ID of the seller
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Seller home data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: "Seller data retrieved successfully"
+                  source:
+                    type: string
+                    example: "seller-home-controller"
+                  responseTime:
+                    type: number
+                    example: 0.45
+                  data:
+                    type: object
+                    properties:
+                      seller:
+                        $ref: '#/components/schemas/Seller'
+                      items:
+                        type: array
+                        items:
+                          $ref: '#/components/schemas/Item'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '404':
+          description: Seller not found
+        '500':
+          description: Internal server error
+
+  /create/{sellerId}:
+    post:
+      tags: [Seller]
+      summary: Create a new auction
+      description: Creates a new auction listing for the specified seller
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: sellerId
+          in: path
+          required: true
+          description: The ID of the seller creating the auction
+          schema:
+            type: string
+            example: "6818e920f98a61aeacbca6ff"
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the item
+                  example: "Antique Vase"
+                basePrice:
+                  type: number
+                  format: float
+                  description: Starting price for the auction
+                  example: 1000
+                type:
+                  type: string
+                  description: Category of the item
+                  example: "Antiques"
+                date:
+                  type: string
+                  format: date
+                  description: Auction date (YYYY-MM-DD)
+                  example: "2025-05-07"
+                StartTime:
+                  type: string
+                  format: time
+                  description: Auction start time (HH:MM)
+                  example: "14:00"
+                EndTime:
+                  type: string
+                  format: time
+                  description: Auction end time (HH:MM)
+                  example: "16:00"
+                image:
+                  type: string
+                  format: binary
+                  description: Primary image of the item
+              required:
+                - name
+                - basePrice
+                - type
+                - date
+                - StartTime
+                - EndTime
+                - image
+      responses:
+        '201':
+          description: Auction created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Item'
+        '400':
+          description: Bad request - Invalid input data
+        '401':
+          description: Unauthorized - Invalid or missing authentication
+        '500':
+          description: Internal server error
+
+  /sell/{sellerId}/{itemId}:
+    get:
+      tags: [Seller]
+      summary: Get selling page data
+      description: Retrieves detailed information for a specific item being sold by a seller
+      security:
+        - cookieAuth: []
+      parameters:
+        - name: sellerId
+          in: path
+          required: true
+          description: ID of the seller
+          schema:
+            type: string
+        - name: itemId
+          in: path
+          required: true
+          description: ID of the item being sold
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Selling page data retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      user:
+                        type: string
+                        description: User ID
+                        example: "6818e920f98a61aeacbca6ff"
+                      username:
+                        type: string
+                        description: Display name of the seller
+                        example: "JohnDoe"
+                      item:
+                        $ref: '#/components/schemas/Item'
+        '401':
+          description: Unauthorized - Invalid or missing authentication token
+        '404':
+          description: Not found - Either seller or item doesn't exist
+        '500':
+          description: Internal server error
+
+  # post:
+  #   tags: [Seller]
+  #   summary: Mark item as sold
+  #   description: Updates the status of a specific item to sold for the authenticated seller
+  #   security:
+  #     - cookieAuth: []
+  #   parameters:
+  #     - name: sellerId
+  #       in: path
+  #       required: true
+  #       description: ID of the seller marking the item as sold
+  #       schema:
+  #         type: string
+  #         example: "6818e920f98a61aeacbca6ff"
+  #     - name: itemId
+  #       in: path
+  #       required: true
+  #       description: ID of the item to mark as sold
+  #       schema:
+  #         type: string
+  #         example: "681a58e084ba713bc384c4d2"
+  #   responses:
+  #     '200':
+  #       description: Item successfully marked as sold
+  #       content:
+  #         application/json:
+  #           schema:
+  #             type: object
+  #             properties:
+  #               message:
+  #                 type: string
+  #                 description: Success message
+  #                 example: "Item marked as sold successfully"
+  #               item:
+  #                 $ref: '#/components/schemas/Item'
+  #     '400':
+  #       description: Bad request - Invalid input parameters
+  #     '401':
+  #       description: Unauthorized - Invalid or missing authentication token
+  #     '403':
+  #       description: Forbidden - Seller doesn't own this item
+  #     '404':
+  #       description: Not found - Either seller or item doesn't exist
+  #     '409':
+  #       description: Conflict - Item is already sold
+  #     '500':
+  #       description: Internal server error
+
+  # ====================== #
+  #       Admin Routes      #
+  # ====================== #
+  /admin/login:
+    post:
+      tags: [Admin]
+      summary: Admin login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+              required:
+                - email
+                - password
+      responses:
+        '200':
+          description: Successfully logged in
+
   /admin/home:
     get:
+      tags: [Admin]
       summary: Admin dashboard
       security:
         - cookieAuth: []
@@ -516,267 +736,161 @@ paths:
                         items:
                           $ref: '#/components/schemas/Item'
 
-  /delete:
+  # ====================== #
+  #    Additional Routes    #
+  # ====================== #
+
+  /feedback:
     post:
-      summary: Delete item
-      security:
-        - cookieAuth: []
+      tags: [Additional]
+      summary: Submit feedback
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                id:
-                  type: string
-                type:
-                  type: string
-                  enum: [user, seller, item]
-              required:
-                - id
-                - type
+              $ref: '#/components/schemas/Feedback'
       responses:
         '200':
-          description: Item deleted successfully
-        '400':
-          description: Invalid type
-        '404':
-          description: Not found
-        '500':
-          description: Internal Server Error
+          description: Feedback saved successfully.
 
-  /item/unsold/{id}:
-    post:
-      summary: Mark item as unsold
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-          description: ID of the item
+    get:
+      tags: [Additional]
+      summary: Get all feedbacks
       responses:
         '200':
-          description: Item status updated
-        '404':
-          description: Item not found
-        '500':
-          description: Internal Server Error
-
-  /delete:
-    post:
-      summary: Delete item
-      security:
-        - cookieAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                id:
-                  type: string
-              required:
-                - id
-      responses:
-        '200':
-          description: Item deleted successfully
-
-  /item/unsold/{id}:
-    post:
-      summary: Mark item as unsold
-      parameters:
-        - in: path
-          name: id
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Item status updated
-
-  /seller/login:
-    post:
-      summary: Seller login
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                email:
-                  type: string
-                  format: email
-                password:
-                  type: string
-              required:
-                - email
-                - password
-      responses:
-        '200':
-          description: Successfully logged in
+          description: Returns a list of feedbacks.
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  sellerId:
-                    type: string
+                type: array
+                items:
+                  $ref: '#/components/schemas/reviews'
 
-  /seller/home/{id}:
-    get:
-      summary: Get seller home data
+  /item/unsold/{id}:
+    post:
+      tags: [Additional]
+      summary: Mark item as unsold
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
-          description: ID of the seller
       responses:
         '200':
-          description: Returns seller home data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  source:
-                    type: string
-                  responseTime:
-                    type: number
-                  data:
-                    type: object
-                    properties:
-                      seller:
-                        $ref: '#/components/schemas/Seller'
-                      items:
-                        type: array
-                        items:
-                          $ref: '#/components/schemas/Item'
+          description: Item status updated
 
-  /seller/sell/{seller}/{itemid}:
-    get:
-      summary: Get selling page data
-      parameters:
-        - name: seller
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the seller
-        - name: itemid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the item
-      responses:
-        '200':
-          description: Returns selling page data
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: object
-                    properties:
-                      user:
-                        type: string
-                      username:
-                        type: string
-                      item:
-                        $ref: '#/components/schemas/Item'
+  # /item/{id}:
+  #   delete:
+  #     tags: [Additional]
+  #     summary: Delete an item
+  #     description: Permanently deletes an item by its ID
+  #     security:
+  #       - cookieAuth: []
+  #     parameters:
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: The ID of the item to delete (must be a valid MongoDB ObjectId)
+  #         schema:
+  #           type: string
+  #           pattern: '^[0-9a-fA-F]{24}$'
+  #           example: "6817ed1fe4bffaff3c3473a7"
+  #     responses:
+  #       '200':
+  #         description: Item deleted successfully
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 message:
+  #                   type: string
+  #                   example: "Item deleted successfully"
+  #                 deletedItem:
+  #                   $ref: '#/components/schemas/Item'
+  #       '400':
+  #         description: Bad Request - Invalid ID format
+  #       '401':
+  #         description: Unauthorized - Missing or invalid authentication
+  #       '404':
+  #         description: Not Found - Item not found
+  #       '500':
+  #         description: Internal Server Error
 
-    post:
-      summary: Mark item as sold
-      parameters:
-        - name: seller
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the seller
-        - name: itemid
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the item
-      responses:
-        '200':
-          description: Item sold successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  item:
-                    $ref: '#/components/schemas/Item'
 
-  /seller/auction/{seller}:
-    post:
-      summary: Create a new auction
-      requestBody:
-        required: true
-        content:
-          multipart/form-data:
-            schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                basePrice:
-                  type: number
-                type:
-                  type: string
-                date:
-                  type: string
-                  format: date
-                StartTime:
-                  type: string
-                  format: time
-                EndTime:
-                  type: string
-                  format: time
-                image:
-                  type: string
-                  format: binary
-              required:
-                - name
-                - basePrice
-                - type
-                - date
-                - StartTime
-                - EndTime
-                - image
-      parameters:
-        - name: seller
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ID of the seller
-      responses:
-        '200':
-          description: Auction created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+  # /delete/{type}/{id}:
+  #   delete:
+  #     tags: [Additional]
+  #     summary: Delete item
+  #     description: Deletes a resource of specified type by ID
+  #     security:
+  #       - cookieAuth: []
+  #     parameters:
+  #       - name: type
+  #         in: path
+  #         required: true
+  #         description: Type of resource to delete
+  #         schema:
+  #           type: string
+  #           enum: [user, seller, item]
+  #           example: "item"
+  #       - name: id
+  #         in: path
+  #         required: true
+  #         description: ID of the resource to delete
+  #         schema:
+  #           type: string
+  #           example: "507f1f77bcf86cd799439011"
+  #     responses:
+  #       '200':
+  #         description: Resource deleted successfully
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 message:
+  #                   type: string
+  #                   example: "Item deleted successfully"
+  #                 deletedCount:
+  #                   type: number
+  #                   example: 1
+  #       '400':
+  #         description: Bad Request - Invalid type parameter
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 error:
+  #                   type: string
+  #                   example: "Invalid type parameter. Must be one of: user, seller, item"
+  #       '401':
+  #         description: Unauthorized - Missing or invalid authentication
+  #       '403':
+  #         description: Forbidden - Insufficient permissions
+  #       '404':
+  #         description: Not Found - Resource not found
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 error:
+  #                   type: string
+  #                   example: "Item not found with id 507f1f77bcf86cd799439011"
+  #       '500':
+  #         description: Internal Server Error
+  #         content:
+  #           application/json:
+  #             schema:
+  #               type: object
+  #               properties:
+  #                 error:
+  #                   type: string
+  #                   example: "Database operation failed"
 
 security:
   - cookieAuth: []

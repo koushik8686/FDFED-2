@@ -135,8 +135,28 @@ app.use("/delete" ,require("./routers/admin-routes/deleteitem") )
 
 
 app.post('/item/unsold/:id', async (req, res) => {
-  itemmodel.findByIdAndUpdate(req.params.id, { aution_active: false });
-  res.status(200).send({ message: `Item ${req.params.id} marked as unsold` });
+  try {
+    const item = await itemmodel.findById(req.params.id);
+    if (!item) {
+      return res.status(404).send({ message: "Item not found" });
+    }
+    const beforeUpdate = item.aution_active ;
+    await itemmodel.findByIdAndUpdate(req.params.id, { aution_active: false });
+    const afterUpdate = item.auction_active;
+
+    console.log(beforeUpdate)
+    console.log(afterUpdate)
+    res.status(200).send({
+      message: `Item ${req.params.id} marked as unsold`,
+      beforeUpdate,
+      afterUpdate,
+    });
+    const client = await getRedisClient();
+    await client.flushAll();
+  } catch (error) {
+    console.error('Error marking item as unsold:', error);
+    res.status(500).json({ error: 'An error occurred while marking the item as unsold.' });
+  }
 })
 
 app.get("/performance" , async (req, res) => {

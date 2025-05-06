@@ -214,7 +214,9 @@ const ItemsDashboard = () => {
 
         {/* Content */}
         <div className="p-4 md:p-8">
+          
           <div className="max-w-7xl mx-auto">
+            
             <div className="bg-white rounded-xl shadow-sm overflow-hidden">
               {/* Header */}
               <div className="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-8 md:py-10">
@@ -304,7 +306,72 @@ const ItemsDashboard = () => {
                   </div>
                 )}
               </div>
+  <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-purple-100 p-3 rounded-lg">
+                      <Package className="h-6 w-6 text-purple-500" />
+                    </div>
+                    <div className="ml-5">
+                      <h3 className="text-lg font-medium text-gray-900">Total Items</h3>
+                      <p className="text-gray-500 text-sm">All active items</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="flex items-baseline">
+                      <p className="text-3xl font-bold text-gray-900">{filteredItems.length}</p>
+                      <p className="ml-2 text-sm text-gray-500">items</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
 
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-green-100 p-3 rounded-lg">
+                      <Package className="h-6 w-6 text-green-500" />
+                    </div>
+                    <div className="ml-5">
+                      <h3 className="text-lg font-medium text-gray-900">Average Price</h3>
+                      <p className="text-gray-500 text-sm">Current average price</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="flex items-baseline">
+                      <p className="text-3xl font-bold text-gray-900">
+                        {formatPrice(
+                          filteredItems.reduce((acc, item) => acc + Number.parseFloat(item.current_price || 0), 0) /
+                            (filteredItems.length || 1),
+                        )}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+                <div className="p-5">
+                  <div className="flex items-center">
+                    <div className="flex-shrink-0 bg-blue-100 p-3 rounded-lg">
+                      <Package className="h-6 w-6 text-blue-500" />
+                    </div>
+                    <div className="ml-5">
+                      <h3 className="text-lg font-medium text-gray-900">Total Value</h3>
+                      <p className="text-gray-500 text-sm">Sum of all current prices</p>
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <div className="flex items-baseline">
+                      <p className="text-3xl font-bold text-gray-900">
+                        {formatPrice(filteredItems.reduce((acc, item) => acc + Number.parseFloat(item.current_price || 0), 0))}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
               {/* Items List */}
               <div className="overflow-x-auto">
                 {filteredItems.length === 0 ? (
@@ -472,72 +539,7 @@ const ItemsDashboard = () => {
             </div>
 
             {/* Item Stats Cards */}
-            <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-purple-100 p-3 rounded-lg">
-                      <Package className="h-6 w-6 text-purple-500" />
-                    </div>
-                    <div className="ml-5">
-                      <h3 className="text-lg font-medium text-gray-900">Total Items</h3>
-                      <p className="text-gray-500 text-sm">All active items</p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex items-baseline">
-                      <p className="text-3xl font-bold text-gray-900">{items.length}</p>
-                      <p className="ml-2 text-sm text-gray-500">items</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-green-100 p-3 rounded-lg">
-                      <Package className="h-6 w-6 text-green-500" />
-                    </div>
-                    <div className="ml-5">
-                      <h3 className="text-lg font-medium text-gray-900">Average Price</h3>
-                      <p className="text-gray-500 text-sm">Current average price</p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex items-baseline">
-                      <p className="text-3xl font-bold text-gray-900">
-                        {formatPrice(
-                          items.reduce((acc, item) => acc + Number.parseFloat(item.current_price || 0), 0) /
-                            (items.length || 1),
-                        )}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
-                <div className="p-5">
-                  <div className="flex items-center">
-                    <div className="flex-shrink-0 bg-blue-100 p-3 rounded-lg">
-                      <Package className="h-6 w-6 text-blue-500" />
-                    </div>
-                    <div className="ml-5">
-                      <h3 className="text-lg font-medium text-gray-900">Total Value</h3>
-                      <p className="text-gray-500 text-sm">Sum of all current prices</p>
-                    </div>
-                  </div>
-                  <div className="mt-4">
-                    <div className="flex items-baseline">
-                      <p className="text-3xl font-bold text-gray-900">
-                        {formatPrice(items.reduce((acc, item) => acc + Number.parseFloat(item.current_price || 0), 0))}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
+          
           </div>
         </div>
       </div>
