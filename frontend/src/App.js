@@ -19,6 +19,8 @@ import FeedBack from './components/user/FeedBAckForm';
 import Reviews from './components/admin/Reviews';
 import Performance from './Performance';
 import Subscriptions from './components/admin/Susriptions';
+import AdminUserDashboard from './components/admin/UserDashboard';
+import ItemsDashboard from './components/admin/ItemsDashboard';
 
 function App() {
   return (
@@ -37,7 +39,8 @@ function App() {
         <Route path="/auction/:item" element={<Auction />} />
         <Route path="/item/:item" element={<Item />} />   
         <Route path='/admin/login' element={<AdminLogin/>}/>
-        <Route path='/admin/' element={<Admin/>}/>
+        <Route path='/admin/' element={<AdminUserDashboard/>}/>
+        <Route path='/admin/items' element={<ItemsDashboard/>} />
         <Route path='/admin/calender' element={<TimeFrame/>} />
         <Route path='/reviews'  element={<Reviews/>} />
         <Route path='/subscriptions' element={<Subscriptions/>} />

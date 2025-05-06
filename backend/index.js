@@ -14,6 +14,7 @@ const app = express();
 const email = "hexart637@gmail.com";
 const morgan = require('morgan');
 const PerformanceLog = require('./models/PerformanceLog');
+const UserModel = require('./models/usermodel')
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
@@ -187,5 +188,69 @@ app.post('/create-checkout-session', async (req, res) => {
 
   res.json({ id: session.id });
 });
+
+app.post('/user/edit/:id', async (req, res) => {
+  const { id } = req.params;
+  const { username, email } = req.body;
+  const client = await getRedisClient()
+  try {
+    const updatedUser = await UserModel.findByIdAndUpdate(
+      id,
+      { username, email },
+      { new: true }
+    );
+    client.flushAll();
+    res.json(updatedUser);
+ 
+  } catch (error) {
+    console.error('Error updating user:', error);
+    res.status(500).json({ error: 'An error occurred while updating the user.' });
+  }
+});
+app.get('/user/delete/:id', async (req, res) => {
+  const { id } = req.params;
+   const client = await getRedisClient()
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+    client.flushAll();
+    res.json(deletedUser);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the user.' });
+  }
+});
+
+
+app.post("/seller/edit/:id", async (req, res) => {
+  const { id } = req.params;
+  const { name, email } = req.body;
+  const client = await getRedisClient()
+  try {
+    const updatedSeller = await SellerModel.findByIdAndUpdate(
+      id,
+      { name, email },
+      { new: true }
+    );
+    client.flushAll();
+    res.json(updatedSeller);
+ 
+  } catch (error) {
+    console.error('Error updating seller:', error);
+    res.status(500).json({ error: 'An error occurred while updating the seller.' });
+  }
+})
+app.get('/seller/delete/:id', async (req, res) => {
+  const { id } = req.params;
+   const client = await getRedisClient()
+  try {
+    const deletedSeller = await SellerModel.findByIdAndDelete(id);
+    client.flushAll();
+    res.json(deletedSeller);
+  } catch (error) {
+    console.error('Error deleting seller:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the seller.' });
+  }
+})
+
 
 module.exports = app;

@@ -1,9 +1,10 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Users, Crown, Star, Package, Search, ChevronDown, Filter, ArrowUpDown } from "lucide-react"
+import { Users, Crown, Star, Package, Search, ChevronDown, Filter, ArrowUpDown, Edit, Trash2 } from "lucide-react"
 import { Link } from "react-router-dom"
-
+import AdminNav from "./AdminNav"
+import { UserPlus } from "lucide-react"
 const SellersBySubscription = () => {
   const [sellers, setSellers] = useState([])
   const [loading, setLoading] = useState(true)
@@ -13,9 +14,76 @@ const SellersBySubscription = () => {
   const [sortOrder, setSortOrder] = useState("asc")
   const [isFilterOpen, setIsFilterOpen] = useState(false)
   const [isSidebarOpen, setIsSidebarOpen] = useState(true)
+  const [isAddModalOpen, setIsAddModalOpen] = useState(false)
+  const [newseller, setnewseller] = useState({ name: "", email: "", password: "", phone: "" })
+  const [editingSeller, setEditingSeller] = useState(null)
+  const [isEditSellerModalOpen, setIsEditSellerModalOpen] = useState(false)
 
-  const logout = () => {
-    // Add your logout logic here
+  const handleAddSeller = async () => {
+    try {
+      // Replace with your actual API endpoint
+      const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/sellerregister`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newseller),
+      })
+
+      const data = await response.json()
+      setSellers([...sellers, data])
+      setnewseller({ name: "", email: "", password: "", phone: "" })
+      setIsAddModalOpen(false)
+    } catch (error) {
+      console.error("Error adding user:", error)
+    }
+  }
+
+  const handleOpenEditSellerModal = (seller) => {
+    setEditingSeller({ ...seller })
+    setIsEditSellerModalOpen(true)
+  }
+
+  const handleCloseEditSellerModal = () => {
+    setEditingSeller(null)
+    setIsEditSellerModalOpen(false)
+  }
+
+  const handleSaveSellerEdit = async () => {
+    if (!editingSeller) return
+    try {
+      const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/seller/edit/${editingSeller._id}`, {
+        method: "POST", // or PUT, depending on your backend API
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: editingSeller.name, email: editingSeller.email, phone: editingSeller.phone }), // Send only necessary fields
+      })
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const updatedSeller = await response.json()
+      setSellers(sellers.map((s) => (s._id === updatedSeller._id ? updatedSeller : s)))
+      handleCloseEditSellerModal()
+    } catch (error) {
+      console.error("Error updating seller:", error)
+    }
+  }
+
+  const handleDeleteSeller = async (sellerId) => {
+    if (window.confirm("Are you sure you want to delete this seller?")) {
+      try {
+        const response = await fetch(`${process.env.REACT_APP_BACKENDURL}/seller/delete/${sellerId}`, {
+          method: "GET", // or DELETE, depending on your backend API
+        })
+        if (!response.ok) {
+         throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        setSellers(sellers.filter((s) => s._id !== sellerId))
+      } catch (error) {
+        console.error("Error deleting seller:", error)
+      }
+    }
   }
 
   useEffect(() => {
@@ -166,47 +234,7 @@ const SellersBySubscription = () => {
   return (
     <div className="flex min-h-screen">
       {/* Sidebar */}
-      <aside className={`fixed top-0 left-0 h-full bg-white shadow-lg w-64 transform ${
-        isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      } transition-transform duration-300 ease-in-out z-30`}>
-        <div className="p-6">
-          <h1 className="text-xl font-semibold text-gray-900">Auction Admin</h1>
-        </div>
-        <nav className="mt-4">
-          <Link to="/admin" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Dashboard
-          </Link>
-          <Link to="#users" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Users
-          </Link>
-          <Link to="#sellers" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Sellers
-          </Link>
-          <Link to="#items" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Items
-          </Link>
-          <Link to="/admin/calender" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Calendar
-          </Link>
-          <Link to="/reviews" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Reviews
-          </Link>
-          <Link to="/subscriptions" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Subscriptions
-          </Link>
-          <Link to="/performance" className="flex items-center px-6 py-3 text-gray-600 hover:bg-gray-100">
-            Performance
-          </Link>
-
-          <button 
-            onClick={logout} 
-            className="w-full text-left px-6 py-3 text-gray-600 hover:bg-gray-100"
-          >
-            Log Out
-          </button>
-        </nav>
-      </aside>
-
+     <AdminNav/>
       {/* Main Content */}
       <div className={`flex-1 ${isSidebarOpen ? 'ml-64' : 'ml-0'} transition-margin duration-300 ease-in-out`}>
         {/* Toggle Sidebar Button */}
@@ -237,7 +265,6 @@ const SellersBySubscription = () => {
                 <div className="flex flex-col md:flex-row md:items-center justify-between">
                   <div>
                     <h1 className="text-2xl md:text-3xl font-bold text-white">Seller Management</h1>
-                    <p className="mt-2 text-purple-100">View and manage sellers by subscription plans</p>
                   </div>
                   <div className="mt-4 md:mt-0 flex items-center space-x-2">
                     <div className="bg-white/20 backdrop-blur-sm rounded-lg px-3 py-2 text-white flex items-center">
@@ -245,6 +272,13 @@ const SellersBySubscription = () => {
                       <span className="font-medium">{sellers.length} Total Sellers</span>
                     </div>
                   </div>
+                   <button
+                                        onClick={() => setIsAddModalOpen(true)}
+                                        className="bg-white text-purple-600 hover:bg-purple-50 rounded-lg px-3 py-2 flex items-center font-medium"
+                                      >
+                                        <UserPlus className="h-5 w-5 mr-2" />
+                                        Add Seller
+                                      </button>
                 </div>
               </div>
 
@@ -494,6 +528,23 @@ const SellersBySubscription = () => {
                               <div className="ml-2">{getSubscriptionBadge(seller.subscription)}</div>
                             </div>
                           </td>
+
+                          <td className="px-6 py-4 whitespace-nowrap">
+                            <div className="flex items-center space-x-2">
+                              <button
+                                onClick={() => handleOpenEditSellerModal(seller)}
+                                className="text-purple-600 hover:text-purple-900"
+                              >
+                                <Edit className="h-5 w-5" />
+                              </button>
+                              <button
+                                onClick={() => handleDeleteSeller(seller._id)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                <Trash2 className="h-5 w-5" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
                       ))}
                     </tbody>
@@ -604,6 +655,119 @@ const SellersBySubscription = () => {
           </div>
         </div>
       </div>
+
+      {/* Add Seller Modal (existing) */}
+      {isAddModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Add New Seller</h2> {/* Corrected Title */}
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={newseller.name}
+                  onChange={(e) => setnewseller({ ...newseller, name: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={newseller.email}
+                  onChange={(e) => setnewseller({ ...newseller, email: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
+                <input
+                  type="password"
+                  value={newseller.password}
+                  onChange={(e) => setnewseller({ ...newseller, password: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input
+                  type="text"
+                  value={newseller.phone}
+                  onChange={(e) => setnewseller({ ...newseller, phone: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={() => setIsAddModalOpen(false)}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleAddSeller}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Add Seller
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Seller Modal */}
+      {isEditSellerModalOpen && editingSeller && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+            <h2 className="text-xl font-bold mb-4">Edit Seller</h2>
+            <div className="space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                <input
+                  type="text"
+                  value={editingSeller.name}
+                  onChange={(e) => setEditingSeller({ ...editingSeller, name: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input
+                  type="email"
+                  value={editingSeller.email}
+                  onChange={(e) => setEditingSeller({ ...editingSeller, email: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                <input
+                  type="text"
+                  value={editingSeller.phone || ''}
+                  onChange={(e) => setEditingSeller({ ...editingSeller, phone: e.target.value })}
+                  className="w-full p-2 border border-gray-300 rounded-md"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end space-x-2 mt-6">
+              <button
+                onClick={handleCloseEditSellerModal}
+                className="px-4 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSaveSellerEdit}
+                className="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700"
+              >
+                Save Changes
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
