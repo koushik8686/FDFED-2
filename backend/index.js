@@ -20,6 +20,18 @@ const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const stripe = require('stripe');
 const getRedisClient = require('./redis'); // Import Redis client
+const { v2: cloudinary } = require('cloudinary');
+const {storage} = require('./routers/seller-routes/storage');
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.API_KEY,
+  api_secret: process.env.API_SECRET,
+});
+
+// Configure multer for memory storage
+
+const upload = multer({ storage });
 
 const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
@@ -35,7 +47,8 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 
 const allowedOrigins = [
   'http://localhost:3000',
-  'https://fdfed-iota.vercel.app'
+  'https://fdfed-iota.vercel.app',
+  'https://fdfed-2-server.vercel.app/'
 ];
 
 app.use(cors({
@@ -46,7 +59,7 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  methods: ['GET', 'POST', 'OPTIONS' , 'DELETE'],
+  methods: ['GET', 'POST', 'OPTIONS' , 'PUT' ,   'DELETE'],
   allowedHeaders: ['Content-Type'],
   credentials: true // only needed if using cookies/sessions
 }));
@@ -271,6 +284,75 @@ app.get('/seller/delete/:id', async (req, res) => {
     res.status(500).json({ error: 'An error occurred while deleting the seller.' });
   }
 })
+
+app.get('item/delete/:id', async (req, res) => {
+  const { id } = req.params;
+   const client = await getRedisClient()
+  try {
+    const deletedItem = await itemmodel.findByIdAndDelete(id);
+    client.flushAll();
+    res.json(deletedItem);
+  } catch (error) {
+    console.error('Error deleting item:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the item.' });
+  }
+})
+
+app.put('/item/update/:id', upload.single('image'), async (req, res) => {
+  const { id } = req.params;
+  const client = await getRedisClient();
+  try {
+    const updateData = { ...req.body };
+    
+    // Handle image upload if new image was provided
+  
+      updateData.url = req.file.path;
+    // Convert string dates to Date objects
+    const dateParts = updateData.date.split('-');
+      const year = parseInt(dateParts[0]);
+      const month = parseInt(dateParts[1]) - 1; // Months are 0-indexed
+      const day = parseInt(dateParts[2]);
+
+      // Handle StartTime if provided
+      if (updateData.StartTime) {
+        const [hours, minutes] = updateData.StartTime.split(':').map(Number);
+        updateData.StartTime = new Date(year, month, day, hours, minutes);
+        
+        // Validate the date
+        if (isNaN(updateData.StartTime.getTime())) {
+          throw new Error('Invalid StartTime date');
+        }
+      }
+
+      // Handle EndTime if provided
+      if (updateData.EndTime) {
+        const [hours, minutes] = updateData.EndTime.split(':').map(Number);
+        updateData.EndTime = new Date(year, month, day, hours, minutes);
+        
+        // Validate the date
+        if (isNaN(updateData.EndTime.getTime())) {
+          throw new Error('Invalid EndTime date');
+        }
+      }
+
+
+    const updatedItem = await itemmodel.findByIdAndUpdate(
+      id,
+      updateData,
+      { new: true }
+    );
+
+    // Clear only relevant cache keys 
+    await client.flushAll();
+    res.json(updatedItem);
+  } catch (error) {
+    console.error('Error updating item:', error);
+    res.status(500).json({ 
+      error: 'An error occurred while updating the item.',
+      details: error.message 
+    });
+  }
+});
 
 
 module.exports = app;

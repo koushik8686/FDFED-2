@@ -1,9 +1,11 @@
-"use client"
-
 import { useState, useEffect } from "react"
 import { Link, useNavigate } from "react-router-dom"
 import axios from "axios"
 import Cookies from "js-cookie"
+import {
+  BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer,
+  PieChart, Pie, Cell, AreaChart, Area
+} from 'recharts'
 
 export default function SellerSoldItems() {
   const navigate = useNavigate()
@@ -23,9 +25,12 @@ export default function SellerSoldItems() {
     totalRevenue: 0,
     averageSoldPrice: 0,
     successRate: 0,
-    monthlySales: [],
-    categorySales: {},
+    timeSeriesData: [], // Will hold hourly/daily/weekly/monthly data
+    categoryData: [], // For pie chart
   })
+
+  // Colors for charts
+  const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#8884D8', '#82CA9D']
 
   useEffect(() => {
     const fetchSoldItems = async () => {
@@ -34,20 +39,13 @@ export default function SellerSoldItems() {
           return navigate("/seller")
         }
         const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`)
-        console.log(response.data)
         setSeller(response.data.seller)
 
-        // Get sold items from the API response
         const soldItems = response.data.seller.solditems || []
-        // Get unsold items - items where auction_active is false
         const unsoldItems = response.data.items.filter((item) => item.aution_active === false)
        
-        console.log(unsoldItems)
-        console.log(soldItems)
         setSoldItems(soldItems)
         setUnsoldItems(unsoldItems)
-
-        // Calculate analytics based on real data
         calculateAnalytics(soldItems, unsoldItems)
       } catch (error) {
         console.error("Error fetching data:", error)
@@ -59,80 +57,174 @@ export default function SellerSoldItems() {
     fetchSoldItems()
   }, [sellerid, navigate])
 
+  const logout = () => {
+    Cookies.remove("seller")
+    navigate("/")
+  }
+
   const calculateAnalytics = (sold, unsold) => {
     const totalSold = sold.length
     const totalUnsold = unsold.length
-
-    // Calculate total revenue from sold items
     const totalRevenue = sold.reduce((sum, item) => sum + Number(item.current_price || 0), 0)
-
-    // Calculate average sold price
     const averageSoldPrice = totalSold > 0 ? totalRevenue / totalSold : 0
-
-    // Calculate success rate
     const successRate = totalSold + totalUnsold > 0 ? (totalSold / (totalSold + totalUnsold)) * 100 : 0
 
-    // Initialize monthly sales data
-    const monthlySales = [
-      { month: "Jan", sales: 0 },
-      { month: "Feb", sales: 0 },
-      { month: "Mar", sales: 0 },
-      { month: "Apr", sales: 0 },
-      { month: "May", sales: 0 },
-      { month: "Jun", sales: 0 },
-      { month: "Jul", sales: 0 },
-      { month: "Aug", sales: 0 },
-      { month: "Sep", sales: 0 },
-      { month: "Oct", sales: 0 },
-      { month: "Nov", sales: 0 },
-      { month: "Dec", sales: 0 },
-    ]
-
-    // Count sales by month
-    sold.forEach((item) => {
-      const soldDate = new Date(item.soldDate || item.updatedAt)
-      const month = soldDate.getMonth() // 0-11
-      monthlySales[month].sales += 1
-    })
-
-    // Initialize category sales
-    const categorySales = {}
-
-    // Count sales by category
-    sold.forEach((item) => {
-      const category = item.type || "Other"
-      if (!categorySales[category]) {
-        categorySales[category] = { count: 0, revenue: 0 }
-      }
-      categorySales[category].count += 1
-      categorySales[category].revenue += Number(item.current_price || 0)
-    })
-
-    // Add categories from unsold items too
-    unsold.forEach((item) => {
-      const category = item.type || "Other"
-      if (!categorySales[category]) {
-        categorySales[category] = { count: 0, revenue: 0 }
-      }
-    })
-
-    // If no categories were found, add some defaults
-    if (Object.keys(categorySales).length === 0) {
-      categorySales["Art"] = { count: 0, revenue: 0 }
-      categorySales["Antique"] = { count: 0, revenue: 0 }
-      categorySales["Collectible"] = { count: 0, revenue: 0 }
-    }
-
+    // Process data based on current time filter
+    const { timeSeriesData, categoryData } = processChartData(sold, timeFilter)
+ 
     setAnalytics({
       totalSold,
       totalUnsold,
       totalRevenue,
       averageSoldPrice,
       successRate,
-      monthlySales,
-      categorySales,
+      timeSeriesData,
+      categoryData,
     })
   }
+
+  // Process data for charts based on time filter
+  const processChartData = (soldItems, filter) => {
+    const now = new Date()
+    let timeSeriesData = []
+    let categoryData = []
+
+    // Process category data (same for all time filters)
+    const categoryMap = {}
+    soldItems.forEach(item => {
+      const category = item.type || "Other"
+      if (!categoryMap[category]) {
+        categoryMap[category] = { name: category, value: 0, revenue: 0 }
+      }
+      categoryMap[category].value += 1
+      categoryMap[category].revenue += Number(item.current_price || 0)
+    })
+    categoryData = Object.values(categoryMap)
+
+    // Process time series data based on filter
+    switch (filter) {
+      case "day":
+        // Hourly data for last 24 hours
+        timeSeriesData = Array(24).fill().map((_, i) => {
+          const hour = new Date(now)
+          hour.setHours(now.getHours() - 23 + i)
+          return {
+            name: hour.getHours().toString().padStart(2, '0') + ':00',
+            sales: 0,
+            revenue: 0
+          }
+        })
+        
+        soldItems.forEach(item => {
+          const soldDate = new Date(item.soldDate || item.updatedAt)
+          const hourDiff = Math.floor((now - soldDate) / (1000 * 60 * 60))
+          if (hourDiff >= 0 && hourDiff < 24) {
+            const idx = 23 - hourDiff
+            timeSeriesData[idx].sales += 1
+            timeSeriesData[idx].revenue += Number(item.current_price || 0)
+          }
+        })
+        break
+
+      case "week":
+        // Daily data for last 7 days
+        timeSeriesData = Array(7).fill().map((_, i) => {
+          const date = new Date(now)
+          date.setDate(now.getDate() - 6 + i)
+          return {
+            name: date.toLocaleDateString('en-US', { weekday: 'short' }),
+            sales: 0,
+            revenue: 0
+          }
+        })
+        
+        soldItems.forEach(item => {
+          const soldDate = new Date(item.soldDate || item.updatedAt)
+          const dayDiff = Math.floor((now - soldDate) / (1000 * 60 * 60 * 24))
+          if (dayDiff >= 0 && dayDiff < 7) {
+            const idx = 6 - dayDiff
+            timeSeriesData[idx].sales += 1
+            timeSeriesData[idx].revenue += Number(item.current_price || 0)
+          }
+        })
+        break
+
+      case "month":
+        // Weekly data for last 4 weeks
+        timeSeriesData = Array(4).fill().map((_, i) => {
+          const weekStart = new Date(now)
+          weekStart.setDate(now.getDate() - (7 * (3 - i)))
+          return {
+            name: `Week ${i + 1}`,
+            sales: 0,
+            revenue: 0
+          }
+        })
+        
+        soldItems.forEach(item => {
+          const soldDate = new Date(item.soldDate || item.updatedAt)
+          const weekDiff = Math.floor((now - soldDate) / (1000 * 60 * 60 * 24 * 7))
+          if (weekDiff >= 0 && weekDiff < 4) {
+            const idx = 3 - weekDiff
+            timeSeriesData[idx].sales += 1
+            timeSeriesData[idx].revenue += Number(item.current_price || 0)
+          }
+        })
+        break
+
+      case "year":
+        // Monthly data for last 12 months
+        timeSeriesData = Array(12).fill().map((_, i) => {
+          const month = new Date(now)
+          month.setMonth(now.getMonth() - 11 + i)
+          return {
+            name: month.toLocaleDateString('en-US', { month: 'short' }),
+            sales: 0,
+            revenue: 0
+          }
+        })
+        
+        soldItems.forEach(item => {
+          const soldDate = new Date(item.soldDate || item.updatedAt)
+          const monthDiff = (now.getFullYear() - soldDate.getFullYear()) * 12 + now.getMonth() - soldDate.getMonth()
+          if (monthDiff >= 0 && monthDiff < 12) {
+            const idx = 11 - monthDiff
+            timeSeriesData[idx].sales += 1
+            timeSeriesData[idx].revenue += Number(item.current_price || 0)
+          }
+        })
+        break
+
+      default:
+        // All time - monthly data
+        timeSeriesData = Array(12).fill().map((_, i) => ({
+          name: new Date(0, i).toLocaleDateString('en-US', { month: 'short' }),
+          sales: 0,
+          revenue: 0
+        }))
+        
+        soldItems.forEach(item => {
+          const soldDate = new Date(item.soldDate || item.updatedAt)
+          const month = soldDate.getMonth()
+          timeSeriesData[month].sales += 1
+          timeSeriesData[month].revenue += Number(item.current_price || 0)
+        })
+    }
+
+    return { timeSeriesData, categoryData }
+  }
+
+  // Update charts when time filter changes
+  useEffect(() => {
+    if (soldItems.length > 0) {
+      const { timeSeriesData, categoryData } = processChartData(soldItems, timeFilter)
+      setAnalytics(prev => ({
+        ...prev,
+        timeSeriesData,
+        categoryData
+      }))
+    }
+  }, [timeFilter])
 
   const filterItemsByTime = (items, filter) => {
     if (filter === "all") return items
@@ -163,100 +255,112 @@ export default function SellerSoldItems() {
     })
   }
 
-  const logout = () => {
-    Cookies.remove("seller")
-    navigate("/")
-  }
-
   // Function to render the monthly sales chart
-  const renderMonthlySalesChart = () => {
-    const maxSales = Math.max(...analytics.monthlySales.map((month) => month.sales))
-
-    return (
-      <div className="h-64 w-full flex items-end space-x-1 mt-4">
-        {analytics.monthlySales.map((month, index) => {
-          const height = maxSales > 0 ? (month.sales / maxSales) * 150 : 0
-
-          // Generate different colors for different months
-          const colors = [
-            "bg-blue-500",
-            "bg-indigo-500",
-            "bg-purple-500",
-            "bg-pink-500",
-            "bg-red-500",
-            "bg-orange-500",
-            "bg-amber-500",
-            "bg-yellow-500",
-            "bg-lime-500",
-            "bg-green-500",
-            "bg-teal-500",
-            "bg-cyan-500",
-          ]
-
-          return (
-            <div key={index} className="flex flex-col items-center flex-1">
-              <div className={`${colors[index]} rounded-t-md w-full`} style={{ height: `${height}px` }}></div>
-              <div className="text-xs mt-1 truncate w-full text-center">{month.month}</div>
-            </div>
-          )
-        })}
-      </div>
-    )
-  }
-
-  // Function to render the category distribution chart
-  const renderCategoryChart = () => {
-    const categories = Object.keys(analytics.categorySales)
-    const totalItems = categories.reduce((sum, cat) => sum + analytics.categorySales[cat].count, 0)
-
-    // Colors for different categories
-    const categoryColors = {
-      Art: "bg-purple-500",
-      Antique: "bg-amber-500",
-      Sculpture: "bg-blue-500",
-      Collectible: "bg-pink-500",
-      Other: "bg-gray-500",
+  const renderTimeSeriesChart = () => {
+    let chartTitle = ""
+    switch (timeFilter) {
+      case "day": chartTitle = "Hourly Sales (Last 24 Hours)"; break
+      case "week": chartTitle = "Daily Sales (Last 7 Days)"; break
+      case "month": chartTitle = "Weekly Sales (Last 4 Weeks)"; break
+      case "year": chartTitle = "Monthly Sales (Last 12 Months)"; break
+      default: chartTitle = "Monthly Sales (All Time)"
     }
 
     return (
-      <div className="flex flex-wrap gap-2 mt-4 justify-center">
-        {categories.map((category, index) => {
-          const percentage =
-            totalItems > 0 ? Math.round((analytics.categorySales[category].count / totalItems) * 100) : 0
-
-          return (
-            <div key={index} className="flex flex-col items-center">
-              <div className="flex items-center mb-1">
-                <div className={`w-3 h-3 ${categoryColors[category] || "bg-gray-500"} rounded-full mr-1`}></div>
-                <span className="text-xs">{category}</span>
-              </div>
-              <div className="w-16 h-16 rounded-full flex items-center justify-center relative">
-                <svg className="w-16 h-16" viewBox="0 0 36 36">
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke={categoryColors[category]?.replace("bg-", "text-").replace("500", "200") || "text-gray-200"}
-                    strokeWidth="3"
-                    strokeDasharray="100, 100"
-                  />
-                  <path
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                    fill="none"
-                    stroke={categoryColors[category]?.replace("bg-", "text-") || "text-gray-500"}
-                    strokeWidth="3"
-                    strokeDasharray={`${percentage}, 100`}
-                  />
-                </svg>
-                <div className="absolute text-xs font-semibold">{percentage}%</div>
-              </div>
-              <div className="text-xs mt-1">{analytics.categorySales[category].count} items</div>
-            </div>
-          )
-        })}
+      <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+        <h3 className="text-lg font-semibold mb-2">{chartTitle}</h3>
+        <div className="h-80">
+          <ResponsiveContainer width="100%" height="100%">
+            <AreaChart
+              data={analytics.timeSeriesData}
+              margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Area
+                type="monotone"
+                dataKey="sales"
+                name="Items Sold"
+                stackId="1"
+                stroke="#8884d8"
+                fill="#8884d8"
+              />
+              <Area
+                type="monotone"
+                dataKey="revenue"
+                name="Revenue (₹)"
+                stackId="2"
+                stroke="#82ca9d"
+                fill="#82ca9d"
+              />
+            </AreaChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     )
   }
 
+  // Render category distribution chart
+  const renderCategoryChart = () => (
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-lg font-semibold mb-2">Category Distribution</h3>
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={analytics.categoryData}
+              cx="50%"
+              cy="50%"
+              labelLine={false}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
+              nameKey="name"
+              label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+            >
+              {analytics.categoryData.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+              ))}
+            </Pie>
+            <Tooltip 
+              formatter={(value, name, props) => [
+                value, 
+                `${name} (₹${props.payload.revenue.toLocaleString()})`
+              ]}
+            />
+            <Legend />
+          </PieChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  )
+
+  // Render revenue vs items sold chart
+  const renderRevenueVsItemsChart = () => (
+    <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
+      <h3 className="text-lg font-semibold mb-2">Revenue vs Items Sold</h3>
+      <div className="h-80">
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={analytics.timeSeriesData}
+            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis dataKey="name" />
+            <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+            <YAxis yAxisId="right" orientation="right" stroke="#82ca9d" />
+            <Tooltip />
+            <Legend />
+            <Bar yAxisId="left" dataKey="sales" name="Items Sold" fill="#8884d8" />
+            <Bar yAxisId="right" dataKey="revenue" name="Revenue (₹)" fill="#82ca9d" />
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
+    </div>
+  )
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-gray-50">
@@ -562,88 +666,14 @@ export default function SellerSoldItems() {
 
               {/* Charts */}
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                  <h3 className="text-lg font-semibold mb-2">Monthly Sales</h3>
-                  <p className="text-sm text-gray-500 mb-4">Number of items sold per month</p>
-                  {renderMonthlySalesChart()}
-                </div>
-
-                <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                  <h3 className="text-lg font-semibold mb-2">Category Distribution</h3>
-                  <p className="text-sm text-gray-500 mb-4">Sales by item category</p>
-                  {renderCategoryChart()}
-                </div>
+                {renderTimeSeriesChart()}
+                {renderCategoryChart()}
+              </div>
+              <div className="grid grid-cols-1">
+                {renderRevenueVsItemsChart()}
               </div>
 
-              {/* Summary */}
-              <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
-                <h3 className="text-lg font-semibold mb-4">Sales Summary</h3>
-                {Object.keys(analytics.categorySales).length > 0 ? (
-                  <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-gray-200">
-                      <thead className="bg-gray-50">
-                        <tr>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Category
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Items Sold
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Revenue
-                          </th>
-                          <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                            Avg. Price
-                          </th>
-                        </tr>
-                      </thead>
-                      <tbody className="bg-white divide-y divide-gray-200">
-                        {Object.keys(analytics.categorySales).map((category, index) => (
-                          <tr key={index}>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="flex items-center">
-                                <div
-                                  className={`w-3 h-3 ${
-                                    category === "Art"
-                                      ? "bg-purple-500"
-                                      : category === "Antique"
-                                        ? "bg-amber-500"
-                                        : category === "Sculpture"
-                                          ? "bg-blue-500"
-                                          : category === "Collectible"
-                                            ? "bg-pink-500"
-                                            : "bg-gray-500"
-                                  } rounded-full mr-2`}
-                                ></div>
-                                <div className="text-sm font-medium text-gray-900">{category}</div>
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">{analytics.categorySales[category].count}</div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                ₹{analytics.categorySales[category].revenue.toLocaleString()}
-                              </div>
-                            </td>
-                            <td className="px-6 py-4 whitespace-nowrap">
-                              <div className="text-sm text-gray-900">
-                                {analytics.categorySales[category].count > 0
-                                  ? `₹${Math.round(analytics.categorySales[category].revenue / analytics.categorySales[category].count).toLocaleString()}`
-                                  : "-"}
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                ) : (
-                  <div className="text-center py-8 text-gray-500">
-                    No sales data available yet. Start selling items to see your sales summary.
-                  </div>
-                )}
-              </div>
+        
             </div>
           )}
 

@@ -3,9 +3,234 @@
 import { useState, useEffect } from "react"
 import { Package, Search, ChevronDown, Filter, ArrowUpDown, Edit, Trash2, PlusCircle } from "lucide-react"
 import AdminNav from "./AdminNav"
+import Cookies from "js-cookie"
+import axios from "axios"
+import { useNavigate } from "react-router-dom"
+const ItemForm = ({ item, onSave, onClose, mode = 'edit' }) => {
+  const [formData, setFormData] = useState({
+    name: item?.name || "",
+    base_price: item?.base_price || 0,
+    type: item?.type || "Art",
+    description: item?.description || "",
+    date: item?.date ? new Date(item.date).toISOString().split('T')[0] : "",
+    StartTime: item?.StartTime ? new Date(item.StartTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : "12:00",
+    EndTime: item?.EndTime ? new Date(item.EndTime).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) : "23:59",
+  });
+  
+  const [imagePreview, setImagePreview] = useState(item?.url || null);
+  const [imageFile, setImageFile] = useState(null);
+  const [sellerId, setSellerId] = useState(item?.seller || "");
+  const [sellers, setSellers] = useState([]);
 
+  useEffect(() => {
+    // Fetch sellers for the dropdown
+    const fetchSellers = async () => {
+      try {
+        const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellers`);
+        setSellers(response.data.data || []);
+      } catch (error) {
+        console.error("Error fetching sellers:", error);
+      }
+    };
+    fetchSellers();
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const updatedData = new FormData();
+    
+    // Append all form data
+    Object.keys(formData).forEach(key => {
+      updatedData.append(key, formData[key]);
+    });
+    
+    if (imageFile) {
+      updatedData.append('image', imageFile);
+    }
+    
+    if (sellerId) {
+      updatedData.append('seller', sellerId);
+    }
+    
+    onSave(updatedData);
+  };
+
+  return (
+    <form onSubmit={handleSubmit} className="popup-form space-y-4 p-6 bg-white rounded-lg shadow-xl max-w-2xl mx-auto">
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">
+        {mode === 'add' ? 'Add New Item' : 'Edit Item'}
+      </h2>
+      
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Name*</label>
+          <input
+            type="text"
+            name="name"
+            value={formData.name}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Base Price (₹)*</label>
+          <input
+            type="number"
+            name="base_price"
+            value={formData.base_price}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            min="0"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Type*</label>
+          <select
+            name="type"
+            value={formData.type}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            required
+          >
+            <option value="Art">Art</option>
+            <option value="Antique">Antique</option>
+            <option value="Collectible">Collectible</option>
+            <option value="Jewelry">Jewelry</option>
+            <option value="Electronics">Electronics</option>
+          </select>
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Seller*</label>
+          <select
+            value={sellerId}
+            onChange={(e) => setSellerId(e.target.value)}
+            className="form-input w-full"
+            required
+          >
+            <option value="">Select Seller</option>
+            {sellers.map(seller => (
+              <option key={seller._id} value={seller._id}>
+                {seller.name} ({seller.email})
+              </option>
+            ))}
+          </select>
+        </div>
+        
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Description*</label>
+          <textarea
+            name="description"
+            value={formData.description}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            rows="3"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Auction Date*</label>
+          <input
+            type="date"
+            name="date"
+            value={formData.date}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">Start Time*</label>
+          <input
+            type="time"
+            name="StartTime"
+            value={formData.StartTime}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            required
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700 mb-1">End Time*</label>
+          <input
+            type="time"
+            name="EndTime"
+            value={formData.EndTime}
+            onChange={handleInputChange}
+            className="form-input w-full"
+            required
+          />
+        </div>
+        
+        <div className="md:col-span-2">
+          <label className="block text-sm font-medium text-gray-700 mb-1">Item Image*</label>
+          <input
+            type="file"
+            name="image"
+            onChange={handleImageChange}
+            accept="image/*"
+            className="block w-full text-sm text-gray-500
+              file:mr-4 file:py-2 file:px-4
+              file:rounded-md file:border-0
+              file:text-sm file:font-semibold
+              file:bg-blue-50 file:text-blue-700
+              hover:file:bg-blue-100"
+            required={mode === 'add'}
+          />
+          {imagePreview && (
+            <div className="mt-2">
+              <img 
+                src={imagePreview} 
+                alt="Preview" 
+                className="h-40 object-contain rounded border border-gray-200" 
+              />
+              <p className="text-xs text-gray-500 mt-1">Image Preview</p>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      <div className="flex justify-end space-x-3 pt-4">
+        <button
+          type="button"
+          onClick={onClose}
+          className="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50"
+        >
+          Cancel
+        </button>
+        <button
+          type="submit"
+          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-md text-sm font-medium"
+        >
+          {mode === 'add' ? 'Add Item' : 'Save Changes'}
+        </button>
+      </div>
+    </form>
+  );
+};
 const ItemsDashboard = () => {
   const [items, setItems] = useState([])
+  const navigate = useNavigate()
   const [loading, setLoading] = useState(true)
   const [searchTerm, setSearchTerm] = useState("")
   const [sortBy, setSortBy] = useState("name")
@@ -25,6 +250,10 @@ const ItemsDashboard = () => {
   })
 
   useEffect(() => {
+    const admin = Cookies.get("admin")
+    if (!admin) {
+      navigate("/admin/login")
+    }
     const fetchItems = async () => {
       try {
         // Replace with your actual API endpoint

@@ -5,6 +5,12 @@ import { Link, useNavigate } from "react-router-dom"
 import AddItem from "./AddItem"
 import axios from "axios"
 import Cookies from "js-cookie"
+import {
+  ComposedChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Legend
+} from 'recharts';
+import {
+  RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Radar
+} from 'recharts';
 
 export default function SellerHome() {
   // Component for the Edit Item Form
@@ -127,7 +133,7 @@ export default function SellerHome() {
       setSeller(response.data.seller)
 
       const currentTime = new Date()
-      const validItems = response.data.seller.items.filter((item) => {
+      const validItems = response.data.items.filter((item) => {
         if (!item.EndTime) {
           return true
         }
@@ -158,6 +164,8 @@ export default function SellerHome() {
         (sum, item) => sum + (item.auction_history ? item.auction_history.length : 0),
         0,
       )
+      console.log(validItems[0])
+      console.log(totalBids)
       const totalVisits = validItems.reduce(
         (sum, item) => sum + (item.visited_users ? item.visited_users.length : 0),
         0,
@@ -234,48 +242,54 @@ export default function SellerHome() {
   }
 
   // Function to render the price comparison chart
-  const renderPriceChart = () => {
+  const renderPriceChart = ({ items, analytics }) => {
+    if (items.length === 0) {
+      return null;
+    }
+    const chartData = items.map((item) => ({
+      name: item.name,
+      basePrice: parseInt(item.base_price),
+      currentPrice: parseInt(item.current_price),
+    }));
+  
     return (
-      <div className="h-64 w-full flex items-end space-x-2 mt-4">
-        {items.map((item, index) => (
-          <div key={index} className="flex flex-col items-center flex-1">
-            <div className="flex w-full space-x-1">
-              <div
-                className="bg-indigo-200 rounded-t-md flex-1"
-                style={{ height: `${(Number.parseInt(item.base_price) / analytics.averagePrice) * 100}px` }}
-              ></div>
-              <div
-                className="bg-violet-500 rounded-t-md flex-1"
-                style={{ height: `${(Number.parseInt(item.current_price) / analytics.averagePrice) * 100}px` }}
-              ></div>
-            </div>
-            <div className="text-xs mt-1 truncate w-full text-center">{item.name}</div>
-          </div>
-        ))}
+      <div className="w-full h-80 mt-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <ComposedChart data={chartData}>
+            <XAxis dataKey="name" tick={{ fontSize: 10 }} />
+            <YAxis />
+            <Tooltip />
+            <Legend />
+            <Bar dataKey="basePrice" fill="#c3bdfa" name="Base Price" />
+            <Bar dataKey="currentPrice" fill="#8b5cf6" name="Current Price" />
+          </ComposedChart>
+        </ResponsiveContainer>
       </div>
-    )
-  }
+    );
+  };
 
   // Function to render the bid activity chart
-  const renderBidActivityChart = () => {
+
+  const renderBidActivityChart = ({ items }) => {
+    const chartData = items.map(item => ({
+      name: item.name,
+      bids: item.auction_history ? item.auction_history.length : 0,
+    }));
+  
     return (
-      <div className="h-64 w-full flex items-end space-x-2 mt-4">
-        {items.map((item, index) => {
-          const bidCount = item.auction_history ? item.auction_history.length : 0
-          const maxBids = Math.max(...items.map((i) => (i.auction_history ? i.auction_history.length : 0)))
-          const height = maxBids > 0 ? (bidCount / maxBids) * 150 : 0
-
-          return (
-            <div key={index} className="flex flex-col items-center flex-1">
-              <div className="bg-violet-400 rounded-t-md w-full" style={{ height: `${height}px` }}></div>
-              <div className="text-xs mt-1 truncate w-full text-center">{item.name}</div>
-            </div>
-          )
-        })}
+      <div className="w-full h-80 mt-4">
+        <ResponsiveContainer width="100%" height="100%">
+          <RadarChart outerRadius="80%" data={chartData}>
+            <PolarGrid />
+            <PolarAngleAxis dataKey="name" tick={{ fontSize: 10 }} />
+            <PolarRadiusAxis />
+            <Tooltip />
+            <Radar name="Bids" dataKey="bids" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.6} />
+          </RadarChart>
+        </ResponsiveContainer>
       </div>
-    )
-  }
-
+    );
+  };
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-screen bg-slate-50">
@@ -427,26 +441,7 @@ export default function SellerHome() {
                 {activeTab === "dashboard" ? "Dashboard Overview" : "My Items"}
               </h2>
             </div>
-            <button
-              onClick={handleAddItem}
-              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors flex items-center"
-            >
-              <svg
-                className="w-5 h-5 mr-1"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                ></path>
-              </svg>
-              Add New Item
-            </button>
+          
           </div>
         </header>
 
@@ -616,13 +611,13 @@ export default function SellerHome() {
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                   <h3 className="text-lg font-semibold mb-2">Price Comparison</h3>
                   <p className="text-sm text-gray-500 mb-4">Base price (light) vs Current price (dark)</p>
-                  {renderPriceChart()}
+                  {renderPriceChart({ items, analytics })}
                 </div>
 
                 <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-100">
                   <h3 className="text-lg font-semibold mb-2">Bid Activity</h3>
                   <p className="text-sm text-gray-500 mb-4">Number of bids per item</p>
-                  {renderBidActivityChart()}
+                  {renderBidActivityChart({ items, analytics })}
                 </div>
               </div>
 
@@ -648,9 +643,9 @@ export default function SellerHome() {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {items
+                      {items.reverse()
                         .flatMap((item) =>
-                          (item.auction_history || []).map((bid, bidIndex) => (
+                          (item.auction_history || []).reverse().map((bid, bidIndex) => (
                             <tr key={`${item._id}-${bidIndex}`}>
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <div className="flex items-center">
@@ -690,7 +685,7 @@ export default function SellerHome() {
                             </tr>
                           )),
                         )
-                        .slice(0, 5)}
+                        .slice(0,10)}
 
                       {items.flatMap((item) => item.auction_history || []).length === 0 && (
                         <tr>

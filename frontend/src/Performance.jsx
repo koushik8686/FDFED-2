@@ -1,6 +1,86 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react"
+import {
+  LineChart,
+  Line,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  LabelList
+} from 'recharts'
+
+const LineChartComponent = ({ stats }) => {
+  if (!stats || stats.endpoints.length === 0) return null
+
+  const mergedData = stats.timeSeriesData[stats.endpoints[0]].map((_, index) => {
+    const point = { time: stats.timeSeriesData[stats.endpoints[0]][index].time }
+    stats.endpoints.forEach(endpoint => {
+      point[endpoint] = stats.timeSeriesData[endpoint][index]?.responseTime ?? 0
+    })
+    return point
+  })
+
+  return (
+    <ResponsiveContainer width="100%" height={400}>
+      <LineChart data={mergedData} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="time" />
+        <YAxis label={{ value: 'Response Time (ms)', angle: -90, position: 'insideLeft' }} />
+        <Tooltip />
+        <Legend />
+        {stats.endpoints.map((endpoint, idx) => (
+          <Line
+            key={endpoint}
+            type="monotone"
+            dataKey={endpoint}
+            stroke={['#FF6B6B', '#4ECDC4', '#FFD166', '#06D6A0', '#118AB2'][idx % 5]}
+            strokeWidth={2}
+            dot={{ r: 1 }}
+          />
+        ))}
+      </LineChart>
+    </ResponsiveContainer>
+  )
+}
+
+const BarChartComponent = ({ stats }) => {
+  if (!stats || stats.endpoints.length === 0) return null
+
+  const data = stats.endpoints.map(endpoint => ({
+    endpoint: endpoint.split('/').pop(),
+    Min: stats.minResponseTimes[endpoint],
+    Avg: stats.avgResponseTimes[endpoint],
+    Max: stats.maxResponseTimes[endpoint]
+  }))
+
+  return (
+    <ResponsiveContainer width="100%" height={400}>
+      <BarChart data={data} margin={{ top: 20, right: 30, left: 40, bottom: 20 }}>
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="endpoint" />
+        <YAxis label={{ value: 'Response Time (ms)', angle: -90, position: 'insideLeft' }} />
+        <Tooltip />
+        <Legend />
+        <Bar dataKey="Min" fill="#4ECDC4">
+          <LabelList dataKey="Min" position="top" fontSize={10} />
+        </Bar>
+        <Bar dataKey="Avg" fill="#FFD166">
+          <LabelList dataKey="Avg" position="top" fontSize={10} />
+        </Bar>
+        <Bar dataKey="Max" fill="#FF6B6B">
+          <LabelList dataKey="Max" position="top" fontSize={10} />
+        </Bar>
+      </BarChart>
+    </ResponsiveContainer>
+  )
+}
+
 
 export default function PerformanceAnalytics() {
   const [apiData, setApiData] = useState([])
@@ -376,7 +456,7 @@ export default function PerformanceAnalytics() {
   }
 
   return (
-    <div className="space-y-8">
+    <><div className="space-y-8">
       {/* Header */}
       <div className="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-xl shadow-lg p-6 text-white">
         <h2 className="text-3xl font-bold mb-2">API Performance Dashboard</h2>
@@ -459,33 +539,18 @@ export default function PerformanceAnalytics() {
       </div>
 
       {/* Charts Section */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Response Time Line Chart */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Response Time Trends</h3>
-            <div className="h-80">
-              <canvas ref={lineChartRef} width={600} height={400} className="w-full h-full"></canvas>
-            </div>
-          </div>
-        </div>
-
-        {/* Min/Avg/Max Bar Chart */}
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Response Time Comparison</h3>
-            <div className="h-80">
-              <canvas ref={barChartRef} width={600} height={400} className="w-full h-full"></canvas>
-            </div>
-          </div>
-        </div>
-      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <LineChartComponent stats={stats} />
+        <BarChartComponent stats={stats} />
+      </div>
+
+  
+    </div><div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {stats.endpoints.map((endpoint) => (
           <div key={endpoint} className="bg-white rounded-xl shadow-md overflow-hidden border-l-4 border-indigo-500">
             <div className="p-6">
               <h3 className="text-lg font-bold text-gray-800 mb-4">{endpoint}</h3>
-              
+
               <div className="space-y-4">
                 {/* Response Time Stats */}
                 <div className="flex justify-between items-center">
@@ -502,7 +567,7 @@ export default function PerformanceAnalytics() {
                     <p className="text-xl font-bold text-red-500">{stats.maxResponseTimes[endpoint]} ms</p>
                   </div>
                 </div>
-                
+
                 {/* Source Distribution */}
                 <div>
                   <div className="flex justify-between text-sm text-gray-500 mb-1">
@@ -512,19 +577,17 @@ export default function PerformanceAnalytics() {
                     </span>
                   </div>
                   <div className="w-full h-2 bg-gray-200 rounded-full overflow-hidden">
-                    <div 
+                    <div
                       className="h-full bg-gradient-to-r from-teal-500 to-indigo-500 rounded-full"
                       style={{
-                        width: `${
-                          (stats.dbVsCacheCount[endpoint].cache /
+                        width: `${(stats.dbVsCacheCount[endpoint].cache /
                             (stats.dbVsCacheCount[endpoint].db + stats.dbVsCacheCount[endpoint].cache)) *
-                          100
-                        }%`,
+                          100}%`,
                       }}
                     ></div>
                   </div>
                 </div>
-                
+
                 {/* Cache Hit Rate */}
                 <div className="flex items-center">
                   <div className="w-16 h-16 rounded-full border-4 border-indigo-500 flex items-center justify-center">
@@ -532,7 +595,7 @@ export default function PerformanceAnalytics() {
                       {Math.round(
                         (stats.dbVsCacheCount[endpoint].cache /
                           (stats.dbVsCacheCount[endpoint].db + stats.dbVsCacheCount[endpoint].cache)) *
-                          100
+                        100
                       )}%
                     </span>
                   </div>
@@ -547,48 +610,40 @@ export default function PerformanceAnalytics() {
             </div>
           </div>
         ))}
-      </div>
-
-    <div className="bg-white rounded-xl shadow-md overflow-hidden">
-          <div className="p-6">
-            <h3 className="text-xl font-bold text-gray-800 mb-4">Current API Stats</h3>
-            <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-gray-200">
-            <thead>
-              <tr className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Endpoint</th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Source</th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Response Time (ms)</th>
-            <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Timestamp</th>
-              </tr>
-            </thead>
-            <tbody className="bg-white divide-y divide-gray-200">
-              {apiData.slice().reverse().slice(0, 20).map((item) => (
-            <tr key={item._id} className="hover:bg-gray-50">
-              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.endpoint}</td>
-              <td className="px-6 py-4 whitespace-nowrap">
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-              item.source === 'db' 
-                ? 'bg-red-100 text-red-800' 
-                : 'bg-teal-100 text-teal-800'
-                }`}>
-              {item.source}
-                </span>
-              </td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.responseTime}</td>
-              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                {new Date(item.timestamp).toLocaleString()}
-              </td>
-            </tr>
-              ))}
-            </tbody>
-          </table>
-            </div>
+      </div><div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="p-6">
+          <h3 className="text-xl font-bold text-gray-800 mb-4">Current API Stats</h3>
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead>
+                <tr className="bg-gradient-to-r from-purple-600 to-indigo-600 text-white">
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Endpoint</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Source</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Response Time (ms)</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider">Timestamp</th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+                {apiData.slice().reverse().slice(0, 20).map((item) => (
+                  <tr key={item._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{item.endpoint}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 rounded-full text-xs font-medium ${item.source === 'db'
+                          ? 'bg-red-100 text-red-800'
+                          : 'bg-teal-100 text-teal-800'}`}>
+                        {item.source}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.responseTime}</td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                      {new Date(item.timestamp).toLocaleString()}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-
-        {/* Endpoint Performance Cards */}
-   
-    </div>
-  )
+      </div></>
+    )
 }
