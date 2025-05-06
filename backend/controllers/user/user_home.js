@@ -15,25 +15,25 @@ const logPerformance = async (req, source, responseTime) => {
 
 async function renderUserHome(req, res) {
     const start = Date.now();
-    const { email } = req.params;
-    console.log(email)  
+    const { id } = req.params;
+    console.log(id)  
     try {
         const client = await getRedisClient(); // Ensure Redis client is connected
         let user;
         let source;
         let time = 0;
-        const cachedUser = await client.get(`user:${email}`);
+        const cachedUser = await client.get(`user:${id}`);
         if (cachedUser) {
             user = JSON.parse(cachedUser);
             time = Date.now() - start;
-            console.log(email , cachedUser)
+            console.log(id , cachedUser)
             source = 'cache';
         } else {
-            user = await usermodel.findOne({ _id: email });
-            console.log(user._id , email )
+            user = await usermodel.findOne({ _id: id });
+            console.log(user._id , id )
             if (!user || user==null) return res.status(404).send("User not found");
             time = Date.now() - start;
-            await client.set(`user:${email}`, JSON.stringify(user), { EX: 3600 });
+            await client.set(`user:${id}`, JSON.stringify(user), { EX: 3600 });
             source = 'db';
         }
 
@@ -41,7 +41,7 @@ async function renderUserHome(req, res) {
 
         const data = {
             user,
-            id: email,
+            id: id,
             items
         };
 

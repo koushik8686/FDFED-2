@@ -7,6 +7,7 @@ const sellerLoginRouter = require('../routers/seller-routes/seller_login');
 const sellerHomeRouter = require('../routers/seller-routes/seller_home');
 const sellItemRouter = require('../routers/seller-routes/sell_item');
 const createAuctionRouter = require('../routers/seller-routes/create_auction');
+jest.setTimeout(20000); // sets timeout to 20 seconds
 
 const { itemmodel } = require('../models/itemmodel');
 const sellermodel = require('../models/sellermodel');
@@ -30,17 +31,17 @@ let sellerId = null;
 let itemId = null;
 
 beforeAll(async () => {
-    await mongoose.connect("mongodb://localhost:27017/abc", {
+    try {
+      await mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/test_wbd", {
         useNewUrlParser: true,
         useUnifiedTopology: true,
-    });
-});
+      });
+    } catch (err) {
+      console.error("DB connection error:", err);
+    }
+  });
+  
 
-afterAll(async () => {
-    await sellermodel.deleteMany({ email: testSeller.email });
-    await itemmodel.deleteMany({ seller: sellerId });
-    await mongoose.connection.close();
-});
 
 describe('Seller End-to-End Flow', () => {
 
@@ -93,4 +94,11 @@ describe('Seller End-to-End Flow', () => {
     //     expect(res.status).toBe(200);
     //     expect(res.body.message).toBe("Auction created successfully");
     // });
+});
+
+
+afterAll(async () => {
+    await sellermodel.deleteMany();
+    await itemmodel.deleteMany();
+    await mongoose.connection.close();
 });

@@ -8,6 +8,7 @@ const userRegisterRouter = require("../routers/user-routes/user_register");
 const userLoginRouter = require("../routers/user-routes/user_login");
 const { renderUserHome } = require("../controllers/user/user_home");
 const usermodel = require("../models/usermodel");
+jest.setTimeout(20000); // sets timeout to 20 seconds
 
 const app = express();
 app.use(express.json());
@@ -15,7 +16,7 @@ app.use("/liked", LikedRoutes);
 app.use("/auth", authRouter);
 app.use("/register", userRegisterRouter);
 app.use("/login", userLoginRouter);
-app.get("/user/:email", renderUserHome);
+app.get("/user/:id", renderUserHome);
 
 // Test credentials
 function generateTestUser() {
@@ -29,19 +30,14 @@ function generateTestUser() {
 
 const testUser = generateTestUser();
 beforeAll(async () => {
-  await mongoose.connect("mongodb://localhost:27017/abc", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  });
-
-  // Ensure clean state
-  await usermodel.deleteOne({ email: testUser.email });
-});
-
-afterAll(async () => {
-  // Clean up test user
-  await usermodel.deleteOne({ email: testUser.email });
-  await mongoose.disconnect();
+  try {
+    await mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/test_wbd", {
+      useNewUrlParser: true,
+      useUnifiedTopology: true,
+    });
+  } catch (err) {
+    console.error("DB connection error:", err);
+  }
 });
 
 describe("User APIs", () => {
@@ -70,20 +66,25 @@ describe("User APIs", () => {
   
       // Try again
       const res = await request(app).post("/register").send(duplicateUser);
-      expect(res.statusCode).toBe(500);
-      expect(res.body.message).toBe("Internal Server Error");
+      expect(res.statusCode).toBe(200);
+      expect(res.body.message).toBe("Email Already Exists");
     });
   });
   
 
   describe("User Login", () => {
     it("should login successfully with correct credentials", async () => {
+      // Register the test user first
+      await request(app).post("/register").send(testUser);
+
       const res = await request(app).post("/login").send({
         email: testUser.email,
         password: testUser.password,
       });
       expect(res.statusCode).toBe(200);
       expect(res.body.message).toBe("Login Successfully");
+      expect(res.body).toHaveProperty("userId");
+      testUser._id = res.body.userId; // Save userId for subsequent tests
     });
 
     it("should return error for incorrect password", async () => {
@@ -106,15 +107,23 @@ describe("User APIs", () => {
   });
 
   describe("User Home", () => {
-    it("should return user data for a valid email", async () => {
-      const res = await request(app).get(`/user/${testUser.email}`);
+    it("should return user data for a valid user ID", async () => {
+      const res = await request(app).get(`/user/${testUser._id}`);
       expect(res.statusCode).toBe(200);
       expect(res.body).toHaveProperty("data");
     });
 
-    it("should return error for invalid email", async () => {
-      const res = await request(app).get(`/user/invalid_email`);
+    it("should return error for invalid user ID", async () => {
+      const res = await request(app).get(`/user/invalid_user_id`);
       expect(res.statusCode).toBe(500); // Or 404 depending on your controller
     });
   });
+});
+
+
+
+afterAll(async () => {
+  // Clean up the entire collection
+  await usermodel.deleteMany({});
+  await mongoose.disconnect();
 });

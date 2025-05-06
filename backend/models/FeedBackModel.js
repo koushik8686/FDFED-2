@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const FeedbackSchema = mongoose.Schema({
     name: String,
-    email: { type: String, index: true, unique: true },
+    email: { type: String, index: true },
     Feedback: String,
     Rating: Number,
     CreatedAt: { type: Date, index: true }

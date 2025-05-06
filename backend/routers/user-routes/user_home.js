@@ -4,6 +4,6 @@ const { loguserActions, userErrorMiddleware } = require('../../middleware/User')
 
 const router = express.Router();
 
-router.get("/:email", loguserActions, userErrorMiddleware, UserController.renderUserHome);
+router.get("/:id", loguserActions, userErrorMiddleware, UserController.renderUserHome);
 
 module.exports = router;

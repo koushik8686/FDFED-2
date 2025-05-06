@@ -46,29 +46,6 @@ async function userregister_post(req, res) {
             }
         });
 
-        const verificationLink = `http://localhost:3000/verify/${newUser._id}`;
-        const mailOptions = {
-            from: "hexart637@gmail.com",
-            to: email,
-            subject: 'Verify Your Email',
-            html: `
-                <div style="font-family: Arial, sans-serif; text-align: center;">
-                    <h3>Welcome to HexArt!</h3>
-                    <p>To complete your registration, please verify your email address by clicking the button below.</p>
-                    <a href="${verificationLink}" style="display: inline-block; padding: 10px 20px; font-size: 16px; color: white; background-color: #00ADB5; text-decoration: none; border-radius: 5px;">Verify Email</a>
-                    <p>If the button doesn't work, you can copy and paste the following link into your browser:</p>
-                    <p>${verificationLink}</p>
-                </div>
-            `
-        };
-
-        transporter.sendMail(mailOptions, (error, info) => {
-            if (error) {
-                console.log(error);
-            } else {
-                console.log("Mail sent successfully to receiver");
-            }
-        });
         responseTime = Date.now() - start;
         
         await PerformanceLog.create({

@@ -30,13 +30,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
   customCssUrl: CSS_URL,
 }));
 
-const transporter = nodemailer.createTransport({
-  service: 'gmail',
-  auth: {
-    user: email, // Replace with your email
-    pass: 'zetk dsdm imvx keoa', // Replace with your app password
-  },
-});
 
 const allowedOrigins = [
   'http://localhost:3000',

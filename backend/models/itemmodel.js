@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const itemschema = mongoose.Schema({
     name: String,
     person: String,
-    pid: { type: String, index: true, unique: true },
+    pid: { type: String, index: true },
     url: String,
     base_price: Number,
     current_bidder: String,
