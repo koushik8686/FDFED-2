@@ -4,6 +4,7 @@ const bodyParser = require("body-parser");
 const session = require("express-session");
 const cors = require("cors");
 const multer = require("multer");
+const SellerModel = require("./models/sellermodel");
 require('dotenv').config();
 const cookieParser = require("cookie-parser");
 const { itemmodel } = require("./models/itemmodel");
@@ -13,11 +14,11 @@ const app = express();
 const email = "hexart637@gmail.com";
 const morgan = require('morgan');
 const PerformanceLog = require('./models/PerformanceLog');
-const getRedisClient = require('./redis'); // Import Redis client
 const YAML = require('yamljs');
 const swaggerUi = require('swagger-ui-express');
 const fs = require('fs');
 const stripe = require('stripe');
+const getRedisClient = require('./redis'); // Import Redis client
 
 const CSS_URL = "https://cdnjs.cloudflare.com/ajax/libs/swagger-ui/4.1.0/swagger-ui.min.css";
 
@@ -59,7 +60,6 @@ mongoose.connect("mongodb+srv://koushik:koushik@cluster0.h2lzgvs.mongodb.net/fdf
   console.log("MongoDB Connected ")
 });
 app.use(express.json()); // To parse JSON body
-
 
 //Third party middleware
 morgan.token('body', (req) => JSON.stringify(req.body)); // Logs request body
@@ -143,6 +143,29 @@ app.get("/performance" , async (req, res) => {
   res.json(logs);
 })
 
+app.post('/seller/:seller/subscribe', async (req, res) => {
+  const { seller } = req.params;
+  const { plan } = req.body;
+  const client = await getRedisClient(); // Ensure Redis client is connected
+
+  try {
+    // Update seller subscription in the database
+    const updatedSeller = await SellerModel.findByIdAndUpdate(
+      seller,
+      { subscription: plan },
+      { new: true }
+    );
+    await client.flushAll();
+    if (!updatedSeller) {
+      return res.status(404).json({ error: 'Seller not found' });
+    }
+
+    res.status(200).json({ message: 'Subscription updated successfully', seller: updatedSeller });
+  } catch (error) {
+    console.error('Error updating subscription:', error);
+    res.status(500).json({ error: 'An error occurred while updating the subscription.' });
+  }
+});
 
 app.post('/create-checkout-session', async (req, res) => {
   const { items } = req.body;

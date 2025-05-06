@@ -19,7 +19,7 @@ export default function SellerSoldItems() {
         if (!sellerid) {
           return navigate("/seller");
         }
-        const response = await axios.get(`/sellerhome/${sellerid}`);
+        const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
         setSeller(response.data.seller);
         const soldItems = response.data.seller.solditems;
         const unsoldItems = response.data.seller.items.filter((item) => !item.auction_active);
@@ -96,7 +96,7 @@ export default function SellerSoldItems() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {soldItems.map((item) => (
                         <div key={item._id} className="bg-white p-4 rounded-lg shadow-lg">
-                          <img src={"/" + item.url} alt={item.name} className="w-full h-48 object-cover rounded-md" />
+                          <img src={item.url} alt={item.name} className="w-full h-48 object-cover rounded-md" />
                           <div className="mt-3">
                             <h3 className="text-lg font-semibold">{item.name}</h3>
                             <p className="text-gray-600">Sold Price: ₹{item.current_price}</p>
@@ -113,7 +113,7 @@ export default function SellerSoldItems() {
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                       {unsoldItems.map((item) => (
                         <div key={item._id} className="bg-white p-4 rounded-lg shadow-lg">
-                          <img src={"/" + item.url} alt={item.name} className="w-full h-48 object-cover rounded-md" />
+                          <img src={ item.url} alt={item.name} className="w-full h-48 object-cover rounded-md" />
                           <div className="mt-3">
                             <h3 className="text-lg font-semibold">{item.name}</h3>
                             <p className="text-gray-600">Base Price: ₹{item.base_price}</p>

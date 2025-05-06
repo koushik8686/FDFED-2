@@ -96,6 +96,7 @@ export default function Admin() {
           <a href="#items" className="nav-item">Items</a>
           <Link to="/admin/calender" className="nav-item">Calender</Link>
           <a href="/reviews" className='nav-item'>Reviews</a>
+          <a href="/subscriptions" className='nav-item' >Subscriptions</a>
           <p onClick={logout} className="nav-item">Log Out</p>
         </nav>
       </aside>
@@ -269,7 +270,7 @@ export default function Admin() {
                     <td className="table-cell">{item.person}</td>
                     <td className="table-cell">{item.base_price}</td>
                     <td className="table-cell">{item.current_price}</td>
-                    <td className="table-cell"><img src={"/" + item.url} alt={item.name} /></td>
+                    <td className="table-cell"><img src={item.url} alt={item.name} /></td>
                     <td className="table-cell">
                       <AiOutlineDelete onClick={() => deleteItem(item._id)} className="delete-icon" />
                     </td>

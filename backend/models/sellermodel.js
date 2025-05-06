@@ -8,7 +8,12 @@ const sellerschema = mongoose.Schema({
     password: String,
     items: [itemschema],
     solditems: [itemschema],
-    likeditems: [itemschema]
+    likeditems: [itemschema],
+    subscription:{
+        type: String,
+        enum: ['free', 'standard' , 'premium'],
+        default: 'free'
+    }
 }, {
     timestamps: true // This will add createdAt and updatedAt fields automatically
 });

@@ -40,10 +40,6 @@ async function renderSellerHome(req, res) {
         // Get items (consider caching these as well if they don't change often)
         const items = await itemmodel.find({ _id: { $in: seller.items } });
 
-        const data = {
-            seller,
-            items
-        };
 
         await logPerformance(req, source, time);
 
@@ -51,7 +47,8 @@ async function renderSellerHome(req, res) {
             message: "Data Fetched Successfully", 
             source, 
             responseTime: time, 
-            data 
+            seller,
+            items
         });
     } catch (error) {
         console.error("Error fetching data:", error);

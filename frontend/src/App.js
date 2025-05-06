@@ -18,6 +18,7 @@ import TimeFrame from './components/admin/TimeFrame';
 import FeedBack from './components/user/FeedBAckForm';
 import Reviews from './components/admin/Reviews';
 import Performance from './Performance';
+import Subscriptions from './components/admin/Susriptions';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
         <Route path='/admin/' element={<Admin/>}/>
         <Route path='/admin/calender' element={<TimeFrame/>} />
         <Route path='/reviews'  element={<Reviews/>} />
+        <Route path='/subscriptions' element={<Subscriptions/>} />
         <Route path='/performance' element={<Performance/>} />
         {/* Add other routes here */}
       </Routes>

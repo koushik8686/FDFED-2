@@ -21,11 +21,11 @@ export default function SellerHome() {
       }
       console.log(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
       const response = await axios.get(`${process.env.REACT_APP_BACKENDURL}/sellerhome/${sellerid}`);
-      setSeller(response.data.data.seller);
+      setSeller(response.data.seller);
       console.log(response.data.seller);
 
       const currentTime = new Date();
-      const validItems = response.data.data.seller.items.filter(item => {
+      const validItems = response.data.seller.items.filter(item => {
         if (!item.EndTime) {
           return true;
         }
@@ -109,7 +109,7 @@ export default function SellerHome() {
         </header>
 
         <main className="seller-content">
-          {showAddItemForm && <AddItem onClose={handleCloseForm} fetchdata={fetchSellerData} onAdd={handleNewItem} />}
+          {showAddItemForm && <AddItem onClose={handleCloseForm} sellerdata ={seller} fetchdata={fetchSellerData} onAdd={handleNewItem} />}
 
           <div className="items-container">
             {items.map((item) => {
