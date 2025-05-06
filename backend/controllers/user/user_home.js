@@ -16,7 +16,7 @@ const logPerformance = async (req, source, responseTime) => {
 async function renderUserHome(req, res) {
     const start = Date.now();
     const { id } = req.params;
-    console.log(id)  
+    console.log(id);
     try {
         const client = await getRedisClient(); // Ensure Redis client is connected
         let user;
@@ -44,7 +44,6 @@ async function renderUserHome(req, res) {
             id: id,
             items
         };
-
         await logPerformance(req, source, time);
 
         res.status(200).send({ message: "Data Fetched Successfully", source, responseTime: time, data });

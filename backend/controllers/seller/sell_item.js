@@ -34,9 +34,9 @@ async function sellingPagePost(req, res) {
         item.person = item.current_bidder;
 
         const seller = await sellermodel.findOneAndUpdate(
-            { _id: req.params.seller },
-            { $pull: { items: { _id: req.params.itemid } } },
-            { new: true }
+                { _id: req.params.seller },
+                { $pull: { items: { _id: req.params.itemid } } },
+                { new: true }
         );
 
         if (!seller) {
