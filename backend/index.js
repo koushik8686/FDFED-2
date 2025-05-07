@@ -47,6 +47,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
 
 const allowedOrigins = [
   'http://localhost:3000',
+  'http://localhost:4000',
   'https://fdfed-iota.vercel.app',
   'https://fdfed-2-server.vercel.app/'
 ];
@@ -221,6 +222,19 @@ app.post('/create-checkout-session', async (req, res) => {
 
   res.json({ id: session.id });
 });
+
+app.delete('/user/:id', async (req, res) => {
+  const { id } = req.params;
+  const client = await getRedisClient()
+  try {
+    const deletedUser = await UserModel.findByIdAndDelete(id);
+    client.flushAll();
+    res.json(deletedUser);
+  } catch (error) {
+    console.error('Error deleting user:', error);
+    res.status(500).json({ error: 'An error occurred while deleting the user.' });
+  }
+})
 
 app.post('/user/edit/:id', async (req, res) => {
   const { id } = req.params;

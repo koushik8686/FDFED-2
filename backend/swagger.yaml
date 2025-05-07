@@ -199,7 +199,7 @@ paths:
             schema:
               type: object
               properties:
-                name:
+                username:
                   type: string
                 email:
                   type: string
@@ -207,12 +207,12 @@ paths:
                 password:
                   type: string
               required:
-                - name
+                - username
                 - email
                 - password
       responses:
         '200':
-          description: Verification email sent.
+          description: Successful Register.
 
   /login:
     post:
@@ -236,40 +236,58 @@ paths:
       responses:
         '200':
           description: Login successful.
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json
 
   
   paths:
   # ====================== #
   #        User Routes      #
   # ====================== #
-  /user/{userid}:
-    get:
+  /user/{id}:
+    delete:
       tags: [User]
-      summary: Get user profile by ID
-      description: Retrieves the profile information of the specified user
+      summary: Delete user by ID
+      description: Deletes a user by their unique identifier
       security:
         - cookieAuth: []
       parameters:
-        - name: userid
+        - name: id
           in: path
           required: true
-          description: The unique identifier of the user
+          description: The unique identifier of the user to delete
           schema:
             type: string
       responses:
         '200':
-          description: User data retrieved successfully
+          description: User deleted successfully
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                type: object
+                properties:
+                  _id:
+                    type: string
+                  name:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
         '401':
           description: Unauthorized - Invalid or missing authentication token
         '404':
           description: User not found
         '500':
           description: Internal server error
-
 
   # /auction/{userid}/{itemid}:
   #   get:
@@ -739,7 +757,6 @@ paths:
   # ====================== #
   #    Additional Routes    #
   # ====================== #
-
   /feedback:
     post:
       tags: [Additional]
@@ -754,6 +771,7 @@ paths:
         '200':
           description: Feedback saved successfully.
 
+  /feedbacks:
     get:
       tags: [Additional]
       summary: Get all feedbacks
@@ -765,7 +783,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/reviews'
+                  $ref: '#/components/schemas/Feedback'
 
   /item/unsold/{id}:
     post:
