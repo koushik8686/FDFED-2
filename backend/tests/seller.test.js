@@ -73,7 +73,7 @@ describe('Seller End-to-End Flow', () => {
         expect(saved.name).toBe("Test Item");
     });
 
-    test('GET /seller/home/:id - should return seller home data', async () => {
+    test('GET /sellerhome/:id - should return seller home data', async () => {
         const res = await request(app).get(`/seller/home/${sellerId}`);
         expect(res.status).toBe(200);
         expect(res.body.data.seller._id).toBe(sellerId);
