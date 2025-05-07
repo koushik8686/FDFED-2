@@ -714,17 +714,28 @@ const MyBidsDisplay = ({ bids, username }) => {
 
   const totalBids = bids.length
   const totalBidAmount = bids.reduce((acc, bid) => acc + Number.parseInt(bid.price), 0)
-  const wonAuctions = Object.values(groupedBids).filter(itemBids => itemBids.itemOwner === username).length
+  const wonAuctions = Object.values(groupedBids).filter(itemBids => itemBids.current_bidder === username).length
 
   return (
     <div className="p-6 animate-fadeIn">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">My Bids</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
+  <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300 border border-gray-200">
+    <p className="text-gray-500 text-sm mb-1">Total Bids</p>
+    <h2 className="text-2xl font-semibold text-gray-800">{totalBids}</h2>
+  </div>
 
-      <div className="mb-4">
-        <p className="text-sm text-gray-500">Total Bids: {totalBids}</p>
-        <p className="text-sm text-gray-500">Total Bid Amount: ₹{totalBidAmount.toLocaleString()}</p>
-        <p className="text-sm text-gray-500">Won Auctions: {wonAuctions}</p>
-      </div>
+  <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300 border border-gray-200">
+    <p className="text-gray-500 text-sm mb-1">Total Bid Amount</p>
+    <h2 className="text-2xl font-semibold text-green-600">₹{totalBidAmount.toLocaleString()}</h2>
+  </div>
+
+  <div className="bg-white rounded-2xl shadow-lg p-6 transform hover:scale-105 transition-all duration-300 border border-gray-200">
+    <p className="text-gray-500 text-sm mb-1">Won Auctions</p>
+    <h2 className="text-2xl font-semibold text-blue-600">{wonAuctions}</h2>
+  </div>
+</div>
+
 
       {Object.keys(groupedBids).length === 0 ? (
         <div className="text-center py-12">
