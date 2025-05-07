@@ -226,6 +226,14 @@ export default function SellerSoldItems() {
     }
   }, [timeFilter])
 
+  useEffect(() => {
+    if (soldItems.length > 0 || unsoldItems.length > 0) {
+      const filteredSold = filterItemsByTime(soldItems, timeFilter)
+      const filteredUnsold = filterItemsByTime(unsoldItems, timeFilter)
+      calculateAnalytics(filteredSold, filteredUnsold) // Recalculate analytics for filtered items
+    }
+  }, [timeFilter, soldItems, unsoldItems])
+
   const filterItemsByTime = (items, filter) => {
     if (filter === "all") return items
 
