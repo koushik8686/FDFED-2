@@ -10,7 +10,7 @@ This project is a real-time auction platform with the following key features:
 
 - **Sellers**
   - List items for auction.
-  - View and manage listed items.
+  - View and manage listed items
 
 - **Admin**
   - Manage users and sellers.
