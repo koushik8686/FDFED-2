@@ -8,7 +8,6 @@ const FeedbackSchema = mongoose.Schema({
     Rating: Number,
     CreatedAt: { type: Date, index: true }
 });
-
 // Ensure indexes are created
 const Feedback = mongoose.model('Feedbacks', FeedbackSchema);
 module.exports = Feedback;
