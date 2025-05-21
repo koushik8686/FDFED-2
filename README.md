@@ -18,10 +18,10 @@ This project is a real-time auction platform with the following key features:
 - **Real-Time Bidding**:
   - Bids are updated in real-time using WebSocket technology
 
-- **Email Verification**:
+- **Email Verification**:-
   - Secure registration process with email verification with otp validation .
 
-## Technology Stack:
+## Technology Stack:-
 - **Frontend**: React.js
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
@@ -29,7 +29,7 @@ This project is a real-time auction platform with the following key features:
 
 ## Setup and Run Instructions
 
-### Prerequisites:
+### Prerequisites:-
 - Node.js installed
 - MongoDB server running
 
