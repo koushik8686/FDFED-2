@@ -1,28 +1,28 @@
 # Auction Project
 
-## Overview
+## Overview:
 This project is a real-time auction platform with the following key features:
 
-### Features
-- **Users**
+### Features:
+- **Users**:
   - Browse auction items.
   - Place bids in real-time.
 
-- **Sellers**
+- **Sellers**:
   - List items for auction.
   - View and manage listed items
 
-- **Admin**
+- **Admin**:
   - Manage users and sellers.
   - Monitor ongoing auctions.
 
-- **Real-Time Bidding**
+- **Real-Time Bidding**:
   - Bids are updated in real-time using WebSocket technology
 
-- **Email Verification**
+- **Email Verification**:
   - Secure registration process with email verification with otp validation .
 
-## Technology Stack
+## Technology Stack:
 - **Frontend**: React.js
 - **Backend**: Node.js, Express.js
 - **Database**: MongoDB
@@ -30,19 +30,19 @@ This project is a real-time auction platform with the following key features:
 
 ## Setup and Run Instructions
 
-### Prerequisites
+### Prerequisites:
 - Node.js installed
 - MongoDB server running
 
-### Steps to Run
+### Steps to Run:
 
-#### 1. Clone the Repository
+#### 1. Clone the Repository:
 ```bash
 git clone <repository_url>
 cd <repository_folder>
 ```
 
-#### 2. Setup Frontend
+#### 2. Setup Frontend:
 ```bash
 cd frontend
 npm install
@@ -50,7 +50,7 @@ npm start
 ```
 Frontend will be available at `http://localhost:3000`.
 
-#### 3. Setup Backend
+#### 3. Setup Backend:
 ```bash
 cd backend
 npm install
@@ -63,8 +63,8 @@ To run it using docker run the following command:
 docker-compose down -v && docker-compose up --build
 ```
 
-### Note
+### Note:
 Ensure MongoDB is running locally or update the connection string in the backend configuration to point to your MongoDB instance.
 
-## License
+## License:
 This project is licensed under the MIT License.
