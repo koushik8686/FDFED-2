@@ -17,7 +17,7 @@ This project is a real-time auction platform with the following key features:
   - Monitor ongoing auctions.
 
 - **Real-Time Bidding**
-  - Bids are updated in real-time using WebSocket technology.
+  - Bids are updated in real-time using WebSocket technology
 
 - **Email Verification**
   - Secure registration process with email verification with otp validation .
