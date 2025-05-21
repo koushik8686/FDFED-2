@@ -8,7 +8,6 @@ const performanceLogSchema = new mongoose.Schema({
   timestamp: { type: Date, default: Date.now, index: true }, // Indexing the 'timestamp' field
 });
 
-// Compound index for 'endpoint' and 'source'
 performanceLogSchema.index({ endpoint: 1, source: 1 });
 
 module.exports = mongoose.model('PerformanceLog', performanceLogSchema);
