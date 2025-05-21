@@ -5,7 +5,7 @@ This project is a real-time auction platform with the following key features:
 
 ### Features:
 - **Users**:
-  - Browse auction items.
+  - Browse the auction items.
   - Place bids in real-time.
 
 - **Sellers**:
@@ -56,6 +56,7 @@ cd backend
 npm install
 node index.js
 ```
+
 Backend will be available at `http://localhost:4000`.
 
 To run it using docker run the following command:
