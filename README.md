@@ -35,13 +35,13 @@ This project is a real-time auction platform with the following key features:
 
 ### Steps to Run:
 
-#### 1. Clone the Repository:
+#### 1. Clone the Repository:-
 ```bash
 git clone <repository_url>
 cd <repository_folder>
 ```
 
-#### 2. Setup Frontend:
+#### 2. Setup Frontend:-
 ```bash
 cd frontend
 npm install
@@ -58,7 +58,7 @@ node index.js
 
 Backend will be available at `http://localhost:4000`.
 
-To run it using docker run the following command:
+To run it using docker run the following command:-
 ```bash
 docker-compose down -v && docker-compose up --build
 ```
