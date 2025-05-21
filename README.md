@@ -2,7 +2,6 @@
 
 ## Overview:
 This project is a real-time auction platform with the following key features:
-
 ### Features:
 - **Users**:
   - Browse the auction items.
