@@ -9,6 +9,7 @@ const sellItemRouter = require('../routers/seller-routes/sell_item');
 const createAuctionRouter = require('../routers/seller-routes/create_auction');
 jest.setTimeout(20000); // sets timeout to 20 seconds
 
+
 const { itemmodel } = require('../models/itemmodel');
 const sellermodel = require('../models/sellermodel');
 
